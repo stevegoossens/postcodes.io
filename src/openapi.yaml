@@ -93,6 +93,10 @@ components:
             The parishes included in the outcode.
           items:
             $ref: '#/components/schemas/parish'
+        parliamentary_constituency:
+          type: array
+          items:
+            $ref: '#/components/schemas/parliamentary_constituency'
     PostcodeData:
       description: |
         ### Postcode Data (Ordnance Survey Postcode Directory Dataset)
@@ -123,12 +127,14 @@ components:
               $ref: '#/components/schemas/admin_district'
             admin_ward:
               $ref: '#/components/schemas/admin_ward'
+            ced:
+              $ref: '#/components/schemas/ced'
             ccg:
               $ref: '#/components/schemas/ccg'
             ccg_code:
-              type: string
-              nullable: true
-              description: CCG Short Code. e.g. "07N".
+              $ref: '#/components/schemas/ccg_code'
+            ccg_id:
+              $ref: '#/components/schemas/ccg_code'
             lau2:
               type: string
               nullable: true
@@ -143,8 +149,14 @@ components:
               description: The ITL code associated with the postcode.
             parish:
               $ref: '#/components/schemas/parish'
+            parliamentary_constituency:
+              $ref: '#/components/schemas/parliamentary_constituency'
+            pfa:
+              $ref: '#/components/schemas/pfa'
         country:
           $ref: '#/components/schemas/country'
+        date_of_introduction:
+          $ref: '#/components/schemas/date_of_introduction'
         eastings:
           $ref: '#/components/schemas/eastings'
         european_electoral_region:
@@ -171,6 +183,8 @@ components:
           $ref: '#/components/schemas/parish'
         parliamentary_constituency:
           $ref: '#/components/schemas/parliamentary_constituency'
+        pfa:
+          $ref: '#/components/schemas/pfa'
         postcode:
           $ref: '#/components/schemas/postcode'
         primary_care_trust:
@@ -184,7 +198,8 @@ components:
         - $ref: '#/components/schemas/PostcodeData'
         - properties:
             distance:
-              type: string
+              type: number
+              format: float
               description: |
                 Distance in metres from specified postode
     ScottishPostcodeData:
@@ -208,14 +223,19 @@ components:
             
             Royal Mail postcode.
         scottish_parliamentary_constituency:
-          $ref: '#/components/schemas/scottish_parliamentary_constituency'
+          $ref: '#/components/schemas/scottish_parliamentary_constituency_nullable'
     ServerResponseBody:
       properties:
         status:
           type: integer
           format: int32
           description: HTTP Status Code
-          default: 200
+    ServerErrorResponseBody:
+      allOf:
+        - $ref: '#/components/schemas/ServerResponseBody'
+        - properties:
+            error:
+              type: string
     TerminatedPostcodeData:
       description: |
         ###  Terminated Postcode Data (Ordnance Survey Postcode Directory Dataset)
@@ -375,6 +395,10 @@ components:
         ### Sub ICB Location (LOC)/ Local Health Board (LHB)/ Community Health Partnership (CHP)/ Local Commissioning Group (LCG)/ Primary Healthcare Directorate (PHD)
 
         The code for the Sub ICB Locations in England, LHBs in Wales, CHPs in Scotland, LCG in Northern Ireland and PHD in the Isle of Man; there are no equivalent areas in the Channel Islands. This was formerly Clinical Commissioning Group. From July 2022, CCGs were replaced by Sub-ICB locations.
+    ccg_code:
+      type: string
+      nullable: true
+      description: CCG Short Code. e.g. "07N".
     ced:
       type: string
       nullable: true
@@ -394,6 +418,11 @@ components:
         ### Country
 
         The country (i.e. one of the four constituent countries of the United Kingdom or the Channel Islands or the Isle of Man) to which each postcode is assigned.
+    date_of_introduction:
+      type: string
+      nullable: true
+      description: |
+        TODO: undocumented
     eastings:
       type: integer
       format: int32
@@ -534,6 +563,10 @@ components:
         ### Westminster Parliamentary Constituency
 
         The Westminster Parliamentary Constituency code for each postcode.
+    pfa:
+      type: string
+      description: |
+        TODO: undocumented
     postcode:
       type: string
       description: |
@@ -584,9 +617,17 @@ components:
         ### Scottish Parliamentary Constituency
 
         2014 Scottish Parliamentary Constituency.
+    scottish_parliamentary_constituency_nullable:
+      type: string
+      nullable: true
+      description: |
+        ### Scottish Parliamentary Constituency
+
+        2014 Scottish Parliamentary Constituency.
 paths:
   /outcodes:
     get:
+      operationId: outcodeReverseGeocoding
       summary: Outcode Reverse Geocoding
       description: |
         Returns nearest outcodes for a given longitude and latitude.
@@ -628,8 +669,330 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/OutcodeData'
-  /outcodes/:outcode:
+              examples:
+                found:
+                  summary: Found
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "outcode": "L16",
+                                "longitude": -2.8875342145749,
+                                "latitude": 53.39873448583,
+                                "northings": 389468,
+                                "eastings": 341084,
+                                "admin_district": [
+                                    "Knowsley",
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Knowsley, unparished area",
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Woolton",
+                                    "Belle Vale",
+                                    "Roby",
+                                    "Greenbank",
+                                    "Church",
+                                    "Childwall"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Garston and Halewood",
+                                    "Liverpool, Riverside",
+                                    "Knowsley"
+                                ]
+                            },
+                            {
+                                "outcode": "L15",
+                                "longitude": -2.92057201265823,
+                                "latitude": 53.3975726793249,
+                                "northings": 389366,
+                                "eastings": 338885,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Picton",
+                                    "Greenbank",
+                                    "Church",
+                                    "Wavertree",
+                                    "Childwall"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Liverpool, Riverside"
+                                ]
+                            },
+                            {
+                                "outcode": "L18",
+                                "longitude": -2.90821618411553,
+                                "latitude": 53.3805520054152,
+                                "northings": 387462,
+                                "eastings": 339683,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Woolton",
+                                    "Allerton and Hunts Cross",
+                                    "Cressington",
+                                    "Mossley Hill",
+                                    "Greenbank",
+                                    "Church"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Garston and Halewood",
+                                    "Liverpool, Riverside"
+                                ]
+                            },
+                            {
+                                "outcode": "L14",
+                                "longitude": -2.88058875471698,
+                                "latitude": 53.4181563668764,
+                                "northings": 391623,
+                                "eastings": 341572,
+                                "admin_district": [
+                                    "Knowsley",
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Knowsley, unparished area",
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Swanside",
+                                    "Page Moss",
+                                    "Yew Tree",
+                                    "Roby",
+                                    "West Derby",
+                                    "Childwall",
+                                    "Knotty Ash"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Knowsley",
+                                    "Liverpool, West Derby"
+                                ]
+                            },
+                            {
+                                "outcode": "L13",
+                                "longitude": -2.92043604982207,
+                                "latitude": 53.4185191975089,
+                                "northings": 391696,
+                                "eastings": 338925,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Picton",
+                                    "West Derby",
+                                    "Greenbank",
+                                    "Old Swan",
+                                    "Wavertree",
+                                    "Clubmoor",
+                                    "Childwall",
+                                    "Tuebrook and Stoneycroft",
+                                    "Knotty Ash"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Liverpool, Riverside",
+                                    "Liverpool, Walton",
+                                    "Liverpool, West Derby"
+                                ]
+                            },
+                            {
+                                "outcode": "L7",
+                                "longitude": -2.94975911930586,
+                                "latitude": 53.4058327809111,
+                                "northings": 390311,
+                                "eastings": 336957,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Picton",
+                                    "Central",
+                                    "Old Swan",
+                                    "Kensington and Fairfield",
+                                    "Princes Park"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Liverpool, Riverside"
+                                ]
+                            },
+                            {
+                                "outcode": "L25",
+                                "longitude": -2.86370323212192,
+                                "latitude": 53.3788270304806,
+                                "northings": 387234,
+                                "eastings": 342642,
+                                "admin_district": [
+                                    "Knowsley",
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Halewood",
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Woolton",
+                                    "Allerton and Hunts Cross",
+                                    "Belle Vale",
+                                    "Halewood South",
+                                    "Halewood North"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Garston and Halewood"
+                                ]
+                            },
+                            {
+                                "outcode": "L17",
+                                "longitude": -2.94064022687225,
+                                "latitude": 53.3775697400882,
+                                "northings": 387158,
+                                "eastings": 337522,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Mossley Hill",
+                                    "Greenbank",
+                                    "St. Michael's"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Riverside"
+                                ]
+                            },
+                            {
+                                "outcode": "L70",
+                                "longitude": -2.9567696,
+                                "latitude": 53.4040682666667,
+                                "northings": 390122,
+                                "eastings": 336487,
+                                "admin_district": [
+                                    "Knowsley",
+                                    "Sefton",
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Knowsley, unparished area",
+                                    "Sefton, unparished area",
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Netherton and Orrell",
+                                    "Speke-Garston",
+                                    "Riverside",
+                                    "Central",
+                                    "Northwood"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Garston and Halewood",
+                                    "Liverpool, Riverside",
+                                    "Knowsley",
+                                    "Bootle"
+                                ]
+                            },
+                            {
+                                "outcode": "L12",
+                                "longitude": -2.89577164805414,
+                                "latitude": 53.4349747614213,
+                                "northings": 393506,
+                                "eastings": 340587,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Yew Tree",
+                                    "Croxteth",
+                                    "West Derby",
+                                    "Knotty Ash"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, West Derby"
+                                ]
+                            }
+                        ]
+                    }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                missingLatLon:
+                  summary: Missing latitude/longitude
+                  value:
+                    status: 400
+                    error: Invalid longitude/latitude submitted
+  /outcodes/{outcode}:
     get:
+      operationId: outwardCodeLookup
       summary: Outward Code Lookup
       description: |
         Geolocation data for the centroid of the outward code specified. The outward code represents the first half of any postcode (separated by a space).
@@ -650,8 +1013,55 @@ paths:
                   - properties:
                       result:
                         $ref: '#/components/schemas/OutcodeData'
-  /outcodes/:outcode/nearest:
+              examples:
+                found:
+                  summary: Found
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "outcode": "W1A",
+                            "longitude": -0.112778809815951,
+                            "latitude": 51.5243793926381,
+                            "northings": 182295,
+                            "eastings": 531022,
+                            "admin_district": [
+                                "Westminster",
+                                "Islington"
+                            ],
+                            "parish": [
+                                "Islington, unparished area",
+                                "Westminster, unparished area"
+                            ],
+                            "admin_county": [],
+                            "admin_ward": [
+                                "West End",
+                                "Clerkenwell"
+                            ],
+                            "country": [
+                                "England"
+                            ],
+                            "parliamentary_constituency": [
+                                "Islington South and Finsbury",
+                                "Cities of London and Westminster"
+                            ]
+                        }
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                notFound:
+                  summary: Not found
+                  value:
+                    status: 404
+                    error: Outcode not found
+  /outcodes/{outcode}/nearest:
     get:
+      operationId: nearestOutcode
       summary: Nearest Outcode
       description: |
         Returns nearest outcodes for a given outcode.
@@ -688,8 +1098,108 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/OutcodeData'
+              examples:
+                found:
+                  summary: Found
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "outcode": "RH1",
+                                "longitude": -0.15744158200637,
+                                "latitude": 51.2374065636943,
+                                "northings": 150304,
+                                "eastings": 528726,
+                                "admin_district": [
+                                    "Tandridge",
+                                    "Reigate and Banstead"
+                                ],
+                                "parish": [
+                                    "Reigate and Banstead, unparished area",
+                                    "Bletchingley",
+                                    "Nutfield",
+                                    "Outwood",
+                                    "Salfords and Sidlow"
+                                ],
+                                "admin_county": [
+                                    "Surrey"
+                                ],
+                                "admin_ward": [
+                                    "Chipstead, Kingswood & Woodmansterne",
+                                    "Earlswood & Whitebushes",
+                                    "Bletchingley and Nutfield",
+                                    "Redhill East",
+                                    "South Park & Woodhatch",
+                                    "Meadvale & St. John's",
+                                    "Burstow, Horne and Outwood",
+                                    "Hooley, Merstham & Netherne",
+                                    "Horley East & Salfords",
+                                    "Redhill West & Wray Common"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Reigate",
+                                    "East Surrey"
+                                ]
+                            },
+                            {
+                                "outcode": "RH2",
+                                "longitude": -0.203043909411765,
+                                "latitude": 51.23519406,
+                                "northings": 149979,
+                                "eastings": 525548,
+                                "admin_district": [
+                                    "Reigate and Banstead",
+                                    "Mole Valley"
+                                ],
+                                "parish": [
+                                    "Reigate and Banstead, unparished area",
+                                    "Buckland",
+                                    "Leigh",
+                                    "Salfords and Sidlow"
+                                ],
+                                "admin_county": [
+                                    "Surrey"
+                                ],
+                                "admin_ward": [
+                                    "Reigate",
+                                    "Chipstead, Kingswood & Woodmansterne",
+                                    "Capel, Leigh and Newdigate",
+                                    "Horley West & Sidlow",
+                                    "South Park & Woodhatch",
+                                    "Meadvale & St. John's",
+                                    "Horley East & Salfords",
+                                    "Redhill West & Wray Common",
+                                    "Brockham, Betchworth and Buckland"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Reigate",
+                                    "Mole Valley"
+                                ]
+                            }
+                        ]
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                notFound:
+                  summary: Not found
+                  value:
+                    status: 404
+                    error: Outcode not found
   /places:
     get:
+      operationId: placeQuery
       summary: Place Query
       description: |
         Submit a place query and receive a complete list of places matches and associated data.
@@ -722,8 +1232,245 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/PlacesData'
-  /places/:code:
+              examples:
+                adl:
+                  summary: Query for "adl"
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "code": "osgb4000000074553835",
+                                "name_1": "Adlington",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Town",
+                                "outcode": "PR6",
+                                "county_unitary": "Lancashire",
+                                "county_unitary_type": "County",
+                                "district_borough": "Chorley",
+                                "district_borough_type": "District",
+                                "region": "North West",
+                                "country": "England",
+                                "longitude": -2.597354528609,
+                                "latitude": 53.6173202874495,
+                                "eastings": 360582,
+                                "northings": 413585,
+                                "min_eastings": 359099,
+                                "min_northings": 412300,
+                                "max_eastings": 361435,
+                                "max_northings": 414767
+                            },
+                            {
+                                "code": "osgb4000000074543613",
+                                "name_1": "Adlingfleet",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Village",
+                                "outcode": "DN14",
+                                "county_unitary": "East Riding of Yorkshire",
+                                "county_unitary_type": "UnitaryAuthority",
+                                "district_borough": null,
+                                "district_borough_type": null,
+                                "region": "Yorkshire and the Humber",
+                                "country": "England",
+                                "longitude": -0.724682993719623,
+                                "latitude": 53.6785976143851,
+                                "eastings": 484337,
+                                "northings": 420992,
+                                "min_eastings": 484107,
+                                "min_northings": 420632,
+                                "max_eastings": 484992,
+                                "max_northings": 421299
+                            },
+                            {
+                                "code": "osgb4000000074544422",
+                                "name_1": "Adlington",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Village",
+                                "outcode": "SK10",
+                                "county_unitary": "Cheshire East",
+                                "county_unitary_type": "UnitaryAuthority",
+                                "district_borough": null,
+                                "district_borough_type": null,
+                                "region": "North West",
+                                "country": "England",
+                                "longitude": -2.12928816062687,
+                                "latitude": 53.3207739728258,
+                                "eastings": 391485,
+                                "northings": 380435,
+                                "min_eastings": 390867,
+                                "min_northings": 380053,
+                                "max_eastings": 391921,
+                                "max_northings": 380553
+                            },
+                            {
+                                "code": "osgb4000000074561795",
+                                "name_1": "Adley Moor",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Hamlet",
+                                "outcode": "SY7",
+                                "county_unitary": "County of Herefordshire",
+                                "county_unitary_type": "UnitaryAuthority",
+                                "district_borough": null,
+                                "district_borough_type": null,
+                                "region": "West Midlands",
+                                "country": "England",
+                                "longitude": -2.91265007812378,
+                                "latitude": 52.365881613655,
+                                "eastings": 337954,
+                                "northings": 274595,
+                                "min_eastings": 337387,
+                                "min_northings": 274372,
+                                "max_eastings": 338451,
+                                "max_northings": 274872
+                            },
+                            {
+                                "code": "osgb4000000074565937",
+                                "name_1": "Adlestrop",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Village",
+                                "outcode": "GL56",
+                                "county_unitary": "Gloucestershire",
+                                "county_unitary_type": "County",
+                                "district_borough": "Cotswold",
+                                "district_borough_type": "District",
+                                "region": "South West",
+                                "country": "England",
+                                "longitude": -1.6472595570591,
+                                "latitude": 51.9412647669806,
+                                "eastings": 424345,
+                                "northings": 227032,
+                                "min_eastings": 423981,
+                                "min_northings": 226777,
+                                "max_eastings": 424651,
+                                "max_northings": 227277
+                            }
+                        ]
+                    }
+                mob:
+                  summary: Query for "mob"
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "code": "osgb4000000074562255",
+                                "name_1": "Moblake",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Hamlet",
+                                "outcode": "CW3",
+                                "county_unitary": "Cheshire East",
+                                "county_unitary_type": "UnitaryAuthority",
+                                "district_borough": null,
+                                "district_borough_type": null,
+                                "region": "North West",
+                                "country": "England",
+                                "longitude": -2.48370509272904,
+                                "latitude": 52.9883033295363,
+                                "eastings": 367626,
+                                "northings": 343550,
+                                "min_eastings": 367356,
+                                "min_northings": 343333,
+                                "max_eastings": 367856,
+                                "max_northings": 343833
+                            },
+                            {
+                                "code": "osgb4000000074342009",
+                                "name_1": "Mobberley",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Village",
+                                "outcode": "WA16",
+                                "county_unitary": "Cheshire East",
+                                "county_unitary_type": "UnitaryAuthority",
+                                "district_borough": null,
+                                "district_borough_type": null,
+                                "region": "North West",
+                                "country": "England",
+                                "longitude": -2.32774940916169,
+                                "latitude": 53.3134184956524,
+                                "eastings": 378261,
+                                "northings": 379659,
+                                "min_eastings": 377504,
+                                "min_northings": 379186,
+                                "max_eastings": 379370,
+                                "max_northings": 381489
+                            },
+                            {
+                                "code": "osgb4000000074548266",
+                                "name_1": "Mobberley",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Hamlet",
+                                "outcode": "ST10",
+                                "county_unitary": "Staffordshire",
+                                "county_unitary_type": "County",
+                                "district_borough": "Staffordshire Moorlands",
+                                "district_borough_type": "District",
+                                "region": "West Midlands",
+                                "country": "England",
+                                "longitude": -1.98911906035649,
+                                "latitude": 52.9695646902482,
+                                "eastings": 400828,
+                                "northings": 341356,
+                                "min_eastings": 400522,
+                                "min_northings": 341008,
+                                "max_eastings": 401022,
+                                "max_northings": 341508
+                            },
+                            {
+                                "code": "osgb4000000074810497",
+                                "name_1": "Mobley",
+                                "name_1_lang": null,
+                                "name_2": null,
+                                "name_2_lang": null,
+                                "local_type": "Other Settlement",
+                                "outcode": "GL13",
+                                "county_unitary": "Gloucestershire",
+                                "county_unitary_type": "County",
+                                "district_borough": "Stroud",
+                                "district_borough_type": "District",
+                                "region": "South West",
+                                "country": "England",
+                                "longitude": -2.44514352689177,
+                                "latitude": 51.6901281030108,
+                                "eastings": 369326,
+                                "northings": 199135,
+                                "min_eastings": 369078,
+                                "min_northings": 198854,
+                                "max_eastings": 369578,
+                                "max_northings": 199354
+                            }
+                        ]
+                    }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                missingQuery:
+                  summary: Missing query
+                  value:
+                    status: 400
+                    error: No valid query submitted. Remember to include every parameter
+  /places/{code}:
     get:
+      operationId: placeLookup
       summary: Place Lookup
       description: |
         Find a place by OSGB code (e.g. "osgb4000000074564391"). Returns all available data if found. Returns 404 if place does not exist.
@@ -744,8 +1491,51 @@ paths:
                   - properties:
                       result:
                         $ref: '#/components/schemas/PlacesData'
+              examples:
+                osgb4000000074564391:
+                  summary: Result for "osgb4000000074564391"
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "code": "osgb4000000074564391",
+                            "name_1": "Kent",
+                            "name_1_lang": null,
+                            "name_2": null,
+                            "name_2_lang": null,
+                            "local_type": "Hamlet",
+                            "outcode": "BH24",
+                            "county_unitary": "Hampshire",
+                            "county_unitary_type": "County",
+                            "district_borough": "New Forest",
+                            "district_borough_type": "District",
+                            "region": "South East",
+                            "country": "England",
+                            "longitude": -1.80317162043943,
+                            "latitude": 50.8926950373503,
+                            "eastings": 413940,
+                            "northings": 110375,
+                            "min_eastings": 413668,
+                            "min_northings": 110116,
+                            "max_eastings": 414169,
+                            "max_northings": 110616
+                        }
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                notFound:
+                  summary: Not found
+                  value:
+                    status: 404
+                    error: Place not found
   /postcodes:
     get:
+      operationId: reverseGeodingOrPostcodeQuery
       summary: Reverse Geocoding / Postcode Query
       description: |
         ### Reverse Geocoding
@@ -833,8 +1623,547 @@ paths:
                   - $ref: '#/components/schemas/ServerResponseBody'
                   - properties:
                       result:
-                        $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
+                        allOf:
+                          - type: array
+                            nullable: true
+                          - $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
+              examples:
+                lonLat:
+                  summary: Longitude and latitude (limit=2)
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "postcode": "RG9 4HL",
+                                "quality": 1,
+                                "eastings": 475602,
+                                "northings": 180862,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.911728,
+                                "latitude": 51.521625,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HL",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                },
+                                "distance": 0
+                            },
+                            {
+                                "postcode": "RG9 4HH",
+                                "quality": 1,
+                                "eastings": 475594,
+                                "northings": 180888,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.911818,
+                                "latitude": 51.521863,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HH",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                },
+                                "distance": 27.20630221
+                            }
+                        ]
+                    }
+                RG9_4H:
+                  summary: Query for "RG9 4H"
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "postcode": "RG9 4HA",
+                                "quality": 1,
+                                "eastings": 476803,
+                                "northings": 181456,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.894292,
+                                "latitude": 51.526803,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 017A",
+                                "msoa": "South Oxfordshire 017",
+                                "incode": "4HA",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Henley-on-Thames",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "199512",
+                                "admin_ward": "Henley-on-Thames",
+                                "ced": "Henley-on-Thames",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012853",
+                                    "parish": "E04012865",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001755",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028653",
+                                    "msoa": "E02005974",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HB",
+                                "quality": 1,
+                                "eastings": 477206,
+                                "northings": 181633,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.888445,
+                                "latitude": 51.52834,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 017A",
+                                "msoa": "South Oxfordshire 017",
+                                "incode": "4HB",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Henley-on-Thames",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Henley-on-Thames",
+                                "ced": "Henley-on-Thames",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012853",
+                                    "parish": "E04012865",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001755",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028653",
+                                    "msoa": "E02005974",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HD",
+                                "quality": 1,
+                                "eastings": 476890,
+                                "northings": 181589,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.893009,
+                                "latitude": 51.527987,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 017A",
+                                "msoa": "South Oxfordshire 017",
+                                "incode": "4HD",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Henley-on-Thames",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Henley-on-Thames",
+                                "ced": "Henley-on-Thames",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012853",
+                                    "parish": "E04012865",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001755",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028653",
+                                    "msoa": "E02005974",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HE",
+                                "quality": 1,
+                                "eastings": 476738,
+                                "northings": 181504,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.895199,
+                                "latitude": 51.527246,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 017A",
+                                "msoa": "South Oxfordshire 017",
+                                "incode": "4HE",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Henley-on-Thames",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "201808",
+                                "admin_ward": "Henley-on-Thames",
+                                "ced": "Henley-on-Thames",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012853",
+                                    "parish": "E04012865",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001755",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028653",
+                                    "msoa": "E02005974",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HF",
+                                "quality": 1,
+                                "eastings": 476975,
+                                "northings": 181214,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.891866,
+                                "latitude": 51.524605,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HF",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HG",
+                                "quality": 1,
+                                "eastings": 476104,
+                                "northings": 180799,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.904508,
+                                "latitude": 51.520992,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HG",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HH",
+                                "quality": 1,
+                                "eastings": 475594,
+                                "northings": 180888,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.911818,
+                                "latitude": 51.521863,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HH",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HJ",
+                                "quality": 1,
+                                "eastings": 475528,
+                                "northings": 180877,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.912791,
+                                "latitude": 51.52177,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HJ",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HL",
+                                "quality": 1,
+                                "eastings": 475602,
+                                "northings": 180862,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.911728,
+                                "latitude": 51.521625,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HL",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            },
+                            {
+                                "postcode": "RG9 4HN",
+                                "quality": 1,
+                                "eastings": 475522,
+                                "northings": 180822,
+                                "country": "England",
+                                "nhs_ha": "South Central",
+                                "longitude": -0.91287,
+                                "latitude": 51.521279,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Oxfordshire",
+                                "region": "South East",
+                                "lsoa": "South Oxfordshire 019B",
+                                "msoa": "South Oxfordshire 019",
+                                "incode": "4HN",
+                                "outcode": "RG9",
+                                "parliamentary_constituency": "Henley",
+                                "admin_district": "South Oxfordshire",
+                                "parish": "Harpsden",
+                                "admin_county": "Oxfordshire",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Sonning Common",
+                                "ced": "Sonning Common",
+                                "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                "nuts": "Oxfordshire CC",
+                                "pfa": "Thames Valley",
+                                "codes": {
+                                    "admin_district": "E07000179",
+                                    "admin_county": "E10000025",
+                                    "admin_ward": "E05012854",
+                                    "parish": "E04012864",
+                                    "parliamentary_constituency": "E14000742",
+                                    "ccg": "E38000136",
+                                    "ccg_id": "10Q",
+                                    "ced": "E58001756",
+                                    "nuts": "TLJ14",
+                                    "lsoa": "E01028660",
+                                    "msoa": "E02005976",
+                                    "lau2": "E07000179",
+                                    "pfa": "E23000029"
+                                }
+                            }
+                        ]
+                    }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                missingQuery:
+                  summary: Missing query
+                  value:
+                    status: 400
+                    error: No postcode query submitted. Remember to include query parameter
     post:
+      operationId: bulkPostcodeLookupOrBulkReverseGeocoding
       summary: Bulk Postcode Lookup / Bulk Reverse Geocoding
       description: |
         ### Bulk Postcode Lookup
@@ -850,16 +2179,81 @@ paths:
         Bulk translates geolocations into Postcodes. Accepts up to 100 geolocations.
       requestBody:
         description: |
+          ### Bulk Postcode Lookup
+
           This method requires a JSON object containing an array of postcodes to be posted
+
+          application/json content-type doesn't appear to work, so JSON like:
+
+          ```json
+          {
+            "postcodes": ["OX49 5NU", "M32 0JG", "NE30 1DP"]
+          }
+          ````
+
+          has to be form encoded like:
+
+          postcodes%5B%5D=OX49+5NU&postcodes%5B%5D=M32+0JG&postcodes%5B%5D=NE30+1DP
+
+          ### Bulk Reverse Geocoding
+
+          Bulk translates geolocations into Postcodes. Accepts up to 100 geolocations.
+
+          application/json content-type doesn't appear to work, so JSON like:
+          
+          ```json
+          {
+            "geolocations": [{
+              "longitude":  0.629834723775309,
+              "latitude": 51.7923246977375
+            }, {
+              "longitude": -2.49690382054704,
+              "latitude": 53.5351312861402,
+              "radius": 1000,
+              "limit": 5
+            }]
+          }
+          ```
+          
+          has to be form encoded like:
+
+          geolocations%5B0%5D%5Blongitude%5D=0.629834723775309&geolocations%5B0%5D%5Blatitude%5D=51.7923246977375&geolocations%5B1%5D%5Blongitude%5D=-2.49690382054704&geolocations%5B1%5D%5Blatitude%5D=53.5351312861402&geolocations%5B1%5D%5Bradius%5D=1000&geolocations%5B1%5D%5Blimit%5D=5
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
-              type: array
-              items:
-                oneOf:
-                  - $ref: '#/components/schemas/postcode'
-                  - $ref: '#/components/schemas/Geolocation'
+              oneOf:
+                - properties:
+                    postcodes:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/postcode'
+                - properties:
+                    geolocations:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Geolocation'
+            examples:
+              geolocations:
+                summary: List of geolocations
+                value:
+                  {
+                    "geolocations" : [{
+                      "longitude":  0.629834723775309,
+                      "latitude": 51.7923246977375
+                    }, {
+                      "longitude": -2.49690382054704,
+                      "latitude": 53.5351312861402,
+                      "radius": 1000,
+                      "limit": 5
+                    }]
+                  }
+              postcodes:
+                summary: List of postcodes
+                value:
+                  {
+                    "postcodes" : ["OX49 5NU", "M32 0JG", "NE30 1DP"]
+                  }
       parameters:
         - in: query
           required: false
@@ -902,8 +2296,581 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
-  /postcodes/:postcode:
+              examples:
+                geolocations:
+                  summary: Response for geolocations
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "query": {
+                                    "longitude": "0.629834723775309",
+                                    "latitude": "51.7923246977375"
+                                },
+                                "result": [
+                                    {
+                                        "postcode": "CM8 1EF",
+                                        "quality": 1,
+                                        "eastings": 581459,
+                                        "northings": 213679,
+                                        "country": "England",
+                                        "nhs_ha": "East of England",
+                                        "longitude": 0.629806,
+                                        "latitude": 51.792326,
+                                        "european_electoral_region": "Eastern",
+                                        "primary_care_trust": "Mid Essex",
+                                        "region": "East of England",
+                                        "lsoa": "Braintree 017F",
+                                        "msoa": "Braintree 017",
+                                        "incode": "1EF",
+                                        "outcode": "CM8",
+                                        "parliamentary_constituency": "Witham",
+                                        "admin_district": "Braintree",
+                                        "parish": "Witham",
+                                        "admin_county": "Essex",
+                                        "date_of_introduction": "198001",
+                                        "admin_ward": "Witham South",
+                                        "ced": "Witham Southern",
+                                        "ccg": "NHS Mid and South Essex",
+                                        "nuts": "Essex Haven Gateway",
+                                        "pfa": "Essex",
+                                        "codes": {
+                                            "admin_district": "E07000067",
+                                            "admin_county": "E10000012",
+                                            "admin_ward": "E05010388",
+                                            "parish": "E04012935",
+                                            "parliamentary_constituency": "E14001045",
+                                            "ccg": "E38000106",
+                                            "ccg_id": "06Q",
+                                            "ced": "E58000470",
+                                            "nuts": "TLH34",
+                                            "lsoa": "E01033460",
+                                            "msoa": "E02004462",
+                                            "lau2": "E07000067",
+                                            "pfa": "E23000028"
+                                        },
+                                        "distance": 1.98709706
+                                    },
+                                    {
+                                        "postcode": "CM8 1EU",
+                                        "quality": 1,
+                                        "eastings": 581508,
+                                        "northings": 213652,
+                                        "country": "England",
+                                        "nhs_ha": "East of England",
+                                        "longitude": 0.630501,
+                                        "latitude": 51.792068,
+                                        "european_electoral_region": "Eastern",
+                                        "primary_care_trust": "Mid Essex",
+                                        "region": "East of England",
+                                        "lsoa": "Braintree 017F",
+                                        "msoa": "Braintree 017",
+                                        "incode": "1EU",
+                                        "outcode": "CM8",
+                                        "parliamentary_constituency": "Witham",
+                                        "admin_district": "Braintree",
+                                        "parish": "Witham",
+                                        "admin_county": "Essex",
+                                        "date_of_introduction": "198001",
+                                        "admin_ward": "Witham South",
+                                        "ced": "Witham Southern",
+                                        "ccg": "NHS Mid and South Essex",
+                                        "nuts": "Essex Haven Gateway",
+                                        "pfa": "Essex",
+                                        "codes": {
+                                            "admin_district": "E07000067",
+                                            "admin_county": "E10000012",
+                                            "admin_ward": "E05010388",
+                                            "parish": "E04012935",
+                                            "parliamentary_constituency": "E14001045",
+                                            "ccg": "E38000106",
+                                            "ccg_id": "06Q",
+                                            "ced": "E58000470",
+                                            "nuts": "TLH34",
+                                            "lsoa": "E01033460",
+                                            "msoa": "E02004462",
+                                            "lau2": "E07000067",
+                                            "pfa": "E23000028"
+                                        },
+                                        "distance": 54.12009472
+                                    },
+                                    {
+                                        "postcode": "CM8 1PH",
+                                        "quality": 1,
+                                        "eastings": 581421,
+                                        "northings": 213740,
+                                        "country": "England",
+                                        "nhs_ha": "East of England",
+                                        "longitude": 0.629287,
+                                        "latitude": 51.792887,
+                                        "european_electoral_region": "Eastern",
+                                        "primary_care_trust": "Mid Essex",
+                                        "region": "East of England",
+                                        "lsoa": "Braintree 017H",
+                                        "msoa": "Braintree 017",
+                                        "incode": "1PH",
+                                        "outcode": "CM8",
+                                        "parliamentary_constituency": "Witham",
+                                        "admin_district": "Braintree",
+                                        "parish": "Witham",
+                                        "admin_county": "Essex",
+                                        "date_of_introduction": "198001",
+                                        "admin_ward": "Witham Central",
+                                        "ced": "Witham Southern",
+                                        "ccg": "NHS Mid and South Essex",
+                                        "nuts": "Essex Haven Gateway",
+                                        "pfa": "Essex",
+                                        "codes": {
+                                            "admin_district": "E07000067",
+                                            "admin_county": "E10000012",
+                                            "admin_ward": "E05012966",
+                                            "parish": "E04012935",
+                                            "parliamentary_constituency": "E14001045",
+                                            "ccg": "E38000106",
+                                            "ccg_id": "06Q",
+                                            "ced": "E58000470",
+                                            "nuts": "TLH34",
+                                            "lsoa": "E01033462",
+                                            "msoa": "E02004462",
+                                            "lau2": "E07000067",
+                                            "pfa": "E23000028"
+                                        },
+                                        "distance": 73.09110168
+                                    },
+                                    {
+                                        "postcode": "CM8 1PQ",
+                                        "quality": 1,
+                                        "eastings": 581399,
+                                        "northings": 213755,
+                                        "country": "England",
+                                        "nhs_ha": "East of England",
+                                        "longitude": 0.628977,
+                                        "latitude": 51.793028,
+                                        "european_electoral_region": "Eastern",
+                                        "primary_care_trust": "Mid Essex",
+                                        "region": "East of England",
+                                        "lsoa": "Braintree 017H",
+                                        "msoa": "Braintree 017",
+                                        "incode": "1PQ",
+                                        "outcode": "CM8",
+                                        "parliamentary_constituency": "Witham",
+                                        "admin_district": "Braintree",
+                                        "parish": "Witham",
+                                        "admin_county": "Essex",
+                                        "date_of_introduction": "198001",
+                                        "admin_ward": "Witham Central",
+                                        "ced": "Witham Southern",
+                                        "ccg": "NHS Mid and South Essex",
+                                        "nuts": "Essex Haven Gateway",
+                                        "pfa": "Essex",
+                                        "codes": {
+                                            "admin_district": "E07000067",
+                                            "admin_county": "E10000012",
+                                            "admin_ward": "E05012966",
+                                            "parish": "E04012935",
+                                            "parliamentary_constituency": "E14001045",
+                                            "ccg": "E38000106",
+                                            "ccg_id": "06Q",
+                                            "ced": "E58000470",
+                                            "nuts": "TLH34",
+                                            "lsoa": "E01033462",
+                                            "msoa": "E02004462",
+                                            "lau2": "E07000067",
+                                            "pfa": "E23000028"
+                                        },
+                                        "distance": 98.10933201
+                                    }
+                                ]
+                            },
+                            {
+                                "query": {
+                                    "longitude": "-2.49690382054704",
+                                    "latitude": "53.5351312861402",
+                                    "radius": "1000",
+                                    "limit": "5"
+                                },
+                                "result": [
+                                    {
+                                        "postcode": "M46 9WU",
+                                        "quality": 1,
+                                        "eastings": 367163,
+                                        "northings": 404390,
+                                        "country": "England",
+                                        "nhs_ha": "North West",
+                                        "longitude": -2.496903,
+                                        "latitude": 53.535127,
+                                        "european_electoral_region": "North West",
+                                        "primary_care_trust": "Ashton, Leigh and Wigan",
+                                        "region": "North West",
+                                        "lsoa": "Wigan 017C",
+                                        "msoa": "Wigan 017",
+                                        "incode": "9WU",
+                                        "outcode": "M46",
+                                        "parliamentary_constituency": "Bolton West",
+                                        "admin_district": "Wigan",
+                                        "parish": "Wigan, unparished area",
+                                        "admin_county": null,
+                                        "date_of_introduction": "199405",
+                                        "admin_ward": "Atherton",
+                                        "ced": null,
+                                        "ccg": "NHS Greater Manchester",
+                                        "nuts": "Greater Manchester North West",
+                                        "pfa": "Greater Manchester",
+                                        "codes": {
+                                            "admin_district": "E08000010",
+                                            "admin_county": "E99999999",
+                                            "admin_ward": "E05000845",
+                                            "parish": "E43000164",
+                                            "parliamentary_constituency": "E14000580",
+                                            "ccg": "E38000205",
+                                            "ccg_id": "02H",
+                                            "ced": "E99999999",
+                                            "nuts": "TLD36",
+                                            "lsoa": "E01006241",
+                                            "msoa": "E02001303",
+                                            "lau2": "E08000010",
+                                            "pfa": "E23000005"
+                                        },
+                                        "distance": 0.4801241
+                                    },
+                                    {
+                                        "postcode": "M46 9XF",
+                                        "quality": 1,
+                                        "eastings": 367155,
+                                        "northings": 404364,
+                                        "country": "England",
+                                        "nhs_ha": "North West",
+                                        "longitude": -2.497021,
+                                        "latitude": 53.534893,
+                                        "european_electoral_region": "North West",
+                                        "primary_care_trust": "Ashton, Leigh and Wigan",
+                                        "region": "North West",
+                                        "lsoa": "Wigan 017B",
+                                        "msoa": "Wigan 017",
+                                        "incode": "9XF",
+                                        "outcode": "M46",
+                                        "parliamentary_constituency": "Bolton West",
+                                        "admin_district": "Wigan",
+                                        "parish": "Wigan, unparished area",
+                                        "admin_county": null,
+                                        "date_of_introduction": "199405",
+                                        "admin_ward": "Atherton",
+                                        "ced": null,
+                                        "ccg": "NHS Greater Manchester",
+                                        "nuts": "Greater Manchester North West",
+                                        "pfa": "Greater Manchester",
+                                        "codes": {
+                                            "admin_district": "E08000010",
+                                            "admin_county": "E99999999",
+                                            "admin_ward": "E05000845",
+                                            "parish": "E43000164",
+                                            "parliamentary_constituency": "E14000580",
+                                            "ccg": "E38000205",
+                                            "ccg_id": "02H",
+                                            "ced": "E99999999",
+                                            "nuts": "TLD36",
+                                            "lsoa": "E01006240",
+                                            "msoa": "E02001303",
+                                            "lau2": "E08000010",
+                                            "pfa": "E23000005"
+                                        },
+                                        "distance": 27.6350374
+                                    },
+                                    {
+                                        "postcode": "M46 9XE",
+                                        "quality": 1,
+                                        "eastings": 367212,
+                                        "northings": 404330,
+                                        "country": "England",
+                                        "nhs_ha": "North West",
+                                        "longitude": -2.496158,
+                                        "latitude": 53.534608,
+                                        "european_electoral_region": "North West",
+                                        "primary_care_trust": "Ashton, Leigh and Wigan",
+                                        "region": "North West",
+                                        "lsoa": "Wigan 017C",
+                                        "msoa": "Wigan 017",
+                                        "incode": "9XE",
+                                        "outcode": "M46",
+                                        "parliamentary_constituency": "Bolton West",
+                                        "admin_district": "Wigan",
+                                        "parish": "Wigan, unparished area",
+                                        "admin_county": null,
+                                        "date_of_introduction": "199405",
+                                        "admin_ward": "Atherton",
+                                        "ced": null,
+                                        "ccg": "NHS Greater Manchester",
+                                        "nuts": "Greater Manchester North West",
+                                        "pfa": "Greater Manchester",
+                                        "codes": {
+                                            "admin_district": "E08000010",
+                                            "admin_county": "E99999999",
+                                            "admin_ward": "E05000845",
+                                            "parish": "E43000164",
+                                            "parliamentary_constituency": "E14000580",
+                                            "ccg": "E38000205",
+                                            "ccg_id": "02H",
+                                            "ced": "E99999999",
+                                            "nuts": "TLD36",
+                                            "lsoa": "E01006241",
+                                            "msoa": "E02001303",
+                                            "lau2": "E08000010",
+                                            "pfa": "E23000005"
+                                        },
+                                        "distance": 76.40229254
+                                    },
+                                    {
+                                        "postcode": "M46 9NX",
+                                        "quality": 1,
+                                        "eastings": 367245,
+                                        "northings": 404384,
+                                        "country": "England",
+                                        "nhs_ha": "North West",
+                                        "longitude": -2.495666,
+                                        "latitude": 53.535078,
+                                        "european_electoral_region": "North West",
+                                        "primary_care_trust": "Ashton, Leigh and Wigan",
+                                        "region": "North West",
+                                        "lsoa": "Wigan 017C",
+                                        "msoa": "Wigan 017",
+                                        "incode": "9NX",
+                                        "outcode": "M46",
+                                        "parliamentary_constituency": "Bolton West",
+                                        "admin_district": "Wigan",
+                                        "parish": "Wigan, unparished area",
+                                        "admin_county": null,
+                                        "date_of_introduction": "199405",
+                                        "admin_ward": "Atherton",
+                                        "ced": null,
+                                        "ccg": "NHS Greater Manchester",
+                                        "nuts": "Greater Manchester North West",
+                                        "pfa": "Greater Manchester",
+                                        "codes": {
+                                            "admin_district": "E08000010",
+                                            "admin_county": "E99999999",
+                                            "admin_ward": "E05000845",
+                                            "parish": "E43000164",
+                                            "parliamentary_constituency": "E14000580",
+                                            "ccg": "E38000205",
+                                            "ccg_id": "02H",
+                                            "ced": "E99999999",
+                                            "nuts": "TLD36",
+                                            "lsoa": "E01006241",
+                                            "msoa": "E02001303",
+                                            "lau2": "E08000010",
+                                            "pfa": "E23000005"
+                                        },
+                                        "distance": 82.28672453
+                                    },
+                                    {
+                                        "postcode": "M46 9NU",
+                                        "quality": 1,
+                                        "eastings": 367171,
+                                        "northings": 404476,
+                                        "country": "England",
+                                        "nhs_ha": "North West",
+                                        "longitude": -2.496792,
+                                        "latitude": 53.535901,
+                                        "european_electoral_region": "North West",
+                                        "primary_care_trust": "Ashton, Leigh and Wigan",
+                                        "region": "North West",
+                                        "lsoa": "Wigan 017C",
+                                        "msoa": "Wigan 017",
+                                        "incode": "9NU",
+                                        "outcode": "M46",
+                                        "parliamentary_constituency": "Bolton West",
+                                        "admin_district": "Wigan",
+                                        "parish": "Wigan, unparished area",
+                                        "admin_county": null,
+                                        "date_of_introduction": "199405",
+                                        "admin_ward": "Atherton",
+                                        "ced": null,
+                                        "ccg": "NHS Greater Manchester",
+                                        "nuts": "Greater Manchester North West",
+                                        "pfa": "Greater Manchester",
+                                        "codes": {
+                                            "admin_district": "E08000010",
+                                            "admin_county": "E99999999",
+                                            "admin_ward": "E05000845",
+                                            "parish": "E43000164",
+                                            "parliamentary_constituency": "E14000580",
+                                            "ccg": "E38000205",
+                                            "ccg_id": "02H",
+                                            "ced": "E99999999",
+                                            "nuts": "TLD36",
+                                            "lsoa": "E01006241",
+                                            "msoa": "E02001303",
+                                            "lau2": "E08000010",
+                                            "pfa": "E23000005"
+                                        },
+                                        "distance": 85.98655766
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                postcodes:
+                  summary: Response for postcodes
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "query": "OX49 5NU",
+                                "result": {
+                                    "postcode": "OX49 5NU",
+                                    "quality": 1,
+                                    "eastings": 464447,
+                                    "northings": 195647,
+                                    "country": "England",
+                                    "nhs_ha": "South Central",
+                                    "longitude": -1.069752,
+                                    "latitude": 51.655929,
+                                    "european_electoral_region": "South East",
+                                    "primary_care_trust": "Oxfordshire",
+                                    "region": "South East",
+                                    "lsoa": "South Oxfordshire 011B",
+                                    "msoa": "South Oxfordshire 011",
+                                    "incode": "5NU",
+                                    "outcode": "OX49",
+                                    "parliamentary_constituency": "Henley",
+                                    "admin_district": "South Oxfordshire",
+                                    "parish": "Brightwell Baldwin",
+                                    "admin_county": "Oxfordshire",
+                                    "date_of_introduction": "200010",
+                                    "admin_ward": "Chalgrove",
+                                    "ced": "Chalgrove and Watlington",
+                                    "ccg": "NHS Buckinghamshire, Oxfordshire and Berkshire West",
+                                    "nuts": "Oxfordshire CC",
+                                    "pfa": "Thames Valley",
+                                    "codes": {
+                                        "admin_district": "E07000179",
+                                        "admin_county": "E10000025",
+                                        "admin_ward": "E05009735",
+                                        "parish": "E04008109",
+                                        "parliamentary_constituency": "E14000742",
+                                        "ccg": "E38000136",
+                                        "ccg_id": "10Q",
+                                        "ced": "E58001732",
+                                        "nuts": "TLJ14",
+                                        "lsoa": "E01028601",
+                                        "msoa": "E02005968",
+                                        "lau2": "E07000179",
+                                        "pfa": "E23000029"
+                                    }
+                                }
+                            },
+                            {
+                                "query": "M32 0JG",
+                                "result": {
+                                    "postcode": "M32 0JG",
+                                    "quality": 1,
+                                    "eastings": 379988,
+                                    "northings": 395476,
+                                    "country": "England",
+                                    "nhs_ha": "North West",
+                                    "longitude": -2.302836,
+                                    "latitude": 53.455654,
+                                    "european_electoral_region": "North West",
+                                    "primary_care_trust": "Trafford",
+                                    "region": "North West",
+                                    "lsoa": "Trafford 003C",
+                                    "msoa": "Trafford 003",
+                                    "incode": "0JG",
+                                    "outcode": "M32",
+                                    "parliamentary_constituency": "Stretford and Urmston",
+                                    "admin_district": "Trafford",
+                                    "parish": "Trafford, unparished area",
+                                    "admin_county": null,
+                                    "date_of_introduction": "198001",
+                                    "admin_ward": "Gorse Hill",
+                                    "ced": null,
+                                    "ccg": "NHS Greater Manchester",
+                                    "nuts": "Greater Manchester South West",
+                                    "pfa": "Greater Manchester",
+                                    "codes": {
+                                        "admin_district": "E08000009",
+                                        "admin_county": "E99999999",
+                                        "admin_ward": "E05000829",
+                                        "parish": "E43000163",
+                                        "parliamentary_constituency": "E14000979",
+                                        "ccg": "E38000187",
+                                        "ccg_id": "02A",
+                                        "ced": "E99999999",
+                                        "nuts": "TLD34",
+                                        "lsoa": "E01006187",
+                                        "msoa": "E02001261",
+                                        "lau2": "E08000009",
+                                        "pfa": "E23000005"
+                                    }
+                                }
+                            },
+                            {
+                                "query": "NE30 1DP",
+                                "result": {
+                                    "postcode": "NE30 1DP",
+                                    "quality": 1,
+                                    "eastings": 435958,
+                                    "northings": 568671,
+                                    "country": "England",
+                                    "nhs_ha": "North East",
+                                    "longitude": -1.439269,
+                                    "latitude": 55.011303,
+                                    "european_electoral_region": "North East",
+                                    "primary_care_trust": "North Tyneside",
+                                    "region": "North East",
+                                    "lsoa": "North Tyneside 016C",
+                                    "msoa": "North Tyneside 016",
+                                    "incode": "1DP",
+                                    "outcode": "NE30",
+                                    "parliamentary_constituency": "Tynemouth",
+                                    "admin_district": "North Tyneside",
+                                    "parish": "North Tyneside, unparished area",
+                                    "admin_county": null,
+                                    "date_of_introduction": "201303",
+                                    "admin_ward": "Tynemouth",
+                                    "ced": null,
+                                    "ccg": "NHS North East and North Cumbria",
+                                    "nuts": "Tyneside",
+                                    "pfa": "Northumbria",
+                                    "codes": {
+                                        "admin_district": "E08000022",
+                                        "admin_county": "E99999999",
+                                        "admin_ward": "E05001130",
+                                        "parish": "E43000176",
+                                        "parliamentary_constituency": "E14001006",
+                                        "ccg": "E38000127",
+                                        "ccg_id": "99C",
+                                        "ced": "E99999999",
+                                        "nuts": "TLC22",
+                                        "lsoa": "E01008561",
+                                        "msoa": "E02001753",
+                                        "lau2": "E08000022",
+                                        "pfa": "E23000007"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                invalidJson:
+                  summary: Invalid JSON
+                  value:
+                    status: 400
+                    error: |
+                      Invalid JSON query submitted. \n
+                      You need to submit a JSON object with an array of postcodes or geolocation objects.\n
+                      Also ensure that Content-Type is set to application/json\n
+  /postcodes/{postcode}:
     get:
+      operationId: postcodeLookup
       summary: Postcode Lookup
       description: |
         This uniquely identifies a postcode.
@@ -928,8 +2895,118 @@ paths:
                   - properties:
                       result:
                         $ref: '#/components/schemas/PostcodeData'
-  /postcodes/:postcode/autocomplete:
+              examples:
+                B23_5XX:
+                  summary: Response for "B23 5XX"
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "B23 5XX",
+                            "quality": 1,
+                            "eastings": 409557,
+                            "northings": 293446,
+                            "country": "England",
+                            "nhs_ha": "West Midlands",
+                            "longitude": -1.860525,
+                            "latitude": 52.538791,
+                            "european_electoral_region": "West Midlands",
+                            "primary_care_trust": "Birmingham East and North",
+                            "region": "West Midlands",
+                            "lsoa": "Birmingham 010A",
+                            "msoa": "Birmingham 010",
+                            "incode": "5XX",
+                            "outcode": "B23",
+                            "parliamentary_constituency": "Birmingham, Erdington",
+                            "admin_district": "Birmingham",
+                            "parish": "Birmingham, unparished area",
+                            "admin_county": null,
+                            "date_of_introduction": "198001",
+                            "admin_ward": "Perry Common",
+                            "ced": null,
+                            "ccg": "NHS Birmingham and Solihull",
+                            "nuts": "Birmingham",
+                            "pfa": "West Midlands",
+                            "codes": {
+                                "admin_district": "E08000025",
+                                "admin_county": "E99999999",
+                                "admin_ward": "E05011161",
+                                "parish": "E43000250",
+                                "parliamentary_constituency": "E14000561",
+                                "ccg": "E38000258",
+                                "ccg_id": "15E",
+                                "ced": "E99999999",
+                                "nuts": "TLG31",
+                                "lsoa": "E01009135",
+                                "msoa": "E02001836",
+                                "lau2": "E08000025",
+                                "pfa": "E23000014"
+                            }
+                        }
+                    }
+                W1A_1AA:
+                  summary: Response for "W1A 1AA"
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "W1A 1AA",
+                            "quality": 1,
+                            "eastings": 528887,
+                            "northings": 181593,
+                            "country": "England",
+                            "nhs_ha": "London",
+                            "longitude": -0.143799,
+                            "latitude": 51.518561,
+                            "european_electoral_region": "London",
+                            "primary_care_trust": "Westminster",
+                            "region": "London",
+                            "lsoa": "Westminster 013D",
+                            "msoa": "Westminster 013",
+                            "incode": "1AA",
+                            "outcode": "W1A",
+                            "parliamentary_constituency": "Cities of London and Westminster",
+                            "admin_district": "Westminster",
+                            "parish": "Westminster, unparished area",
+                            "admin_county": null,
+                            "date_of_introduction": "199002",
+                            "admin_ward": "West End",
+                            "ced": null,
+                            "ccg": "NHS North West London",
+                            "nuts": "Westminster",
+                            "pfa": "Metropolitan Police",
+                            "codes": {
+                                "admin_district": "E09000033",
+                                "admin_county": "E99999999",
+                                "admin_ward": "E05013808",
+                                "parish": "E43000236",
+                                "parliamentary_constituency": "E14000639",
+                                "ccg": "E38000256",
+                                "ccg_id": "W2U3Z",
+                                "ced": "E99999999",
+                                "nuts": "TLI32",
+                                "lsoa": "E01004765",
+                                "msoa": "E02000972",
+                                "lau2": "E09000033",
+                                "pfa": "E23000001"
+                            }
+                        }
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                invalidPostcode:
+                  summary: Invalid postcode
+                  value:
+                    status: 404
+                    error: Invalid postcode
+  /postcodes/{postcode}/autocomplete:
     get:
+      operationId: postcodeAutocomplete
       summary: Postcode Autocomplete
       description: |
         Convenience method to return an list of matching postcodes.
@@ -954,11 +3031,55 @@ paths:
                   - $ref: '#/components/schemas/ServerResponseBody'
                   - properties:
                       result:
+                        nullable: true
                         type: array
                         items:
                           $ref: '#/components/schemas/postcode'
-  /postcodes/:postcode/nearest:
+              examples:
+                LA1_2:
+                  summary: Result for "LA1 2"
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            "LA1 2AA",
+                            "LA1 2AB",
+                            "LA1 2AD",
+                            "LA1 2AE",
+                            "LA1 2AF",
+                            "LA1 2AG",
+                            "LA1 2AH",
+                            "LA1 2AJ",
+                            "LA1 2AL",
+                            "LA1 2AN"
+                        ]
+                    }
+                S1:
+                  summary: Result for "S1"
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            "S1 1AA",
+                            "S1 1AD",
+                            "S1 1AE",
+                            "S1 1AU",
+                            "S1 1DA",
+                            "S1 1DJ",
+                            "S1 1DL",
+                            "S1 1EQ",
+                            "S1 1GE",
+                            "S1 1GN"
+                        ]
+                    }
+                invalidPostcode:
+                  summary: Invalid postcode
+                  value:
+                    status: 200
+                    result: null
+  /postcodes/{postcode}/nearest:
     get:
+      operationId: nearestPostcode
       summary: Nearest Postcode
       description: |
         Returns nearest postcodes for a given postcode.
@@ -991,8 +3112,425 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
-  /postcodes/:postcode/validate:
+              examples:
+                ME12_2DF:
+                  summary: Response for "ME12 2DF"
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "postcode": "ME12 2DF",
+                                "quality": 1,
+                                "eastings": 594632,
+                                "northings": 174232,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.798722,
+                                "latitude": 51.433653,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Eastern and Coastal Kent",
+                                "region": "South East",
+                                "lsoa": "Swale 003B",
+                                "msoa": "Swale 003",
+                                "incode": "2DF",
+                                "outcode": "ME12",
+                                "parliamentary_constituency": "Sittingbourne and Sheppey",
+                                "admin_district": "Swale",
+                                "parish": "Minster-on-Sea",
+                                "admin_county": "Kent",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Minster Cliffs",
+                                "ced": "Sheppey",
+                                "ccg": "NHS Kent and Medway",
+                                "nuts": "Kent Thames Gateway",
+                                "pfa": "Kent",
+                                "codes": {
+                                    "admin_district": "E07000113",
+                                    "admin_county": "E10000016",
+                                    "admin_ward": "E05009554",
+                                    "parish": "E04005079",
+                                    "parliamentary_constituency": "E14000927",
+                                    "ccg": "E38000237",
+                                    "ccg_id": "91Q",
+                                    "ced": "E58000734",
+                                    "nuts": "TLJ43",
+                                    "lsoa": "E01024587",
+                                    "msoa": "E02005117",
+                                    "lau2": "E07000113",
+                                    "pfa": "E23000032"
+                                },
+                                "distance": 0
+                            },
+                            {
+                                "postcode": "ME12 2FH",
+                                "quality": 1,
+                                "eastings": 594629,
+                                "northings": 174299,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.798686,
+                                "latitude": 51.434252,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Eastern and Coastal Kent",
+                                "region": "South East",
+                                "lsoa": "Swale 003B",
+                                "msoa": "Swale 003",
+                                "incode": "2FH",
+                                "outcode": "ME12",
+                                "parliamentary_constituency": "Sittingbourne and Sheppey",
+                                "admin_district": "Swale",
+                                "parish": "Minster-on-Sea",
+                                "admin_county": "Kent",
+                                "date_of_introduction": "201502",
+                                "admin_ward": "Minster Cliffs",
+                                "ced": "Sheppey",
+                                "ccg": "NHS Kent and Medway",
+                                "nuts": "Kent Thames Gateway",
+                                "pfa": "Kent",
+                                "codes": {
+                                    "admin_district": "E07000113",
+                                    "admin_county": "E10000016",
+                                    "admin_ward": "E05009554",
+                                    "parish": "E04005079",
+                                    "parliamentary_constituency": "E14000927",
+                                    "ccg": "E38000237",
+                                    "ccg_id": "91Q",
+                                    "ced": "E58000734",
+                                    "nuts": "TLJ43",
+                                    "lsoa": "E01024587",
+                                    "msoa": "E02005117",
+                                    "lau2": "E07000113",
+                                    "pfa": "E23000032"
+                                },
+                                "distance": 66.68969298
+                            },
+                            {
+                                "postcode": "ME12 2DA",
+                                "quality": 1,
+                                "eastings": 594615,
+                                "northings": 174156,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.798436,
+                                "latitude": 51.432976,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "Eastern and Coastal Kent",
+                                "region": "South East",
+                                "lsoa": "Swale 003B",
+                                "msoa": "Swale 003",
+                                "incode": "2DA",
+                                "outcode": "ME12",
+                                "parliamentary_constituency": "Sittingbourne and Sheppey",
+                                "admin_district": "Swale",
+                                "parish": "Minster-on-Sea",
+                                "admin_county": "Kent",
+                                "date_of_introduction": "198704",
+                                "admin_ward": "Minster Cliffs",
+                                "ced": "Sheppey",
+                                "ccg": "NHS Kent and Medway",
+                                "nuts": "Kent Thames Gateway",
+                                "pfa": "Kent",
+                                "codes": {
+                                    "admin_district": "E07000113",
+                                    "admin_county": "E10000016",
+                                    "admin_ward": "E05009554",
+                                    "parish": "E04005079",
+                                    "parliamentary_constituency": "E14000927",
+                                    "ccg": "E38000237",
+                                    "ccg_id": "91Q",
+                                    "ced": "E58000734",
+                                    "nuts": "TLJ43",
+                                    "lsoa": "E01024587",
+                                    "msoa": "E02005117",
+                                    "lau2": "E07000113",
+                                    "pfa": "E23000032"
+                                },
+                                "distance": 77.90235722
+                            }
+                        ]
+                    }
+                TN21_0DP:
+                  summary: Response for "TN21 0DP"
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "postcode": "TN21 0DP",
+                                "quality": 1,
+                                "eastings": 557960,
+                                "northings": 120823,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.248114,
+                                "latitude": 50.965177,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "East Sussex Downs and Weald",
+                                "region": "South East",
+                                "lsoa": "Wealden 010D",
+                                "msoa": "Wealden 010",
+                                "incode": "0DP",
+                                "outcode": "TN21",
+                                "parliamentary_constituency": "Bexhill and Battle",
+                                "admin_district": "Wealden",
+                                "parish": "Heathfield and Waldron",
+                                "admin_county": "East Sussex",
+                                "date_of_introduction": "199712",
+                                "admin_ward": "Heathfield North",
+                                "ced": "Heathfield & Mayfield",
+                                "ccg": "NHS Sussex",
+                                "nuts": "East Sussex CC",
+                                "pfa": "Sussex",
+                                "codes": {
+                                    "admin_district": "E07000065",
+                                    "admin_county": "E10000011",
+                                    "admin_ward": "E05011646",
+                                    "parish": "E04003847",
+                                    "parliamentary_constituency": "E14000557",
+                                    "ccg": "E38000235",
+                                    "ccg_id": "97R",
+                                    "ced": "E58000371",
+                                    "nuts": "TLJ22",
+                                    "lsoa": "E01021193",
+                                    "msoa": "E02004412",
+                                    "lau2": "E07000065",
+                                    "pfa": "E23000033"
+                                },
+                                "distance": 0
+                            },
+                            {
+                                "postcode": "TN21 0AF",
+                                "quality": 1,
+                                "eastings": 557952,
+                                "northings": 120903,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.248063,
+                                "latitude": 50.965894,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "East Sussex Downs and Weald",
+                                "region": "South East",
+                                "lsoa": "Wealden 010D",
+                                "msoa": "Wealden 010",
+                                "incode": "0AF",
+                                "outcode": "TN21",
+                                "parliamentary_constituency": "Bexhill and Battle",
+                                "admin_district": "Wealden",
+                                "parish": "Heathfield and Waldron",
+                                "admin_county": "East Sussex",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Heathfield North",
+                                "ced": "Heathfield & Mayfield",
+                                "ccg": "NHS Sussex",
+                                "nuts": "East Sussex CC",
+                                "pfa": "Sussex",
+                                "codes": {
+                                    "admin_district": "E07000065",
+                                    "admin_county": "E10000011",
+                                    "admin_ward": "E05011646",
+                                    "parish": "E04003847",
+                                    "parliamentary_constituency": "E14000557",
+                                    "ccg": "E38000235",
+                                    "ccg_id": "97R",
+                                    "ced": "E58000371",
+                                    "nuts": "TLJ22",
+                                    "lsoa": "E01021193",
+                                    "msoa": "E02004412",
+                                    "lau2": "E07000065",
+                                    "pfa": "E23000033"
+                                },
+                                "distance": 79.84496245
+                            },
+                            {
+                                "postcode": "TN21 0DR",
+                                "quality": 1,
+                                "eastings": 557981,
+                                "northings": 120745,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.248379,
+                                "latitude": 50.964471,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "East Sussex Downs and Weald",
+                                "region": "South East",
+                                "lsoa": "Wealden 010D",
+                                "msoa": "Wealden 010",
+                                "incode": "0DR",
+                                "outcode": "TN21",
+                                "parliamentary_constituency": "Bexhill and Battle",
+                                "admin_district": "Wealden",
+                                "parish": "Heathfield and Waldron",
+                                "admin_county": "East Sussex",
+                                "date_of_introduction": "199712",
+                                "admin_ward": "Heathfield North",
+                                "ced": "Heathfield & Mayfield",
+                                "ccg": "NHS Sussex",
+                                "nuts": "East Sussex CC",
+                                "pfa": "Sussex",
+                                "codes": {
+                                    "admin_district": "E07000065",
+                                    "admin_county": "E10000011",
+                                    "admin_ward": "E05011646",
+                                    "parish": "E04003847",
+                                    "parliamentary_constituency": "E14000557",
+                                    "ccg": "E38000235",
+                                    "ccg_id": "97R",
+                                    "ced": "E58000371",
+                                    "nuts": "TLJ22",
+                                    "lsoa": "E01021193",
+                                    "msoa": "E02004412",
+                                    "lau2": "E07000065",
+                                    "pfa": "E23000033"
+                                },
+                                "distance": 80.7169784
+                            },
+                            {
+                                "postcode": "TN21 0XP",
+                                "quality": 1,
+                                "eastings": 557873,
+                                "northings": 120828,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.246906,
+                                "latitude": 50.965242,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "East Sussex Downs and Weald",
+                                "region": "South East",
+                                "lsoa": "Wealden 010D",
+                                "msoa": "Wealden 010",
+                                "incode": "0XP",
+                                "outcode": "TN21",
+                                "parliamentary_constituency": "Bexhill and Battle",
+                                "admin_district": "Wealden",
+                                "parish": "Heathfield and Waldron",
+                                "admin_county": "East Sussex",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Heathfield North",
+                                "ced": "Heathfield & Mayfield",
+                                "ccg": "NHS Sussex",
+                                "nuts": "East Sussex CC",
+                                "pfa": "Sussex",
+                                "codes": {
+                                    "admin_district": "E07000065",
+                                    "admin_county": "E10000011",
+                                    "admin_ward": "E05011646",
+                                    "parish": "E04003847",
+                                    "parliamentary_constituency": "E14000557",
+                                    "ccg": "E38000235",
+                                    "ccg_id": "97R",
+                                    "ced": "E58000371",
+                                    "nuts": "TLJ22",
+                                    "lsoa": "E01021193",
+                                    "msoa": "E02004412",
+                                    "lau2": "E07000065",
+                                    "pfa": "E23000033"
+                                },
+                                "distance": 85.16971817
+                            },
+                            {
+                                "postcode": "TN21 0AG",
+                                "quality": 1,
+                                "eastings": 558020,
+                                "northings": 120759,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.248968,
+                                "latitude": 50.964581,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "East Sussex Downs and Weald",
+                                "region": "South East",
+                                "lsoa": "Wealden 010D",
+                                "msoa": "Wealden 010",
+                                "incode": "0AG",
+                                "outcode": "TN21",
+                                "parliamentary_constituency": "Bexhill and Battle",
+                                "admin_district": "Wealden",
+                                "parish": "Heathfield and Waldron",
+                                "admin_county": "East Sussex",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Heathfield North",
+                                "ced": "Heathfield & Mayfield",
+                                "ccg": "NHS Sussex",
+                                "nuts": "East Sussex CC",
+                                "pfa": "Sussex",
+                                "codes": {
+                                    "admin_district": "E07000065",
+                                    "admin_county": "E10000011",
+                                    "admin_ward": "E05011646",
+                                    "parish": "E04003847",
+                                    "parliamentary_constituency": "E14000557",
+                                    "ccg": "E38000235",
+                                    "ccg_id": "97R",
+                                    "ced": "E58000371",
+                                    "nuts": "TLJ22",
+                                    "lsoa": "E01021193",
+                                    "msoa": "E02004412",
+                                    "lau2": "E07000065",
+                                    "pfa": "E23000033"
+                                },
+                                "distance": 89.41728778
+                            },
+                            {
+                                "postcode": "TN21 0AE",
+                                "quality": 1,
+                                "eastings": 557998,
+                                "northings": 120913,
+                                "country": "England",
+                                "nhs_ha": "South East Coast",
+                                "longitude": 0.248694,
+                                "latitude": 50.965976,
+                                "european_electoral_region": "South East",
+                                "primary_care_trust": "East Sussex Downs and Weald",
+                                "region": "South East",
+                                "lsoa": "Wealden 010D",
+                                "msoa": "Wealden 010",
+                                "incode": "0AE",
+                                "outcode": "TN21",
+                                "parliamentary_constituency": "Bexhill and Battle",
+                                "admin_district": "Wealden",
+                                "parish": "Heathfield and Waldron",
+                                "admin_county": "East Sussex",
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Heathfield North",
+                                "ced": "Heathfield & Mayfield",
+                                "ccg": "NHS Sussex",
+                                "nuts": "East Sussex CC",
+                                "pfa": "Sussex",
+                                "codes": {
+                                    "admin_district": "E07000065",
+                                    "admin_county": "E10000011",
+                                    "admin_ward": "E05011646",
+                                    "parish": "E04003847",
+                                    "parliamentary_constituency": "E14000557",
+                                    "ccg": "E38000235",
+                                    "ccg_id": "97R",
+                                    "ced": "E58000371",
+                                    "nuts": "TLJ22",
+                                    "lsoa": "E01021193",
+                                    "msoa": "E02004412",
+                                    "lau2": "E07000065",
+                                    "pfa": "E23000033"
+                                },
+                                "distance": 97.78040696
+                            }
+                        ]
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                invalidPostcode:
+                  summary: Invalid postcode
+                  value:
+                    status: 404
+                    error: Postcode not found
+  /postcodes/{postcode}/validate:
     get:
+      operationId: postcodeValidation
       summary: Postcode Validation
       description: |
         Convenience method to validate a postcode. Returns true or false (meaning valid or invalid respectively)
@@ -1015,8 +3553,20 @@ paths:
                         type: boolean
                         description: |
                           true or false (meaning valid or invalid respectively)
-  /postcodes/lon/:longitude/lat/:latitude:
+              examples:
+                invalidPostcode:
+                  summary: Invalid postcode
+                  value:
+                    status: 200
+                    result: false
+                validPostcode:
+                  summary: Valid postcode
+                  value:
+                    status: 200
+                    result: true
+  /postcodes/lon/{longitude}/lat/{latitude}:
     get:
+      operationId: reverseGeocodingLegacy
       deprecated: true
       summary: Reverse Geocoding (Legacy)
       description: |
@@ -1027,7 +3577,7 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/latitude'
-        - in: query
+        - in: path
           name: longitude
           required: true
           schema:
@@ -1063,11 +3613,125 @@ paths:
                   - $ref: '#/components/schemas/ServerResponseBody'
                   - properties:
                       result:
+                        nullable: true
                         type: array
                         items:
                           $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
+              examples:
+                lonLat:
+                  summary: Longitude and latitude (limit=2)
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "postcode": "LU1 5DY",
+                                "quality": 1,
+                                "eastings": 508926,
+                                "northings": 220782,
+                                "country": "England",
+                                "nhs_ha": "East of England",
+                                "longitude": -0.419135,
+                                "latitude": 51.874981,
+                                "european_electoral_region": "Eastern",
+                                "primary_care_trust": "Luton",
+                                "region": "East of England",
+                                "lsoa": "Luton 021C",
+                                "msoa": "Luton 021",
+                                "incode": "5DY",
+                                "outcode": "LU1",
+                                "parliamentary_constituency": "Luton South",
+                                "admin_district": "Luton",
+                                "parish": "Luton, unparished area",
+                                "admin_county": null,
+                                "date_of_introduction": "198001",
+                                "admin_ward": "South",
+                                "ced": null,
+                                "ccg": "NHS Bedfordshire, Luton and Milton Keynes",
+                                "nuts": "Luton",
+                                "pfa": "Bedfordshire",
+                                "codes": {
+                                    "admin_district": "E06000032",
+                                    "admin_county": "E99999999",
+                                    "admin_ward": "E05002208",
+                                    "parish": "E43000027",
+                                    "parliamentary_constituency": "E14000801",
+                                    "ccg": "E38000249",
+                                    "ccg_id": "M1J4Y",
+                                    "ced": "E99999999",
+                                    "nuts": "TLH21",
+                                    "lsoa": "E01015791",
+                                    "msoa": "E02003278",
+                                    "lau2": "E06000032",
+                                    "pfa": "E23000026"
+                                },
+                                "distance": 0
+                            },
+                            {
+                                "postcode": "LU1 5DT",
+                                "quality": 1,
+                                "eastings": 508895,
+                                "northings": 220755,
+                                "country": "England",
+                                "nhs_ha": "East of England",
+                                "longitude": -0.419594,
+                                "latitude": 51.874744,
+                                "european_electoral_region": "Eastern",
+                                "primary_care_trust": "Luton",
+                                "region": "East of England",
+                                "lsoa": "Luton 021A",
+                                "msoa": "Luton 021",
+                                "incode": "5DT",
+                                "outcode": "LU1",
+                                "parliamentary_constituency": "Luton South",
+                                "admin_district": "Luton",
+                                "parish": "Luton, unparished area",
+                                "admin_county": null,
+                                "date_of_introduction": "198001",
+                                "admin_ward": "Farley",
+                                "ced": null,
+                                "ccg": "NHS Bedfordshire, Luton and Milton Keynes",
+                                "nuts": "Luton",
+                                "pfa": "Bedfordshire",
+                                "codes": {
+                                    "admin_district": "E06000032",
+                                    "admin_county": "E99999999",
+                                    "admin_ward": "E05002199",
+                                    "parish": "E43000027",
+                                    "parliamentary_constituency": "E14000801",
+                                    "ccg": "E38000249",
+                                    "ccg_id": "M1J4Y",
+                                    "ced": "E99999999",
+                                    "nuts": "TLH21",
+                                    "lsoa": "E01015738",
+                                    "msoa": "E02003278",
+                                    "lau2": "E06000032",
+                                    "pfa": "E23000026"
+                                },
+                                "distance": 41.16580596
+                            }
+                        ]
+                    }
+                noResult:
+                  summary: No result
+                  value:
+                    status: 200
+                    result: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                invalidLonLat:
+                  summary: Invalid longitude/latitude
+                  value:
+                    status: 400
+                    error: Invalid longitude/latitude submitted
   /random/postcodes:
     get:
+      operationId: randomPostcode
       summary: Random Postcode
       description: |
         Returns a random postcode and all available data for that postcode.
@@ -1089,9 +3753,115 @@ paths:
                   - $ref: '#/components/schemas/ServerResponseBody'
                   - properties:
                       result:
-                        $ref: '#/components/schemas/PostcodeData'
+                        allOf:
+                          - type: object
+                            nullable: true
+                          - $ref: '#/components/schemas/PostcodeData'
+              examples:
+                random:
+                  summary: Random
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "GU9 8UR",
+                            "quality": 1,
+                            "eastings": 482999,
+                            "northings": 145443,
+                            "country": "England",
+                            "nhs_ha": "South East Coast",
+                            "longitude": -0.813393,
+                            "latitude": 51.202181,
+                            "european_electoral_region": "South East",
+                            "primary_care_trust": "Surrey",
+                            "region": "South East",
+                            "lsoa": "Waverley 006D",
+                            "msoa": "Waverley 006",
+                            "incode": "8UR",
+                            "outcode": "GU9",
+                            "parliamentary_constituency": "South West Surrey",
+                            "admin_district": "Waverley",
+                            "parish": "Farnham",
+                            "admin_county": "Surrey",
+                            "date_of_introduction": "199501",
+                            "admin_ward": "Farnham Shortheath and Boundstone",
+                            "ced": "Farnham South",
+                            "ccg": "NHS Frimley",
+                            "nuts": "West Surrey",
+                            "pfa": "Surrey",
+                            "codes": {
+                                "admin_district": "E07000216",
+                                "admin_county": "E10000030",
+                                "admin_ward": "E05007424",
+                                "parish": "E04009614",
+                                "parliamentary_constituency": "E14000953",
+                                "ccg": "E38000252",
+                                "ccg_id": "D4U1Y",
+                                "ced": "E58001487",
+                                "nuts": "TLJ25",
+                                "lsoa": "E01030896",
+                                "msoa": "E02006444",
+                                "lau2": "E07000216",
+                                "pfa": "E23000031"
+                            }
+                        }
+                    }
+                queryOutcode:
+                  summary: Query (outcode=GU2)
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "GU2 7TT",
+                            "quality": 1,
+                            "eastings": 498303,
+                            "northings": 149609,
+                            "country": "England",
+                            "nhs_ha": "South East Coast",
+                            "longitude": -0.593267,
+                            "latitude": 51.237204,
+                            "european_electoral_region": "South East",
+                            "primary_care_trust": "Surrey",
+                            "region": "South East",
+                            "lsoa": "Guildford 015D",
+                            "msoa": "Guildford 015",
+                            "incode": "7TT",
+                            "outcode": "GU2",
+                            "parliamentary_constituency": "Guildford",
+                            "admin_district": "Guildford",
+                            "parish": "Guildford, unparished area",
+                            "admin_county": "Surrey",
+                            "date_of_introduction": "200006",
+                            "admin_ward": "Onslow",
+                            "ced": "Guildford South West",
+                            "ccg": "NHS Surrey Heartlands",
+                            "nuts": "West Surrey",
+                            "pfa": "Surrey",
+                            "codes": {
+                                "admin_district": "E07000209",
+                                "admin_county": "E10000030",
+                                "admin_ward": "E05007298",
+                                "parish": "E43000138",
+                                "parliamentary_constituency": "E14000719",
+                                "ccg": "E38000246",
+                                "ccg_id": "92A",
+                                "ced": "E58001497",
+                                "nuts": "TLJ25",
+                                "lsoa": "E01030469",
+                                "msoa": "E02006358",
+                                "lau2": "E07000209",
+                                "pfa": "E23000031"
+                            }
+                        }
+                    }
+                invalidOutcode:
+                  summary: Invalid outcode
+                  value:
+                    status: 200
+                    result: null
   /random/places:
     get:
+      operationId: randomPlace
       summary: Random Place
       description: |
         Returns a random place and all associated data
@@ -1106,8 +3876,39 @@ paths:
                   - properties:
                       result:
                         $ref: '#/components/schemas/PlacesData'
-  /scotland/postcodes/:postcode:
+              examples:
+                random:
+                  summary: Random
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "code": "osgb4000000074576143",
+                            "name_1": "Chilton Polden",
+                            "name_1_lang": null,
+                            "name_2": null,
+                            "name_2_lang": null,
+                            "local_type": "Village",
+                            "outcode": "TA7",
+                            "county_unitary": "Somerset",
+                            "county_unitary_type": "County",
+                            "district_borough": "Sedgemoor",
+                            "district_borough_type": "District",
+                            "region": "South West",
+                            "country": "England",
+                            "longitude": -2.89606022028403,
+                            "latitude": 51.1559120234085,
+                            "eastings": 337430,
+                            "northings": 140010,
+                            "min_eastings": 336893,
+                            "min_northings": 139361,
+                            "max_eastings": 338218,
+                            "max_northings": 140286
+                        }
+                    }
+  /scotland/postcodes/{postcode}:
     get:
+      operationId: scottishPostcodeLookup
       summary: Scottish Postcode Lookup
       description: |
         Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.
@@ -1130,8 +3931,48 @@ paths:
                   - properties:
                       result:
                         $ref: '#/components/schemas/ScottishPostcodeData'
-  /terminated_postcodes/:postcode:
+              examples:
+                EH22_3NX:
+                  summary: EH22 3NX
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "EH22 3NX",
+                            "scottish_parliamentary_constituency": "Midlothian North and Musselburgh",
+                            "codes": {
+                                "scottish_parliamentary_constituency": "S16000130"
+                            }
+                        }
+                    }
+                G33_6BB:
+                  summary: G33 6BB
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "G33 6BB",
+                            "scottish_parliamentary_constituency": null,
+                            "codes": {
+                                "scottish_parliamentary_constituency": "S16000149"
+                            }
+                        }
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                invalidPostcode:
+                  summary: Invalid postcode
+                  value:
+                    status: 404
+                    error: Invalid postcode
+  /terminated_postcodes/{postcode}:
     get:
+      operationId: terminatedPostcodeLookup
       summary: Terminated Postcode Lookup
       description: |
         Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.
@@ -1140,7 +3981,9 @@ paths:
           required: true
           name: postcode
           schema:
-            $ref: '#/components/schemas/postcode'
+            type: string
+            description: |
+              Terminated postcode
       responses:
         '200':
           description: Terminated Postcode Data
@@ -1152,3 +3995,47 @@ paths:
                   - properties:
                       result:
                         $ref: '#/components/schemas/TerminatedPostcodeData'
+              examples:
+                E1W_1UU:
+                  summary: E1W 1UU
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "E1W 1UU",
+                            "year_terminated": 2015,
+                            "month_terminated": 2,
+                            "longitude": -0.073732,
+                            "latitude": 51.508007
+                        }
+                    }
+                EC2M_7AB:
+                  summary: EC2M 7AB
+                  value:
+                    {
+                        "status": 200,
+                        "result": {
+                            "postcode": "EC2M 7AB",
+                            "year_terminated": 2011,
+                            "month_terminated": 8,
+                            "longitude": -0.086558,
+                            "latitude": 51.517624
+                        }
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                invalidPostcode:
+                  summary: Invalid postcode
+                  value:
+                    status: 404
+                    error: Invalid postcode
+                notFound:
+                  summary: Not found
+                  value:
+                    status: 404
+                    error: Terminated postcode not found

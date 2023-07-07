@@ -1,0 +1,9 @@
+apis:
+  postcodes.io:
+    root: ./src/openapi.yaml
+extends:
+  - recommended
+rules:
+  info-license-url: 'off'
+  operation-4xx-response: 'off'
+  security-defined: 'off'
