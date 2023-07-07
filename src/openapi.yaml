@@ -1,12 +1,21 @@
-openapi: '3.0.2'
+openapi: '3.0.5'
 info:
   title: Postcodes.io
   version: '1.0.0'
+  description: |
+    Postcodes.io allows UK postcode data to be queried over a JSON HTTP API.
+
+    Postcodes.io is an open sourced project maintained by Ideal Postcodes.
+
+    It is a free resource, allowing developers to search, reverse geocode and extract UK postcode and associated data.
+  license:
+    name: MIT
+  contact:
+    name: Ideal Postcodes
+    url: https://chat.ideal-postcodes.co.uk/
 servers:
   - url: https://api.postcodes.io
     description: Public API
-
-
 components:
   schemas:
     Geolocation:
@@ -28,7 +37,7 @@ components:
           type: boolean
           description: |
             Search up to 20km radius, but subject to a maximum of 10 results
-    OutcodeDate:
+    OutcodeData:
       description: |
         ### Outcode Data (Ordnance Survey Postcode Directory Dataset)
 
@@ -246,11 +255,7 @@ components:
         Note: Some fields may be null if not applicable or populated.
       properties:
         code:
-          type: string
-          description: |
-            ### code
-            
-            A unique identifier that enables records to be identified easily. The identifier will be persistent for all LocalTypes except Section of Named Road and Section of Numbered Road.
+          $ref: '#/components/schemas/code'
         country:
           type: string
           description: |
@@ -377,6 +382,12 @@ components:
         ### County Electoral District
 
         The county electoral division code for each English postcode. Pseudo codes are included for the remainder of the UK. The field will be null for English postcodes with no grid reference. English county councils use county electoral divisions (CED) to elect councillors. These CEDs must be confined within district boundaries, but need not be based on whole electoral wards. The only exceptions are the Isles of Scilly and the Greater London Authority (GLA). CEDs do not exist within UAs.
+    code:
+      type: string
+      description: |
+        ### code
+        
+        A unique identifier that enables records to be identified easily. The identifier will be persistent for all LocalTypes except Section of Named Road and Section of Numbered Road.
     country:
       type: string
       description: |
@@ -574,6 +585,165 @@ components:
 
         2014 Scottish Parliamentary Constituency.
 paths:
+  /outcodes:
+    get:
+      summary: Outcode Reverse Geocoding
+      description: |
+        Returns nearest outcodes for a given longitude and latitude.
+      parameters:
+        - in: query
+          required: true
+          name: lat
+          schema:
+            $ref: '#/components/schemas/latitude'
+        - in: query
+          required: true
+          name: lon
+          schema:
+            $ref: '#/components/schemas/longitude'
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: string
+          description: |
+            Limits number of outcodes matches to return. Defaults to 10. Needs to be less than 100.
+        - in: query
+          name: radius
+          required: false
+          schema:
+            type: string
+          description: |
+            Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
+      responses:
+        '200':
+          description: List of Outcode Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OutcodeData'
+  /outcodes/:outcode:
+    get:
+      summary: Outward Code Lookup
+      description: |
+        Geolocation data for the centroid of the outward code specified. The outward code represents the first half of any postcode (separated by a space).
+      parameters:
+        - in: path
+          required: true
+          name: outcode
+          schema:
+            $ref: '#/components/schemas/outcode'
+      responses:
+        '200':
+          description: Outcode Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        $ref: '#/components/schemas/OutcodeData'
+  /outcodes/:outcode/nearest:
+    get:
+      summary: Nearest Outcode
+      description: |
+        Returns nearest outcodes for a given outcode.
+      parameters:
+        - in: path
+          required: true
+          name: outcode
+          schema:
+            $ref: '#/components/schemas/outcode'
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: string
+          description: |
+            Limits number of outcodes matches to return. Defaults to 10. Needs to be less than 100.
+        - in: query
+          name: radius
+          required: false
+          schema:
+            type: string
+          description: |
+            Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
+      responses:
+        '200':
+          description: List of Outcode Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OutcodeData'
+  /places:
+    get:
+      summary: Place Query
+      description: |
+        Submit a place query and receive a complete list of places matches and associated data.
+      parameters:
+        - in: query
+          name: q
+          schema:
+            $ref: '#/components/schemas/query'
+        - in: query
+          name: query
+          schema:
+            $ref: '#/components/schemas/query'
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: string
+          description: |
+            Limits number of places matches to return. Defaults to 10. Needs to be less than 100.
+      responses:
+        '200':
+          description: List of Places Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PlacesData'
+  /places/:code:
+    get:
+      summary: Place Lookup
+      description: |
+        Find a place by OSGB code (e.g. "osgb4000000074564391"). Returns all available data if found. Returns 404 if place does not exist.
+      parameters:
+        - in: path
+          required: true
+          name: code
+          schema:
+            $ref: '#/components/schemas/code'
+      responses:
+        '200':
+          description: Places Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        $ref: '#/components/schemas/PlacesData'
   /postcodes:
     get:
       summary: Reverse Geocoding / Postcode Query
@@ -845,6 +1015,57 @@ paths:
                         type: boolean
                         description: |
                           true or false (meaning valid or invalid respectively)
+  /postcodes/lon/:longitude/lat/:latitude:
+    get:
+      deprecated: true
+      summary: Reverse Geocoding (Legacy)
+      description: |
+        Returns nearest postcodes for a given longitude and latitude.
+      parameters:
+        - in: path
+          name: latitude
+          required: true
+          schema:
+            $ref: '#/components/schemas/latitude'
+        - in: query
+          name: longitude
+          required: true
+          schema:
+            $ref: '#/components/schemas/longitude'
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: string
+          description: |
+            Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
+        - in: query
+          name: radius
+          required: false
+          schema:
+            type: string
+          description: |
+            Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
+        - in: query
+          name: widesearch
+          required: false
+          schema:
+            type: string
+          description: |
+            Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored. 
+      responses:
+        '200':
+          description: Postcode Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
   /random/postcodes:
     get:
       summary: Random Postcode
@@ -869,3 +1090,65 @@ paths:
                   - properties:
                       result:
                         $ref: '#/components/schemas/PostcodeData'
+  /random/places:
+    get:
+      summary: Random Place
+      description: |
+        Returns a random place and all associated data
+      responses:
+        '200':
+          description: Places Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        $ref: '#/components/schemas/PlacesData'
+  /scotland/postcodes/:postcode:
+    get:
+      summary: Scottish Postcode Lookup
+      description: |
+        Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.
+
+        Returns 404 if postcode does not exist in SPD or is not valid. For postcodes not in SPD but in ONSPD, 404 is returned with error message `Postcode exists in ONSPD but not in SPD`.
+      parameters:
+        - in: path
+          required: true
+          name: postcode
+          schema:
+            $ref: '#/components/schemas/postcode'
+      responses:
+        '200':
+          description: Scottish Postcode Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        $ref: '#/components/schemas/ScottishPostcodeData'
+  /terminated_postcodes/:postcode:
+    get:
+      summary: Terminated Postcode Lookup
+      description: |
+        Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.
+      parameters:
+        - in: path
+          required: true
+          name: postcode
+          schema:
+            $ref: '#/components/schemas/postcode'
+      responses:
+        '200':
+          description: Terminated Postcode Data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ServerResponseBody'
+                  - properties:
+                      result:
+                        $ref: '#/components/schemas/TerminatedPostcodeData'
