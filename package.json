@@ -21,9 +21,10 @@
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
     "@jest/globals": "^29.6.1",
-    "@openapi-generator-plus/typescript-fetch-client-generator2": "^0.6.0",
     "@openapi-generator-plus/typescript-fetch-node-client-generator": "^1.1.6",
     "@redocly/cli": "^1.0.0-beta.130",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.4.1",
     "@types/node-fetch": "2.x",
     "core-js": "^3.1.4",
     "jest": "^29.6.1",
@@ -41,8 +42,6 @@
     "webpack": "^5.0.0"
   },
   "dependencies": {
-    "@types/jest": "^29.5.2",
-    "@types/node": "^20.4.1",
     "abab": "^2.0.6",
     "form-data": "^4.0.0",
     "node-fetch": "2.6.7"
