@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals'
 import '../../helpers/custom-expect-matchers/toBePostcodeData';
 
 import { PostcodesApi } from '../../../src/openapi'
+import exp from 'constants';
 
 describe('PostcodesApi', () => {
   const postcodesApi = new PostcodesApi()
@@ -786,22 +787,328 @@ describe('PostcodesApi', () => {
   })
 
   describe('postcodeLookup', () => {
+    it('should return PostcodeData for valid postcode', async () => {
+      // given
+      const postcode = 'AB15 6DH'
 
+      // when
+      const response = await postcodesApi.postcodeLookup(postcode)
+
+      // then
+      expect(response).toEqual({
+        "status": 200,
+        "result": {
+            "postcode": "AB15 6DH",
+            "quality": 1,
+            "eastings": 391109,
+            "northings": 805979,
+            "country": "Scotland",
+            "nhs_ha": "Grampian",
+            "longitude": -2.148567,
+            "latitude": 57.1446,
+            "european_electoral_region": "Scotland",
+            "primary_care_trust": "Aberdeen City Community Health Partnership",
+            "region": null,
+            "lsoa": "Hazlehead - 03",
+            "msoa": "Hazlehead",
+            "incode": "6DH",
+            "outcode": "AB15",
+            "parliamentary_constituency": "Aberdeen South",
+            "admin_district": "Aberdeen City",
+            "parish": null,
+            "admin_county": null,
+            "date_of_introduction": "199606",
+            "admin_ward": "Hazlehead/Queens Cross/Countesswells",
+            "ced": null,
+            "ccg": "Aberdeen City Community Health Partnership",
+            "nuts": "Aberdeen City and Aberdeenshire",
+            "pfa": "Scotland",
+            "codes": {
+                "admin_district": "S12000033",
+                "admin_county": "S99999999",
+                "admin_ward": "S13002844",
+                "parish": "S99999999",
+                "parliamentary_constituency": "S14000002",
+                "ccg": "S03000012",
+                "ccg_id": "012",
+                "ced": "S99999999",
+                "nuts": "TLM50",
+                "lsoa": "S01006549",
+                "msoa": "S02001243",
+                "lau2": "S30000026",
+                "pfa": "S23000009"
+            }
+        }
+      })
+    })
+
+    it('should return 404 error for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop'
+
+      // when
+      const response = await postcodesApi.postcodeLookup(postcode)
+
+      // then
+      expect(response).toEqual({
+        status: 404,
+        error: 'Invalid postcode',
+      })
+    })
   })
 
   describe('postcodeAutocomplete', () => {
+    it('should return list of matching postcodes', async () => {
+      // given
+      const postcode = 'TA11 7Y'
+  
+      // when
+      const response = await postcodesApi.postcodeAutocomplete({ postcode })
 
+      // then
+      expect(response).toEqual({
+        status: 200,
+        result: [
+          'TA11 7YU',
+        ],
+      })
+    })
+
+    it('should return 200 null for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop'
+
+      // when
+      const response = await postcodesApi.postcodeAutocomplete({ postcode })
+
+      // then
+      expect(response).toEqual({
+        status: 200,
+        result: null,
+      })
+    })
   })
 
   describe('nearestPostcode', () => {
+    it('should return list of PostcodeData for valid postcode', async () => {
+      // given
+      const postcode = 'BH21 7AT'
 
+      // when
+      const response = await postcodesApi.nearestPostcode({ postcode })
+
+      // then
+      expect(response).toEqual({
+        "status": 200,
+        "result": [
+            {
+                "postcode": "BH21 7AT",
+                "quality": 1,
+                "eastings": 402917,
+                "northings": 101363,
+                "country": "England",
+                "nhs_ha": "South West",
+                "longitude": -1.959965,
+                "latitude": 50.811811,
+                "european_electoral_region": "South West",
+                "primary_care_trust": "Dorset",
+                "region": "South West",
+                "lsoa": "East Dorset 007B",
+                "msoa": "East Dorset 007",
+                "incode": "7AT",
+                "outcode": "BH21",
+                "parliamentary_constituency": "Mid Dorset and North Poole",
+                "admin_district": "Dorset",
+                "parish": "Colehill",
+                "admin_county": null,
+                "date_of_introduction": "198001",
+                "admin_ward": "Colehill & Wimborne Minster East",
+                "ced": null,
+                "ccg": "NHS Dorset",
+                "nuts": "Dorset",
+                "pfa": "Dorset",
+                "codes": {
+                    "admin_district": "E06000059",
+                    "admin_county": "E99999999",
+                    "admin_ward": "E05012691",
+                    "parish": "E04012462",
+                    "parliamentary_constituency": "E14000815",
+                    "ccg": "E38000045",
+                    "ccg_id": "11J",
+                    "ced": "E99999999",
+                    "nuts": "TLK25",
+                    "lsoa": "E01020379",
+                    "msoa": "E02004249",
+                    "lau2": "E06000059",
+                    "pfa": "E23000039"
+                },
+                "distance": 0
+            },
+            {
+                "postcode": "BH21 7AX",
+                "quality": 1,
+                "eastings": 402951,
+                "northings": 101327,
+                "country": "England",
+                "nhs_ha": "South West",
+                "longitude": -1.959483,
+                "latitude": 50.811487,
+                "european_electoral_region": "South West",
+                "primary_care_trust": "Dorset",
+                "region": "South West",
+                "lsoa": "East Dorset 007B",
+                "msoa": "East Dorset 007",
+                "incode": "7AX",
+                "outcode": "BH21",
+                "parliamentary_constituency": "Mid Dorset and North Poole",
+                "admin_district": "Dorset",
+                "parish": "Colehill",
+                "admin_county": null,
+                "date_of_introduction": "198001",
+                "admin_ward": "Colehill & Wimborne Minster East",
+                "ced": null,
+                "ccg": "NHS Dorset",
+                "nuts": "Dorset",
+                "pfa": "Dorset",
+                "codes": {
+                    "admin_district": "E06000059",
+                    "admin_county": "E99999999",
+                    "admin_ward": "E05012691",
+                    "parish": "E04012462",
+                    "parliamentary_constituency": "E14000815",
+                    "ccg": "E38000045",
+                    "ccg_id": "11J",
+                    "ced": "E99999999",
+                    "nuts": "TLK25",
+                    "lsoa": "E01020379",
+                    "msoa": "E02004249",
+                    "lau2": "E06000059",
+                    "pfa": "E23000039"
+                },
+                "distance": 49.52999179
+            }
+        ]
+      })
+    })
+
+    it('should return 404 error for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop'
+
+      // when
+      const response = await postcodesApi.nearestPostcode({ postcode })
+
+      // then
+      expect(response).toEqual({
+        status: 404,
+        error: 'Postcode not found',
+      })
+    })
   })
 
   describe('postcodeValidation', () => {
+    it('should return true for valid postcode', async () => {
+      // given
+      const postcode = 'CW6 0EF'
 
+      // when
+      const response = await postcodesApi.postcodeValidation(postcode)
+
+      // then
+      expect(response).toEqual({
+        status: 200,
+        result: true,
+      })
+    })
+
+    it('should return false for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop'
+
+      // when
+      const response = await postcodesApi.postcodeValidation(postcode)
+
+      // then
+      expect(response).toEqual({
+        status: 200,
+        result: false,
+      })
+    })
   })
 
   describe('reverseGeocodingLegacy', () => {
+    it('should return list of PostcodeData for matching lon/lat', async () => {
+      // given
+      const longitude = -3.924229
+      const latitude = 51.923369
 
+      // when
+      const response = await postcodesApi.reverseGeocodingLegacy({ longitude, latitude })
+
+      // then
+      expect(response).toEqual({
+        status: 200,
+        result: [
+          {
+            "postcode": "SA19 7BR",
+            "quality": 1,
+            "eastings": 267774,
+            "northings": 226733,
+            "country": "Wales",
+            "nhs_ha": "Hywel Dda University Health Board",
+            "longitude": -3.924229,
+            "latitude": 51.923369,
+            "european_electoral_region": "Wales",
+            "primary_care_trust": "Hywel Dda University Health Board",
+            "region": null,
+            "lsoa": "Carmarthenshire 004D",
+            "msoa": "Carmarthenshire 004",
+            "incode": "7BR",
+            "outcode": "SA19",
+            "parliamentary_constituency": "Carmarthen East and Dinefwr",
+            "admin_district": "Carmarthenshire",
+            "parish": "Manordeilo and Salem",
+            "admin_county": null,
+            "date_of_introduction": "198001",
+            "admin_ward": "Manordeilo and Salem",
+            "ced": null,
+            "ccg": "Hywel Dda University",
+            "nuts": "South West Wales",
+            "pfa": "Dyfed-Powys",
+            "codes": {
+                "admin_district": "W06000010",
+                "admin_county": "W99999999",
+                "admin_ward": "W05001216",
+                "parish": "W04000546",
+                "parliamentary_constituency": "W07000067",
+                "ccg": "W11000025",
+                "ccg_id": "7A2",
+                "ced": "W99999999",
+                "nuts": "TLL14",
+                "lsoa": "W01000709",
+                "msoa": "W02000145",
+                "lau2": "W06000010",
+                "pfa": "W15000004"
+            },
+            "distance": 0
+          }
+        ]
+      })
+    })
+
+    it('should return 200 null for non-matching lon/lat', async () => {
+      // given
+      const longitude = 0
+      const latitude = 0
+
+      // when
+      const response = await postcodesApi.reverseGeocodingLegacy({ longitude, latitude })
+
+      // then
+      expect(response).toEqual({
+        status: 200,
+        result: null,
+      })
+    })
   })
 })
