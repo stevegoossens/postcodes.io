@@ -31,11 +31,11 @@ export namespace Api {
 	 */
 	export namespace BulkPostcodeLookupOrBulkReverseGeocodingRequest {
 		export interface ObjectValue {
-			postcodes?: string[];
+			postcodes: string[];
 		}
 	
 		export interface ObjectValue2 {
-			geolocations?: Api.Geolocation[];
+			geolocations: Api.Geolocation[];
 		}
 	
 	}

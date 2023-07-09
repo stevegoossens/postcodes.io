@@ -2202,12 +2202,16 @@ paths:
           application/json:
             schema:
               oneOf:
-                - properties:
+                - required:
+                    - postcodes
+                  properties:
                     postcodes:
                       type: array
                       items:
                         $ref: '#/components/schemas/postcode'
-                - properties:
+                - required:
+                    - geolocations
+                  properties:
                     geolocations:
                       type: array
                       items:

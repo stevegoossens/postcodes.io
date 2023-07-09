@@ -762,6 +762,27 @@ describe('PostcodesApi', () => {
         ]
       })
     })
+
+    it('should return 200 null for invalid postcode', async () => {
+      // given
+      const request = {
+        postcodes: ['Plop']
+      }
+
+      // when
+      const response = await postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding({}, request)
+
+      // then
+      expect(response).toEqual({
+        status: 200,
+        result: [
+          {
+            query: 'Plop',
+            result: null,
+          },
+        ],
+      })
+    })
   })
 
   describe('postcodeLookup', () => {
