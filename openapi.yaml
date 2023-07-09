@@ -1,4 +1,4 @@
-openapi: '3.0.5'
+openapi: '3.0.3'
 info:
   title: Postcodes.io
   version: '1.0.0'
@@ -127,14 +127,12 @@ components:
               $ref: '#/components/schemas/admin_district'
             admin_ward:
               $ref: '#/components/schemas/admin_ward'
-            ced:
-              $ref: '#/components/schemas/ced'
             ccg:
               $ref: '#/components/schemas/ccg'
-            ccg_code:
-              $ref: '#/components/schemas/ccg_code'
             ccg_id:
               $ref: '#/components/schemas/ccg_code'
+            ced:
+              $ref: '#/components/schemas/ced'
             lau2:
               type: string
               nullable: true
@@ -634,26 +632,28 @@ paths:
       parameters:
         - in: query
           required: true
-          name: lat
-          schema:
-            $ref: '#/components/schemas/latitude'
-        - in: query
-          required: true
           name: lon
           schema:
             $ref: '#/components/schemas/longitude'
         - in: query
+          required: true
+          name: lat
+          schema:
+            $ref: '#/components/schemas/latitude'
+        - in: query
           name: limit
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of outcodes matches to return. Defaults to 10. Needs to be less than 100.
         - in: query
           name: radius
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
       responses:
@@ -667,6 +667,7 @@ paths:
                   - properties:
                       result:
                         type: array
+                        nullable: true
                         items:
                           $ref: '#/components/schemas/OutcodeData'
               examples:
@@ -978,6 +979,11 @@ paths:
                             }
                         ]
                     }
+                nonMatchingLonLat:
+                  summary: Non-matching longitude/latitude
+                  value:
+                    status: 200
+                    result: null
         '400':
           description: Bad Request
           content:
@@ -1075,14 +1081,16 @@ paths:
           name: limit
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of outcodes matches to return. Defaults to 10. Needs to be less than 100.
         - in: query
           name: radius
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
       responses:
@@ -1216,7 +1224,8 @@ paths:
           name: limit
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of places matches to return. Defaults to 10. Needs to be less than 100.
       responses:
@@ -1535,7 +1544,7 @@ paths:
                     error: Place not found
   /postcodes:
     get:
-      operationId: reverseGeodingOrPostcodeQuery
+      operationId: reverseGeocodingOrPostcodeQuery
       summary: Reverse Geocoding / Postcode Query
       description: |
         ### Reverse Geocoding
@@ -1584,7 +1593,8 @@ paths:
           name: limit
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
         - in: query
@@ -1603,14 +1613,15 @@ paths:
           name: radius
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
         - in: query
           name: widesearch
           required: false
           schema:
-            type: string
+            type: boolean
           description: |
             Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored. 
       responses:
@@ -1623,10 +1634,10 @@ paths:
                   - $ref: '#/components/schemas/ServerResponseBody'
                   - properties:
                       result:
-                        allOf:
-                          - type: array
-                            nullable: true
-                          - $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
+                        type: array
+                        nullable: true
+                        items:
+                          $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
               examples:
                 lonLat:
                   summary: Longitude and latitude (limit=2)
@@ -2183,44 +2194,12 @@ paths:
 
           This method requires a JSON object containing an array of postcodes to be posted
 
-          application/json content-type doesn't appear to work, so JSON like:
-
-          ```json
-          {
-            "postcodes": ["OX49 5NU", "M32 0JG", "NE30 1DP"]
-          }
-          ````
-
-          has to be form encoded like:
-
-          postcodes%5B%5D=OX49+5NU&postcodes%5B%5D=M32+0JG&postcodes%5B%5D=NE30+1DP
-
           ### Bulk Reverse Geocoding
 
           Bulk translates geolocations into Postcodes. Accepts up to 100 geolocations.
-
-          application/json content-type doesn't appear to work, so JSON like:
-          
-          ```json
-          {
-            "geolocations": [{
-              "longitude":  0.629834723775309,
-              "latitude": 51.7923246977375
-            }, {
-              "longitude": -2.49690382054704,
-              "latitude": 53.5351312861402,
-              "radius": 1000,
-              "limit": 5
-            }]
-          }
-          ```
-          
-          has to be form encoded like:
-
-          geolocations%5B0%5D%5Blongitude%5D=0.629834723775309&geolocations%5B0%5D%5Blatitude%5D=51.7923246977375&geolocations%5B1%5D%5Blongitude%5D=-2.49690382054704&geolocations%5B1%5D%5Blatitude%5D=53.5351312861402&geolocations%5B1%5D%5Bradius%5D=1000&geolocations%5B1%5D%5Blimit%5D=5
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               oneOf:
                 - properties:
@@ -2305,8 +2284,8 @@ paths:
                         "result": [
                             {
                                 "query": {
-                                    "longitude": "0.629834723775309",
-                                    "latitude": "51.7923246977375"
+                                    "longitude": 0.629834723775309,
+                                    "latitude": 51.7923246977375
                                 },
                                 "result": [
                                     {
@@ -3586,21 +3565,23 @@ paths:
           name: limit
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
         - in: query
           name: radius
           required: false
           schema:
-            type: string
+            type: integer
+            format: int32
           description: |
             Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
         - in: query
           name: widesearch
           required: false
           schema:
-            type: string
+            type: boolean
           description: |
             Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored. 
       responses:
@@ -3970,6 +3951,11 @@ paths:
                   value:
                     status: 404
                     error: Invalid postcode
+                nonScottishPostcode:
+                  summary: Non-Scottish postcode
+                  value:
+                    status: 404
+                    error: Postcode exists in ONSPD but not in SPD
   /terminated_postcodes/{postcode}:
     get:
       operationId: terminatedPostcodeLookup

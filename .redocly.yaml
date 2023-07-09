@@ -1,6 +1,6 @@
 apis:
   postcodes.io:
-    root: ./src/openapi.yaml
+    root: ./openapi.yaml
 extends:
   - recommended
 rules:
