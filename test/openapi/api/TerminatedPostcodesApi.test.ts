@@ -15,14 +15,18 @@ describe('TerminatedPostcodesApi', () => {
       // then
       expect(response).toEqual(
         {
-          "status": 200,
-          "result": {
-            "postcode": "E1W 1UU",
-            "year_terminated": 2015,
-            "month_terminated": 2,
-            "longitude": -0.073732,
-            "latitude": 51.508007
-          }
+          status: 200,
+          contentType: 'application/json',
+          body: {            
+            "status": 200,
+            "result": {
+              "postcode": "E1W 1UU",
+              "year_terminated": 2015,
+              "month_terminated": 2,
+              "longitude": -0.073732,
+              "latitude": 51.508007
+            }
+          },
         }
       )
     })
@@ -37,7 +41,11 @@ describe('TerminatedPostcodesApi', () => {
       // then
       expect(response).toEqual({
         status: 404,
-        error: 'Terminated postcode not found',
+        contentType: 'application/json',
+        body: {          
+          status: 404,
+          error: 'Terminated postcode not found',
+        },
       })
     })
 
@@ -51,7 +59,11 @@ describe('TerminatedPostcodesApi', () => {
       // then
       expect(response).toEqual({
         status: 404,
-        error: 'Invalid postcode',
+        contentType: 'application/json',
+        body: {          
+          status: 404,
+          error: 'Invalid postcode',
+        },
       })
     })
   })

@@ -285,13 +285,21 @@ export const OutcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.NearestOutcode200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 404) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -317,13 +325,21 @@ export const OutcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.OutcodeReverseGeocoding200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 400) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 400,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -346,13 +362,21 @@ export const OutcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.OutwardCodeLookup200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 404) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -572,13 +596,21 @@ export const PlacesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.PlaceLookup200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 404) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -603,13 +635,21 @@ export const PlacesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.PlaceQuery200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 400) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 400,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -1258,13 +1298,21 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.BulkPostcodeLookupOrBulkReverseGeocoding200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 400) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 400,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -1289,13 +1337,21 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.NearestPostcode200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 404) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -1319,7 +1375,11 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.PostcodeAutocomplete200Response,
+						}
 					}
 					throw response;
 				}
@@ -1344,13 +1404,21 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.PostcodeLookup200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 404) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -1373,7 +1441,11 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.PostcodeValidation200Response,
+						}
 					}
 					throw response;
 				}
@@ -1401,13 +1473,21 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.ReverseGeocodingLegacy200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 400) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 400,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -1454,13 +1534,21 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.ReverseGeocodingOrPostcodeQuery200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 400) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 400,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -1723,7 +1811,11 @@ export const RandomApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.RandomPlace200Response,
+						}
 					}
 					throw response;
 				}
@@ -1746,7 +1838,11 @@ export const RandomApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.RandomPostcode200Response,
+						}
 					}
 					throw response;
 				}
@@ -1881,13 +1977,21 @@ export const ScotlandApiFp = function(configuration?: Configuration) {
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.ScottishPostcodeLookup200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 404) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}
@@ -2011,13 +2115,21 @@ export const TerminatedPostcodesApiFp = function(configuration?: Configuration) 
 				
 				if (response.status === 200) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.TerminatedPostcodeLookup200Response,
+						}
 					}
 					throw response;
 				}
 				if (response.status === 404) {
 					if (mimeType === 'application/json') {
-						return response.json() as any;
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
 					}
 					throw response;
 				}

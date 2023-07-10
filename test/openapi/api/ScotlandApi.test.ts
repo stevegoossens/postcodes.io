@@ -15,14 +15,18 @@ describe('ScotlandApi', () => {
       // then
       expect(response).toEqual(
         {
-          "status": 200,
-          "result": {
-            "postcode": "EH22 3NX",
-            "scottish_parliamentary_constituency": "Midlothian North and Musselburgh",
-            "codes": {
-              "scottish_parliamentary_constituency": "S16000130"
+          status: 200,
+          contentType: 'application/json',
+          body: {            
+            "status": 200,
+            "result": {
+              "postcode": "EH22 3NX",
+              "scottish_parliamentary_constituency": "Midlothian North and Musselburgh",
+              "codes": {
+                "scottish_parliamentary_constituency": "S16000130"
+              }
             }
-          }
+          },
         }
       )
     })
@@ -37,7 +41,11 @@ describe('ScotlandApi', () => {
       // then
       expect(response).toEqual({
         status: 404,
-        error: 'Postcode exists in ONSPD but not in SPD',
+        contentType: 'application/json',
+        body: {          
+          status: 404,
+          error: 'Postcode exists in ONSPD but not in SPD',
+        },
       })
     })
 
@@ -51,7 +59,11 @@ describe('ScotlandApi', () => {
       // then
       expect(response).toEqual({
         status: 404,
-        error: 'Invalid postcode',
+        contentType: 'application/json',
+        body: {          
+          status: 404,
+          error: 'Invalid postcode',
+        },
       })
     })
   })
