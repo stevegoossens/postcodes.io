@@ -5,7 +5,7 @@ describe('PlacesApi', () => {
   const placesApi = new PlacesApi()
 
   describe('placeQuery', () => {
-    it('should return PlacesData for matching query', async () => {
+    it('should return list of PlacesData for matching query', async () => {
       // given
       const query = 'adl'
 

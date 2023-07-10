@@ -2,7 +2,6 @@ import { describe, expect, it } from '@jest/globals'
 import '../../helpers/custom-expect-matchers/toBePostcodeData';
 
 import { PostcodesApi } from '../../../src/openapi'
-import exp from 'constants';
 
 describe('PostcodesApi', () => {
   const postcodesApi = new PostcodesApi()
