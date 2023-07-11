@@ -5,6 +5,9 @@ import nock from 'nock';
 
 import PostcodesIO from '../src/index';
 import { Api } from '../src/openapi';
+import { ApiError } from '../src/errors';
+import { fail } from 'assert';
+import { FetchError } from 'node-fetch';
 
 describe('PostcodesIO', () => {
   let basePath: string
@@ -145,7 +148,7 @@ describe('PostcodesIO', () => {
   })
 
   describe('nearestOutcode', () => {
-    it('should return list of nearest OutcodeData for valid outcode and limit=2', async () => {
+    it('should resolve list of nearest OutcodeData for valid outcode and limit=2', async () => {
       // given
       const outcode = 'W1A'
       const scope = nock(basePath)
@@ -267,7 +270,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for invalid outcode',async () => {
+    it('should reject ApiError for invalid outcode',async () => {
       // given
       const outcode = 'PLOP'
       const scope = nock(basePath)
@@ -281,11 +284,13 @@ describe('PostcodesIO', () => {
       const outcodeDataList = postcodesIO.nearestOutcode(outcode)
 
       // then
-      await expect(outcodeDataList).resolves.toBeUndefined()
+      await expect(outcodeDataList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Outcode not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string outcode',async () => {
+    it('should reject ApiError for empty string outcode',async () => {
       // given
       const outcode = ''
       const scope = nock(basePath)
@@ -299,13 +304,15 @@ describe('PostcodesIO', () => {
       const outcodeDataList = postcodesIO.nearestOutcode(outcode)
 
       // then
-      await expect(outcodeDataList).resolves.toBeUndefined()
+      await expect(outcodeDataList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Resource not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('outcodeReverseGeocoding', () => {
-    it('should return list of nearest OutcodeData for matching lon/lat', async () => {
+    it('should resolve list of nearest OutcodeData for matching lon/lat', async () => {
       // given
       const lon = -2.302836
       const lat = 53.455654
@@ -438,7 +445,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for non-matching lon/lat',async () => {
+    it('should reject ApiError for non-matching lon/lat',async () => {
       // given
       const lon = 0
       const lat = 0
@@ -453,13 +460,15 @@ describe('PostcodesIO', () => {
       const outcodeDataList = postcodesIO.outcodeReverseGeocoding(lon, lat)
 
       // then
-      await expect(outcodeDataList).resolves.toBeUndefined()
+      await expect(outcodeDataList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 200, Body: {"status":200,"result":null}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('randomPostcode', () => {
-    it('should return PostcodeData', async () => {
+    it('should resolve PostcodeData', async () => {
       // given
       const scope = nock(basePath)
         .get('/random/postcodes')
@@ -517,7 +526,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return PostcodeData for valid outcode', async () => {
+    it('should resolve PostcodeData for valid outcode', async () => {
       // given
       const outcode = 'NR7'
       const scope = nock(basePath)
@@ -576,7 +585,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for invalid outcode', async () => {
+    it('should reject ApiError for invalid outcode', async () => {
       // given
       const outcode = 'Plop'
       const scope = nock(basePath)
@@ -590,11 +599,13 @@ describe('PostcodesIO', () => {
       const postcodeData = postcodesIO.randomPostcode(outcode)
 
       // then
-      await expect(postcodeData).resolves.toBeUndefined()
+      await expect(postcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 200, Body: {"status":200,"result":null}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return PostcodeData for empty string outcode', async () => {
+    it('should resolve PostcodeData for empty string outcode', async () => {
       // given
       const outcode = ''
       const scope = nock(basePath)
@@ -655,7 +666,7 @@ describe('PostcodesIO', () => {
   })
 
   describe('randomPlace', () => {
-    it('should return PlacesData', async () => {
+    it('should resolve PlacesData', async () => {
       // given
       const scope = nock(basePath)
         .get('/random/places')
@@ -696,7 +707,7 @@ describe('PostcodesIO', () => {
   })
 
   describe('scottishPostcodeLookup', () => {
-    it('should return ScottishPostcodeData for Scottish postcode', async () => {
+    it('should resolve ScottishPostcodeData for Scottish postcode', async () => {
       // given
       const postcode = 'EH22 3NX'
       const scope = nock(basePath)
@@ -728,7 +739,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for non-Scottish postcode', async () => {
+    it('should reject ApiError for non-Scottish postcode', async () => {
       // given
       const postcode = 'W1A 1AA'
       const scope = nock(basePath)
@@ -742,11 +753,13 @@ describe('PostcodesIO', () => {
       const scottishPostcodeData = postcodesIO.scottishPostcodeLookup(postcode)
 
       // then
-      await expect(scottishPostcodeData).resolves.toBeUndefined()
+      await expect(scottishPostcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Postcode exists in ONSPD but not in SPD"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for invalid postcode', async () => {
+    it('should reject ApiError for invalid postcode', async () => {
       // given
       const postcode = 'Plop'
       const scope = nock(basePath)
@@ -760,11 +773,13 @@ describe('PostcodesIO', () => {
       const scottishPostcodeData = postcodesIO.scottishPostcodeLookup(postcode)
 
       // then
-      await expect(scottishPostcodeData).resolves.toBeUndefined()
+      await expect(scottishPostcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Invalid postcode"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string postcode', async () => {
+    it('should reject ApiError for empty string postcode', async () => {
       // given
       const postcode = ''
       const scope = nock(basePath)
@@ -778,13 +793,15 @@ describe('PostcodesIO', () => {
       const scottishPostcodeData = postcodesIO.scottishPostcodeLookup(postcode)
 
       // then
-      await expect(scottishPostcodeData).resolves.toBeUndefined()
+      await expect(scottishPostcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Resource not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('terminatedPostcodeLookup', () => {
-    it('should return TerminatedPostcodeData for terminated postcode', async () => {
+    it('should resolve TerminatedPostcodeData for terminated postcode', async () => {
       // given
       const postcode = 'E1W 1UU'
       const scope = nock(basePath)
@@ -816,7 +833,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for live postcode', async () => {
+    it('should reject ApiError for live postcode', async () => {
       // given
       const postcode = 'W1A 1AA'
       const scope = nock(basePath)
@@ -830,11 +847,13 @@ describe('PostcodesIO', () => {
       const terminatedPostcodeData = postcodesIO.terminatedPostcodeLookup(postcode)
 
       // then
-      await expect(terminatedPostcodeData).resolves.toBeUndefined()
+      await expect(terminatedPostcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Terminated postcode not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for invalid postcode', async () => {
+    it('should reject ApiError for invalid postcode', async () => {
       // given
       const postcode = 'Plop'
       const scope = nock(basePath)
@@ -848,11 +867,13 @@ describe('PostcodesIO', () => {
       const terminatedPostcodeData = postcodesIO.terminatedPostcodeLookup(postcode)
 
       // then
-      await expect(terminatedPostcodeData).resolves.toBeUndefined()
+      await expect(terminatedPostcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Invalid postcode"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string postcode', async () => {
+    it('should reject ApiError for empty string postcode', async () => {
       // given
       const postcode = ''
       const scope = nock(basePath)
@@ -866,13 +887,15 @@ describe('PostcodesIO', () => {
       const terminatedPostcodeData = postcodesIO.terminatedPostcodeLookup(postcode)
 
       // then
-      await expect(terminatedPostcodeData).resolves.toBeUndefined()
+      await expect(terminatedPostcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Resource not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('placeQuery', () => {
-    it('should return list of PlacesData for matching query', async () => {
+    it('should resolve list of PlacesData for matching query', async () => {
       // given
       const query = 'adl'
       const scope = nock(basePath)
@@ -1124,7 +1147,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return empty array for non-matching query', async () => {
+    it('should resolve empty array for non-matching query', async () => {
       // given
       const query = 'zzzzzz'
       const scope = nock(basePath)
@@ -1142,7 +1165,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string query', async () => {
+    it('should reject ApiError for empty string query', async () => {
       // given
       const query = ''
         const scope = nock(basePath)
@@ -1156,13 +1179,15 @@ describe('PostcodesIO', () => {
       const placesDataList = postcodesIO.placeQuery(query)
 
       // then
-      await expect(placesDataList).resolves.toBeUndefined()
+      await expect(placesDataList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 400, Body: {"status":400,"error":"No valid query submitted. Remember to include every parameter"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('placeLookup', () => {
-    it('should return PlacesData for matching code', async () => {
+    it('should resolve PlacesData for matching code', async () => {
       // given
       const code = 'osgb4000000074564391'
       const scope = nock(basePath)
@@ -1226,7 +1251,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for non-matching code', async () => {
+    it('should reject ApiError for non-matching code', async () => {
       // given
       const code = 'Plop'
       const scope = nock(basePath)
@@ -1240,11 +1265,13 @@ describe('PostcodesIO', () => {
       const placesData = postcodesIO.placeLookup(code)
 
       // then
-      await expect(placesData).resolves.toBeUndefined()
+      await expect(placesData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Place not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string code', async () => {
+    it('should reject ApiError for empty string code', async () => {
       // given
       const code = ''
       const scope = nock(basePath)
@@ -1258,13 +1285,15 @@ describe('PostcodesIO', () => {
       const placesData = postcodesIO.placeLookup(code)
 
       // then
-      await expect(placesData).resolves.toBeUndefined()
+      await expect(placesData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Place not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('reverseGeocoding', () => {
-    it('should return list of PostcodeData for matching lon/lat', async () => {
+    it('should resolve list of PostcodeData for matching lon/lat', async () => {
       // given
       const lon = -1.492787
       const lat = 54.961017
@@ -1457,7 +1486,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for non-matching lon/lat', async () => {
+    it('should reject ApiError for non-matching lon/lat', async () => {
       // given
       const lon = 0
       const lat = 0
@@ -1472,13 +1501,15 @@ describe('PostcodesIO', () => {
       const postcodeDataList = postcodesIO.reverseGeocoding(lon, lat, { limit: 2 })
 
       // then
-      await expect(postcodeDataList).resolves.toBeUndefined()
+      await expect(postcodeDataList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 200, Body: {"status":200,"result":null}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('postcodeQuery', () => {
-    it('should return list of PostcodeData for matching query', async () => {
+    it('should resolve list of PostcodeData for matching query', async () => {
       // given
       const query = 'KT3'
       const scope = nock(basePath)
@@ -1666,7 +1697,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for non-matching query', async () => {
+    it('should reject ApiError for non-matching query', async () => {
       // given
       const query = 'Plop'
       const scope = nock(basePath)
@@ -1680,11 +1711,13 @@ describe('PostcodesIO', () => {
       const postcodeDataList = postcodesIO.postcodeQuery(query)
 
       // then
-      await expect(postcodeDataList).resolves.toBeUndefined()
+      await expect(postcodeDataList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 200, Body: {"status":200,"result":null}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string query', async () => {
+    it('should reject ApiError for empty string query', async () => {
       // given
       const query = ''
       const scope = nock(basePath)
@@ -1698,13 +1731,15 @@ describe('PostcodesIO', () => {
       const postcodeDataList = postcodesIO.postcodeQuery(query)
 
       // then
-      await expect(postcodeDataList).resolves.toBeUndefined()
+      await expect(postcodeDataList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 400, Body: {"status":400,"error":"No postcode query submitted. Remember to include query parameter"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('bulkPostcodeLookup', () => {
-    it('should return list of PostcodeData for list of postcodes', async () => {
+    it('should resolve list of PostcodeData for list of postcodes', async () => {
       // given
       const postcodes = ['BD6 3PS', 'NE32 5YQ']
       const scope = nock(basePath)
@@ -1904,7 +1939,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return empty list for empty list of postcodes', async () => {
+    it('should resolve empty list for empty list of postcodes', async () => {
       // given
       const postcodes: string[] = []
       const scope = nock(basePath)
@@ -1922,7 +1957,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return null for invalid postcode', async () => {
+    it('should resolve null for invalid postcode', async () => {
       // given
       const postcodes = ['Plop']
       const scope = nock(basePath)
@@ -1950,7 +1985,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return null for empty string postcode', async () => {
+    it('should resolve null for empty string postcode', async () => {
       // given
       const postcodes = ['']
       const scope = nock(basePath)
@@ -1980,7 +2015,7 @@ describe('PostcodesIO', () => {
   })
 
   describe('bulkReverseGeocoding', () => {
-    it('should return list of PostcodeData for list of geolocations', async () => {
+    it('should resolve list of PostcodeData for list of geolocations', async () => {
       // given
       const geolocations = [
         {
@@ -2821,7 +2856,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return empty list for empty list of geolocations', async () => {
+    it('should resolve empty list for empty list of geolocations', async () => {
       // given
       const geolocations: Api.Geolocation[] = []
       const scope = nock(basePath)
@@ -2841,7 +2876,7 @@ describe('PostcodesIO', () => {
   })
 
   describe('postcodeLookup', () => {
-    it('should return PostcodeData for valid postcode', async () => {
+    it('should resolve PostcodeData for valid postcode', async () => {
       // given
       const postcode = 'AB15 6DH'
       const scope = nock(basePath)
@@ -2941,7 +2976,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for invalid postcode', async () => {
+    it('should reject ApiError for invalid postcode', async () => {
       // given
       const postcode = 'Plop'
       const scope = nock(basePath)
@@ -2955,11 +2990,13 @@ describe('PostcodesIO', () => {
       const postcodeData = postcodesIO.postcodeLookup(postcode)
 
       // then
-      await expect(postcodeData).resolves.toBeUndefined()
+      await expect(postcodeData).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Invalid postcode"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string postcode', async () => {
+    it('should reject ApiError for empty string postcode', async () => {
       // given
       const postcode = ''
       const scope = nock(basePath)
@@ -2973,13 +3010,22 @@ describe('PostcodesIO', () => {
       const postcodeData = postcodesIO.postcodeLookup(postcode)
 
       // then
-      await expect(postcodeData).resolves.toBeUndefined()
+      try {
+        const resolved = await postcodeData
+        fail('promise should have rejected')
+      } catch (error) {
+        expect(error).toBeInstanceOf(ApiError)
+        expect(error).toHaveProperty('message', 'Exception thrown during API call')
+        expect(error).toHaveProperty('cause', expect.objectContaining({
+          status: 400,
+        }))
+      }
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('postcodeAutocomplete', () => {
-    it('should return list of matching postcodes', async () => {
+    it('should resolve list of matching postcodes', async () => {
       // given
       const postcode = 'TA11 7Y'
       const scope = nock(basePath)
@@ -3001,7 +3047,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for invalid postcode', async () => {
+    it('should reject ApiError for invalid postcode', async () => {
       // given
       const postcode = 'Plop'
       const scope = nock(basePath)
@@ -3015,11 +3061,13 @@ describe('PostcodesIO', () => {
       const postcodes = postcodesIO.postcodeAutocomplete(postcode)
 
       // then
-      await expect(postcodes).resolves.toBeUndefined()
+      await expect(postcodes).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 200, Body: {"status":200,"result":null}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string postcode', async () => {
+    it('should reject ApiError for empty string postcode', async () => {
       // given
       const postcode = ''
       const scope = nock(basePath)
@@ -3033,13 +3081,22 @@ describe('PostcodesIO', () => {
       const postcodeData = postcodesIO.postcodeAutocomplete(postcode)
 
       // then
-      await expect(postcodeData).resolves.toBeUndefined()
+      try {
+        const resolved = await postcodeData
+        fail('promise should have rejected')
+      } catch (error) {
+        expect(error).toBeInstanceOf(ApiError)
+        expect(error).toHaveProperty('message', 'Exception thrown during API call')
+        expect(error).toHaveProperty('cause', expect.objectContaining({
+          status: 404,
+        }))
+      }
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('nearestPostcode', () => {
-    it('should return list of PostcodeDataReverseGeocoding for valid postcode', async () => {
+    it('should resolve list of PostcodeDataReverseGeocoding for valid postcode', async () => {
       // given
       const postcode = 'BH21 7AT'
       const scope = nock(basePath)
@@ -3231,7 +3288,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for invalid postcode', async () => {
+    it('should reject ApiError for invalid postcode', async () => {
       // given
       const postcode = 'Plop'
       const scope = nock(basePath)
@@ -3245,11 +3302,13 @@ describe('PostcodesIO', () => {
       const postcodeDataReverseGeocodingList = postcodesIO.nearestPostcode(postcode)
 
       // then
-      await expect(postcodeDataReverseGeocodingList).resolves.toBeUndefined()
+      await expect(postcodeDataReverseGeocodingList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Postcode not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for empty string postcode', async () => {
+    it('should reject ApiError for empty string postcode', async () => {
       // given
       const postcode = ''
       const scope = nock(basePath)
@@ -3263,13 +3322,15 @@ describe('PostcodesIO', () => {
       const postcodeDataReverseGeocodingList = postcodesIO.nearestPostcode(postcode)
 
       // then
-      await expect(postcodeDataReverseGeocodingList).resolves.toBeUndefined()
+      await expect(postcodeDataReverseGeocodingList).rejects.toThrow(
+        new ApiError('Unsuccessful HTTP response: Status 404, Body: {"status":404,"result":"Resource not found"}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('postcodeValidation', () => {
-    it('should return true for valid postcode', async () => {
+    it('should resolve true for valid postcode', async () => {
       // given
       const postcode = 'CW6 0EF'
       const scope = nock(basePath)
@@ -3287,7 +3348,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return false for invalid postcode', async () => {
+    it('should resolve false for invalid postcode', async () => {
       // given
       const postcode = 'Plop'
       const scope = nock(basePath)
@@ -3305,7 +3366,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return false for empty string postcode', async () => {
+    it('should reject ApiError for empty string postcode', async () => {
       // given
       const postcode = ''
       const scope = nock(basePath)
@@ -3319,13 +3380,22 @@ describe('PostcodesIO', () => {
       const postcodeIsValid = postcodesIO.postcodeValidation(postcode)
 
       // then
-      await expect(postcodeIsValid).resolves.toBeFalsy()
+      try {
+        const resolved = await postcodeIsValid
+        fail('promise should have rejected')
+      } catch (error) {
+        expect(error).toBeInstanceOf(ApiError)
+        expect(error).toHaveProperty('message', 'Exception thrown during API call')
+        expect(error).toHaveProperty('cause', expect.objectContaining({
+          status: 404,
+        }))
+      }
       expect(scope.isDone()).toBeTruthy()
     })
   })
 
   describe('reverseGeocodingLegacy', () => {
-    it('should return list of PostcodeData for matching lon/lat', async () => {
+    it('should resolve list of PostcodeData for matching lon/lat', async () => {
       // given
       const longitude = -3.924229
       const latitude = 51.923369
@@ -3432,7 +3502,7 @@ describe('PostcodesIO', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
-    it('should return undefined for non-matching lon/lat', async () => {
+    it('should reject ApiError for non-matching lon/lat', async () => {
       // given
       const longitude = 0
       const latitude = 0
@@ -3447,7 +3517,9 @@ describe('PostcodesIO', () => {
       const postcodeDataList = postcodesIO.reverseGeocodingLegacy(longitude, latitude)
 
       // then
-      await expect(postcodeDataList).resolves.toBeUndefined()
+      await expect(postcodeDataList).rejects.toThrowError(
+        new ApiError('Unsuccessful HTTP response: Status 200, Body: {"status":200,"result":null}')
+      )
       expect(scope.isDone()).toBeTruthy()
     })
   })
