@@ -4,7 +4,7 @@ import type { MatcherFunction } from 'expect';
 const toBePlacesData: MatcherFunction =
   function (received) {
     let pass = false
-    
+
     if (typeof received === 'object' && received !== null && received !== undefined) {
       pass = 'code' in received &&
           'country' in received &&

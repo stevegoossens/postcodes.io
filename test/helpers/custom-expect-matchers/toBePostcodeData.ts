@@ -6,7 +6,7 @@ import { Api } from '../../../src/openapi'
 const toBePostcodeData: MatcherFunction =
   function (received) {
     let pass = false
-    
+
     if (typeof received === 'object' && received !== null && received !== undefined) {
       pass = 'admin_county' in received &&
           'admin_county' in received &&

@@ -12,10 +12,10 @@ describe('PostcodesIO', () => {
     it('should return list of nearest OutcodeData for valid outcode and limit=2', async () => {
       // given
       const outcode = 'W1A'
-  
+
       // when
       const outcodeDataList = postcodesIO.nearestOutcode(outcode, { limit: 2 })
-  
+
       // then
       await expect(outcodeDataList).resolves.toEqual(
         [
@@ -174,7 +174,7 @@ describe('PostcodesIO', () => {
 
       // when
       const outcodeDataList = postcodesIO.outcodeReverseGeocoding(lon, lat)
-      
+
       // then
       await expect(outcodeDataList).resolves.toBeUndefined()
     })
