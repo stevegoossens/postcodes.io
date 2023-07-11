@@ -409,3 +409,5 @@ export class PostcodesIO {
     }
   }
 }
+
+export default PostcodesIO

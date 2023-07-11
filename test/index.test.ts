@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import './helpers/custom-expect-matchers/toBePlacesData';
 import './helpers/custom-expect-matchers/toBePostcodeData';
 
-import { PostcodesIO } from '../src/index'
+import PostcodesIO from '../src/index'
 import { Api } from '../src/openapi';
 
 describe('PostcodesIO', () => {
