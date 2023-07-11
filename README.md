@@ -1,5 +1,8 @@
 # postcodes.io-client
-Client for the postcodes.io API (ideal-postcodes/postcodes.io)
+Client for the postcodes.io API
+
+:octocat: [ideal-postcodes/postcodes.io](https://github.com/ideal-postcodes/postcodes.io)
+REST API docs: https://api.postcodes.io/
 
 TODO: add all code examples and "snazz"
 
@@ -27,6 +30,14 @@ Download all NPM dependencies
 
 ```
 yarn
+```
+
+### View api.postcodes.io REST API docs
+
+You can view a complete documentation of the api.postcodes.io REST API, rendered with ReDoc, locally in a browser.
+
+```
+yarn docs
 ```
 
 ### Generate code from OpenAPI
