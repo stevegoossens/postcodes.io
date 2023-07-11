@@ -20,7 +20,7 @@ import { Buffer } from "buffer";
 
 export namespace Api {
 	export interface BulkPostcodeLookupOrBulkReverseGeocoding200Response extends Api.ServerResponseBody {
-		result?: Api.PostcodeDataReverseGeocoding[];
+		result?: (Api.BulkPostcodeLookupResultItem | Api.BulkReverseGeocodingResultItem)[];
 	}
 
 	export type BulkPostcodeLookupOrBulkReverseGeocodingRequest = Api.BulkPostcodeLookupOrBulkReverseGeocodingRequest.ObjectValue | Api.BulkPostcodeLookupOrBulkReverseGeocodingRequest.ObjectValue2;
@@ -36,6 +36,54 @@ export namespace Api {
 	
 		export interface ObjectValue2 {
 			geolocations: Api.Geolocation[];
+		}
+	
+	}
+
+	export interface BulkPostcodeLookupResultItem {
+		/**
+		 * @description <h3 id="postcode">Postcode</h3>
+		 *  <p>All current (‘live’) postcodes within the United Kingdom, the Channel Islands and the Isle of Man, received monthly from Royal Mail. 2, 3 or 4-character outward code, single space and 3-character inward code.</p>
+		 * @type {string}
+		 * @memberof BulkPostcodeLookupResultItem
+		 */
+		query: string;
+		result: Api.BulkPostcodeLookupResultItem.Result;
+	}
+	
+	/**
+	 * @export
+	 * @namespace BulkPostcodeLookupResultItem
+	 */
+	export namespace BulkPostcodeLookupResultItem {
+		export interface Result2 extends Api.BulkPostcodeLookupResultItem.IResult {
+		}
+	
+		export interface IResult {
+		}
+		
+		export interface Result extends Api.PostcodeData, Api.BulkPostcodeLookupResultItem.IResult {
+		}
+	
+	}
+
+	export interface BulkReverseGeocodingResultItem {
+		query: Api.Geolocation;
+		result: Api.BulkReverseGeocodingResultItem.Result[];
+	}
+	
+	/**
+	 * @export
+	 * @namespace BulkReverseGeocodingResultItem
+	 */
+	export namespace BulkReverseGeocodingResultItem {
+		export interface Result2 extends Api.BulkReverseGeocodingResultItem.IResult {
+		}
+	
+		export interface IResult {
+		}
+		
+		export interface Result extends Api.PostcodeDataReverseGeocoding, Api.BulkReverseGeocodingResultItem.IResult {
 		}
 	
 	}

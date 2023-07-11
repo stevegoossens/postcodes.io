@@ -15,7 +15,7 @@
     "docs": "redocly preview-docs postcodes.io",
     "pregenerate": "rimraf src/openapi",
     "generate": "openapi-generator-plus generate -c ./config.yml",
-    "openapi:lint": "redocly lint postcodes.io",
+    "lint:openapi": "redocly lint postcodes.io",
     "test": "jest"
   },
   "devDependencies": {

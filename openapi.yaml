@@ -386,6 +386,32 @@ components:
         ### Ward
 
         The current administrative/electoral area to which the postcode has been assigned.
+    BulkPostcodeLookupResultItem:
+      required:
+        - query
+        - result
+      properties:
+        query:
+          $ref: '#/components/schemas/postcode'
+        result:
+          allOf:
+            - type: object
+              nullable: true
+            - $ref: '#/components/schemas/PostcodeData'
+    BulkReverseGeocodingResultItem:
+      required:
+        - query
+        - result
+      properties:
+        query:
+          $ref: '#/components/schemas/Geolocation'
+        result:
+          type: array
+          items:
+            allOf:
+              - type: object
+                nullable: true
+              - $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
     ccg:
       type: string
       nullable: true
@@ -2278,7 +2304,9 @@ paths:
                       result:
                         type: array
                         items:
-                          $ref: '#/components/schemas/PostcodeDataReverseGeocoding'
+                          oneOf:
+                            - $ref: '#/components/schemas/BulkPostcodeLookupResultItem'
+                            - $ref: '#/components/schemas/BulkReverseGeocodingResultItem'
               examples:
                 geolocations:
                   summary: Response for geolocations
@@ -2468,10 +2496,10 @@ paths:
                             },
                             {
                                 "query": {
-                                    "longitude": "-2.49690382054704",
-                                    "latitude": "53.5351312861402",
-                                    "radius": "1000",
-                                    "limit": "5"
+                                    "longitude": -2.49690382054704,
+                                    "latitude": 53.5351312861402,
+                                    "radius": 1000,
+                                    "limit": 5
                                 },
                                 "result": [
                                     {
