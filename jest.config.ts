@@ -4,6 +4,7 @@ const config: JestConfigWithTsJest = {
   collectCoverage: true,
   collectCoverageFrom: [
     './src/**/*.ts',
+    '!./src/openapi/**/*',
     '!./test/**/*',
     '!./**/*.d.ts',
     '!./integration/**/*',
