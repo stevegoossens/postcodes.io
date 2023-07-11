@@ -14,10 +14,10 @@ describe('PostcodesIO', () => {
       const outcode = 'W1A'
   
       // when
-      const outcodeDataList = await postcodesIO.nearestOutcode(outcode, { limit: 2 })
+      const outcodeDataList = postcodesIO.nearestOutcode(outcode, { limit: 2 })
   
       // then
-      expect(outcodeDataList).toEqual(
+      await expect(outcodeDataList).resolves.toEqual(
         [
           {
             admin_county: [],
@@ -78,10 +78,21 @@ describe('PostcodesIO', () => {
       const outcode = 'PLOP'
 
       // when
-      const outcodeDataList = await postcodesIO.nearestOutcode(outcode)
+      const outcodeDataList = postcodesIO.nearestOutcode(outcode)
 
       // then
-      expect(outcodeDataList).toBeUndefined()
+      await expect(outcodeDataList).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string outcode',async () => {
+      // given
+      const outcode = ''
+
+      // when
+      const outcodeDataList = postcodesIO.nearestOutcode(outcode)
+
+      // then
+      await expect(outcodeDataList).resolves.toBeUndefined()
     })
   })
 
@@ -92,10 +103,10 @@ describe('PostcodesIO', () => {
       const lat = 53.455654
 
       // when
-      const outcodeDataList = await postcodesIO.outcodeReverseGeocoding(lon, lat, { limit: 2 })
+      const outcodeDataList = postcodesIO.outcodeReverseGeocoding(lon, lat, { limit: 2 })
 
       // then
-      expect(outcodeDataList).toEqual(
+      await expect(outcodeDataList).resolves.toEqual(
         [
           {
             admin_county: [],
@@ -162,10 +173,10 @@ describe('PostcodesIO', () => {
       const lat = 0
 
       // when
-      const outcodeDataList = await postcodesIO.outcodeReverseGeocoding(lon, lat)
+      const outcodeDataList = postcodesIO.outcodeReverseGeocoding(lon, lat)
       
       // then
-      expect(outcodeDataList).toBeUndefined()
+      await expect(outcodeDataList).resolves.toBeUndefined()
     })
   })
 
@@ -174,10 +185,10 @@ describe('PostcodesIO', () => {
       // given
 
       // when
-      const postcodeData = await postcodesIO.randomPostcode()
+      const postcodeData = postcodesIO.randomPostcode()
 
       // then
-      expect(postcodeData).toBePostcodeData()
+      await expect(postcodeData).resolves.toBePostcodeData()
     })
 
     it('should return PostcodeData for valid outcode', async () => {
@@ -185,10 +196,10 @@ describe('PostcodesIO', () => {
       const outcode = 'W1A'
 
       // when
-      const postcodeData = await postcodesIO.randomPostcode(outcode)
+      const postcodeData = postcodesIO.randomPostcode(outcode)
 
       // then
-      expect(postcodeData).toBePostcodeData()
+      await expect(postcodeData).resolves.toBePostcodeData()
     })
 
     it('should return undefined for invalid outcode', async () => {
@@ -196,10 +207,22 @@ describe('PostcodesIO', () => {
       const outcode = 'Plop'
 
       // when
-      const postcodeData = await postcodesIO.randomPostcode(outcode)
+      const postcodeData = postcodesIO.randomPostcode(outcode)
 
       // then
-      expect(postcodeData).toBeUndefined()
+      await expect(postcodeData).resolves.toBeUndefined()
+    })
+
+    it('should return PostcodeData for empty string outcode', async () => {
+      // given
+      const outcode = ''
+
+      // when
+      const postcodeData = postcodesIO.randomPostcode(outcode)
+
+      // then
+      await expect(postcodeData).resolves.toBePostcodeData()
+
     })
   })
 
@@ -208,10 +231,10 @@ describe('PostcodesIO', () => {
       // given
 
       // when
-      const placesData = await postcodesIO.randomPlace()
+      const placesData = postcodesIO.randomPlace()
 
       // then
-      expect(placesData).toBePlacesData()
+      await expect(placesData).resolves.toBePlacesData()
     })
   })
 
@@ -221,10 +244,10 @@ describe('PostcodesIO', () => {
       const postcode = 'EH22 3NX'
 
       // when
-      const scottishPostcodeData = await postcodesIO.scottishPostcodeLookup(postcode)
+      const scottishPostcodeData = postcodesIO.scottishPostcodeLookup(postcode)
 
       // then
-      expect(scottishPostcodeData).toEqual(
+      await expect(scottishPostcodeData).resolves.toEqual(
         {
           "postcode": "EH22 3NX",
           "scottish_parliamentary_constituency": "Midlothian North and Musselburgh",
@@ -240,10 +263,10 @@ describe('PostcodesIO', () => {
       const postcode = 'W1A 1AA'
 
       // when
-      const scottishPostcodeData = await postcodesIO.scottishPostcodeLookup(postcode)
+      const scottishPostcodeData = postcodesIO.scottishPostcodeLookup(postcode)
 
       // then
-      expect(scottishPostcodeData).toBeUndefined()
+      await expect(scottishPostcodeData).resolves.toBeUndefined()
     })
 
     it('should return undefined for invalid postcode', async () => {
@@ -251,10 +274,21 @@ describe('PostcodesIO', () => {
       const postcode = 'Plop'
 
       // when
-      const scottishPostcodeData = await postcodesIO.scottishPostcodeLookup(postcode)
+      const scottishPostcodeData = postcodesIO.scottishPostcodeLookup(postcode)
 
       // then
-      expect(scottishPostcodeData).toBeUndefined()
+      await expect(scottishPostcodeData).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string postcode', async () => {
+      // given
+      const postcode = ''
+
+      // when
+      const scottishPostcodeData = postcodesIO.scottishPostcodeLookup(postcode)
+
+      // then
+      await expect(scottishPostcodeData).resolves.toBeUndefined()
     })
   })
 
@@ -264,10 +298,10 @@ describe('PostcodesIO', () => {
       const postcode = 'E1W 1UU'
 
       // when
-      const terminatedPostcodeData = await postcodesIO.terminatedPostcodeLookup(postcode)
+      const terminatedPostcodeData = postcodesIO.terminatedPostcodeLookup(postcode)
 
       // then
-      expect(terminatedPostcodeData).toEqual(
+      await expect(terminatedPostcodeData).resolves.toEqual(
         {
           "postcode": "E1W 1UU",
           "year_terminated": 2015,
@@ -283,10 +317,10 @@ describe('PostcodesIO', () => {
       const postcode = 'W1A 1AA'
 
       // when
-      const terminatedPostcodeData = await postcodesIO.terminatedPostcodeLookup(postcode)
+      const terminatedPostcodeData = postcodesIO.terminatedPostcodeLookup(postcode)
 
       // then
-      expect(terminatedPostcodeData).toBeUndefined()
+      await expect(terminatedPostcodeData).resolves.toBeUndefined()
     })
 
     it('should return undefined for invalid postcode', async () => {
@@ -294,10 +328,21 @@ describe('PostcodesIO', () => {
       const postcode = 'Plop'
 
       // when
-      const terminatedPostcodeData = await postcodesIO.terminatedPostcodeLookup(postcode)
+      const terminatedPostcodeData = postcodesIO.terminatedPostcodeLookup(postcode)
 
       // then
-      expect(terminatedPostcodeData).toBeUndefined()
+      await expect(terminatedPostcodeData).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string postcode', async () => {
+      // given
+      const postcode = ''
+
+      // when
+      const terminatedPostcodeData = postcodesIO.terminatedPostcodeLookup(postcode)
+
+      // then
+      await expect(terminatedPostcodeData).resolves.toBeUndefined()
     })
   })
 
@@ -307,10 +352,10 @@ describe('PostcodesIO', () => {
       const query = 'adl'
 
       // when
-      const placesDataList = await postcodesIO.placeQuery(query)
+      const placesDataList = postcodesIO.placeQuery(query)
 
       // then
-      expect(placesDataList).toEqual(
+      await expect(placesDataList).resolves.toEqual(
         [
           {
               "code": "osgb4000000074553835",
@@ -436,10 +481,10 @@ describe('PostcodesIO', () => {
       const query = 'zzzzzz'
 
       // when
-      const placesDataList = await postcodesIO.placeQuery(query)
+      const placesDataList = postcodesIO.placeQuery(query)
 
       // then
-      expect(placesDataList).toEqual([])
+      await expect(placesDataList).resolves.toEqual([])
     })
 
     it('should return undefined for empty string query', async () => {
@@ -447,10 +492,10 @@ describe('PostcodesIO', () => {
       const query = ''
 
       // when
-      const placesDataList = await postcodesIO.placeQuery(query)
+      const placesDataList = postcodesIO.placeQuery(query)
 
       // then
-      expect(placesDataList).toBeUndefined()
+      await expect(placesDataList).resolves.toBeUndefined()
     })
   })
 
@@ -460,10 +505,10 @@ describe('PostcodesIO', () => {
       const code = 'osgb4000000074564391'
 
       // when
-      const placesData = await postcodesIO.placeLookup(code)
+      const placesData = postcodesIO.placeLookup(code)
 
       // then
-      expect(placesData).toEqual(
+      await expect(placesData).resolves.toEqual(
         {
           "code": "osgb4000000074564391",
           "name_1": "Kent",
@@ -495,10 +540,21 @@ describe('PostcodesIO', () => {
       const code = 'Plop'
 
       // when
-      const placesData = await postcodesIO.placeLookup(code)
+      const placesData = postcodesIO.placeLookup(code)
 
       // then
-      expect(placesData).toBeUndefined()
+      await expect(placesData).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string code', async () => {
+      // given
+      const code = ''
+
+      // when
+      const placesData = postcodesIO.placeLookup(code)
+
+      // then
+      await expect(placesData).resolves.toBeUndefined()
     })
   })
 
@@ -509,10 +565,10 @@ describe('PostcodesIO', () => {
       const lat = 54.961017
 
       // when
-      const postcodeDataList = await postcodesIO.reverseGeocoding(lon, lat, { limit: 2 })
+      const postcodeDataList = postcodesIO.reverseGeocoding(lon, lat, { limit: 2 })
 
       // then
-      expect(postcodeDataList).toEqual([
+      await expect(postcodeDataList).resolves.toEqual([
         {
           "postcode": "NE32 5YQ",
           "quality": 1,
@@ -601,6 +657,18 @@ describe('PostcodesIO', () => {
         }
       ])
     })
+
+    it('should return undefined for non-matching lon/lat', async () => {
+      // given
+      const lon = 0
+      const lat = 0
+
+      // when
+      const postcodeDataList = postcodesIO.reverseGeocoding(lon, lat, { limit: 2 })
+
+      // then
+      await expect(postcodeDataList).resolves.toBeUndefined()
+    })
   })
 
   describe('postcodeQuery', () => {
@@ -609,10 +677,10 @@ describe('PostcodesIO', () => {
       const query = 'KT3'
 
       // when
-      const postcodeDataList = await postcodesIO.postcodeQuery(query, { limit: 2 })
+      const postcodeDataList = postcodesIO.postcodeQuery(query, { limit: 2 })
 
       // then
-      expect(postcodeDataList).toEqual([
+      await expect(postcodeDataList).resolves.toEqual([
         {
           "postcode": "KT3 3AA",
           "quality": 1,
@@ -699,6 +767,28 @@ describe('PostcodesIO', () => {
         }
       ])
     })
+
+    it('should return undefined for non-matching query', async () => {
+      // given
+      const query = 'Plop'
+
+      // when
+      const postcodeDataList = postcodesIO.postcodeQuery(query, { limit: 2 })
+
+      // then
+      await expect(postcodeDataList).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string query', async () => {
+      // given
+      const query = ''
+
+      // when
+      const postcodeDataList = postcodesIO.postcodeQuery(query, { limit: 2 })
+
+      // then
+      await expect(postcodeDataList).resolves.toBeUndefined()
+    })
   })
 
   describe('bulkPostcodeLookup', () => {
@@ -707,10 +797,10 @@ describe('PostcodesIO', () => {
       const postcodes = ['BD6 3PS', 'NE32 5YQ']
 
       // when
-      const postcodeDataList = await postcodesIO.bulkPostcodeLookup(postcodes)
+      const postcodeDataList = postcodesIO.bulkPostcodeLookup(postcodes)
 
       // then
-      expect(postcodeDataList).toEqual([
+      await expect(postcodeDataList).resolves.toEqual([
         {
             "query": "BD6 3PS",
             "result": {
@@ -809,10 +899,10 @@ describe('PostcodesIO', () => {
       const postcodes: string[] = []
 
       // when
-      const postcodeDataList = await postcodesIO.bulkPostcodeLookup(postcodes)
+      const postcodeDataList = postcodesIO.bulkPostcodeLookup(postcodes)
 
       // then
-      expect(postcodeDataList).toEqual([])
+      await expect(postcodeDataList).resolves.toEqual([])
     })
 
     it('should return null for invalid postcode', async () => {
@@ -820,12 +910,28 @@ describe('PostcodesIO', () => {
       const postcodes = ['Plop']
 
       // when
-      const postcodeDataList = await postcodesIO.bulkPostcodeLookup(postcodes)
+      const postcodeDataList = postcodesIO.bulkPostcodeLookup(postcodes)
 
       // then
-      expect(postcodeDataList).toEqual([
+      await expect(postcodeDataList).resolves.toEqual([
         {
           query: 'Plop',
+          result: null,
+        },
+      ])
+    })
+
+    it('should return null for empty string postcode', async () => {
+      // given
+      const postcodes = ['']
+
+      // when
+      const postcodeDataList = postcodesIO.bulkPostcodeLookup(postcodes)
+
+      // then
+      await expect(postcodeDataList).resolves.toEqual([
+        {
+          query: '',
           result: null,
         },
       ])
@@ -849,10 +955,10 @@ describe('PostcodesIO', () => {
       ]
 
       // when
-      const postcodeDataList = await postcodesIO.bulkReverseGeocoding(geolocations)
+      const postcodeDataList = postcodesIO.bulkReverseGeocoding(geolocations)
 
       // then
-      expect(postcodeDataList).toEqual([
+      await expect(postcodeDataList).resolves.toEqual([
         {
             "query": {
                 "longitude": 0.629834723775309,
@@ -1266,10 +1372,10 @@ describe('PostcodesIO', () => {
       const geolocations: Api.Geolocation[] = []
 
       // when
-      const postcodeDataList = await postcodesIO.bulkReverseGeocoding(geolocations)
+      const postcodeDataList = postcodesIO.bulkReverseGeocoding(geolocations)
 
       // then
-      expect(postcodeDataList).toEqual([])
+      await expect(postcodeDataList).resolves.toEqual([])
     })
   })
 
@@ -1279,10 +1385,10 @@ describe('PostcodesIO', () => {
       const postcode = 'AB15 6DH'
 
       // when
-      const postcodeData = await postcodesIO.postcodeLookup(postcode)
+      const postcodeData = postcodesIO.postcodeLookup(postcode)
 
       // then
-      expect(postcodeData).toEqual({
+      await expect(postcodeData).resolves.toEqual({
         "postcode": "AB15 6DH",
         "quality": 1,
         "eastings": 391109,
@@ -1331,10 +1437,285 @@ describe('PostcodesIO', () => {
       const postcode = 'Plop'
 
       // when
-      const postcodeData = await postcodesIO.postcodeLookup(postcode)
+      const postcodeData = postcodesIO.postcodeLookup(postcode)
 
       // then
-      expect(postcodeData).toBeUndefined()
+      await expect(postcodeData).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string postcode', async () => {
+      // given
+      const postcode = ''
+
+      // when
+      const postcodeData = postcodesIO.postcodeLookup(postcode)
+
+      // then
+      await expect(postcodeData).resolves.toBeUndefined()
+    })
+  })
+
+  describe('postcodeAutocomplete', () => {
+    it('should return list of matching postcodes', async () => {
+      // given
+      const postcode = 'TA11 7Y'
+
+      // when
+      const postcodes = postcodesIO.postcodeAutocomplete(postcode)
+
+      // then
+      await expect(postcodes).resolves.toEqual([
+        'TA11 7YU',
+      ])
+    })
+
+    it('should return undefined for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop'
+
+      // when
+      const postcodes = postcodesIO.postcodeAutocomplete(postcode)
+
+      // then
+      await expect(postcodes).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string postcode', async () => {
+      // given
+      const postcode = ''
+
+      // when
+      const postcodeData = postcodesIO.postcodeAutocomplete(postcode)
+
+      // then
+      await expect(postcodeData).resolves.toBeUndefined()
+    })
+  })
+
+  describe('nearestPostcode', () => {
+    it('should return list of PostcodeDataReverseGeocoding for valid postcode', async () => {
+      // given
+      const postcode = 'BH21 7AT'
+
+      // when
+      const postcodeDataReverseGeocodingList = postcodesIO.nearestPostcode(postcode)
+
+      // then
+      await expect(postcodeDataReverseGeocodingList).resolves.toEqual([
+        {
+            "postcode": "BH21 7AT",
+            "quality": 1,
+            "eastings": 402917,
+            "northings": 101363,
+            "country": "England",
+            "nhs_ha": "South West",
+            "longitude": -1.959965,
+            "latitude": 50.811811,
+            "european_electoral_region": "South West",
+            "primary_care_trust": "Dorset",
+            "region": "South West",
+            "lsoa": "East Dorset 007B",
+            "msoa": "East Dorset 007",
+            "incode": "7AT",
+            "outcode": "BH21",
+            "parliamentary_constituency": "Mid Dorset and North Poole",
+            "admin_district": "Dorset",
+            "parish": "Colehill",
+            "admin_county": null,
+            "date_of_introduction": "198001",
+            "admin_ward": "Colehill & Wimborne Minster East",
+            "ced": null,
+            "ccg": "NHS Dorset",
+            "nuts": "Dorset",
+            "pfa": "Dorset",
+            "codes": {
+                "admin_district": "E06000059",
+                "admin_county": "E99999999",
+                "admin_ward": "E05012691",
+                "parish": "E04012462",
+                "parliamentary_constituency": "E14000815",
+                "ccg": "E38000045",
+                "ccg_id": "11J",
+                "ced": "E99999999",
+                "nuts": "TLK25",
+                "lsoa": "E01020379",
+                "msoa": "E02004249",
+                "lau2": "E06000059",
+                "pfa": "E23000039"
+            },
+            "distance": 0
+        },
+        {
+            "postcode": "BH21 7AX",
+            "quality": 1,
+            "eastings": 402951,
+            "northings": 101327,
+            "country": "England",
+            "nhs_ha": "South West",
+            "longitude": -1.959483,
+            "latitude": 50.811487,
+            "european_electoral_region": "South West",
+            "primary_care_trust": "Dorset",
+            "region": "South West",
+            "lsoa": "East Dorset 007B",
+            "msoa": "East Dorset 007",
+            "incode": "7AX",
+            "outcode": "BH21",
+            "parliamentary_constituency": "Mid Dorset and North Poole",
+            "admin_district": "Dorset",
+            "parish": "Colehill",
+            "admin_county": null,
+            "date_of_introduction": "198001",
+            "admin_ward": "Colehill & Wimborne Minster East",
+            "ced": null,
+            "ccg": "NHS Dorset",
+            "nuts": "Dorset",
+            "pfa": "Dorset",
+            "codes": {
+                "admin_district": "E06000059",
+                "admin_county": "E99999999",
+                "admin_ward": "E05012691",
+                "parish": "E04012462",
+                "parliamentary_constituency": "E14000815",
+                "ccg": "E38000045",
+                "ccg_id": "11J",
+                "ced": "E99999999",
+                "nuts": "TLK25",
+                "lsoa": "E01020379",
+                "msoa": "E02004249",
+                "lau2": "E06000059",
+                "pfa": "E23000039"
+            },
+            "distance": 49.52999179
+        }
+      ])
+    })
+
+    it('should return undefined for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop'
+
+      // when
+      const postcodeDataReverseGeocodingList = postcodesIO.nearestPostcode(postcode)
+
+      // then
+      await expect(postcodeDataReverseGeocodingList).resolves.toBeUndefined()
+    })
+
+    it('should return undefined for empty string postcode', async () => {
+      // given
+      const postcode = ''
+
+      // when
+      const postcodeDataReverseGeocodingList = postcodesIO.nearestPostcode(postcode)
+
+      // then
+      await expect(postcodeDataReverseGeocodingList).resolves.toBeUndefined()
+    })
+  })
+
+  describe('postcodeValidation', () => {
+    it('should return true for valid postcode', async () => {
+      // given
+      const postcode = 'CW6 0EF'
+
+      // when
+      const postcodeIsValid = postcodesIO.postcodeValidation(postcode)
+
+      // then
+      await expect(postcodeIsValid).resolves.toBeTruthy()
+    })
+
+    it('should return false for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop'
+
+      // when
+      const postcodeIsValid = postcodesIO.postcodeValidation(postcode)
+
+      // then
+      await expect(postcodeIsValid).resolves.toBeFalsy()
+    })
+
+    it('should return false for empty string postcode', async () => {
+      // given
+      const postcode = ''
+
+      // when
+      const postcodeIsValid = postcodesIO.postcodeValidation(postcode)
+
+      // then
+      await expect(postcodeIsValid).resolves.toBeFalsy()
+    })
+  })
+
+  describe('reverseGeocodingLegacy', () => {
+    it('should return list of PostcodeData for matching lon/lat', async () => {
+      // given
+      const longitude = -3.924229
+      const latitude = 51.923369
+
+      // when
+      const postcodeDataList = postcodesIO.reverseGeocodingLegacy(longitude, latitude)
+
+      // then
+      await expect(postcodeDataList).resolves.toEqual([
+        {
+          "postcode": "SA19 7BR",
+          "quality": 1,
+          "eastings": 267774,
+          "northings": 226733,
+          "country": "Wales",
+          "nhs_ha": "Hywel Dda University Health Board",
+          "longitude": -3.924229,
+          "latitude": 51.923369,
+          "european_electoral_region": "Wales",
+          "primary_care_trust": "Hywel Dda University Health Board",
+          "region": null,
+          "lsoa": "Carmarthenshire 004D",
+          "msoa": "Carmarthenshire 004",
+          "incode": "7BR",
+          "outcode": "SA19",
+          "parliamentary_constituency": "Carmarthen East and Dinefwr",
+          "admin_district": "Carmarthenshire",
+          "parish": "Manordeilo and Salem",
+          "admin_county": null,
+          "date_of_introduction": "198001",
+          "admin_ward": "Manordeilo and Salem",
+          "ced": null,
+          "ccg": "Hywel Dda University",
+          "nuts": "South West Wales",
+          "pfa": "Dyfed-Powys",
+          "codes": {
+              "admin_district": "W06000010",
+              "admin_county": "W99999999",
+              "admin_ward": "W05001216",
+              "parish": "W04000546",
+              "parliamentary_constituency": "W07000067",
+              "ccg": "W11000025",
+              "ccg_id": "7A2",
+              "ced": "W99999999",
+              "nuts": "TLL14",
+              "lsoa": "W01000709",
+              "msoa": "W02000145",
+              "lau2": "W06000010",
+              "pfa": "W15000004"
+          },
+          "distance": 0
+        }
+      ])
+    })
+
+    it('should return undefined for non-matching lon/lat', async () => {
+      // given
+      const longitude = 0
+      const latitude = 0
+
+      // when
+      const postcodeDataList = postcodesIO.reverseGeocodingLegacy(longitude, latitude)
+
+      // then
+      await expect(postcodeDataList).resolves.toBeUndefined()
     })
   })
 })
