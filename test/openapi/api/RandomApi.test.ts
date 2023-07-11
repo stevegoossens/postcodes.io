@@ -224,13 +224,104 @@ describe('RandomApi', () => {
       })
       expect(scope.isDone()).toBeTruthy()
     })
+
+    it('should return null for invalid outcode', async () => {
+      // given
+      const outcode = 'Ploppy'
+      const scope = nock(basePath)
+        .get(`/random/postcodes?outcode=${outcode}`)
+        .reply(200, {
+          status: 200,
+          result: null
+      })
+
+      // when
+      const response = randomApi.randomPostcode(outcode)
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: null,
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
+    it('should return PostcodeData for empty string outcode', async () => {
+      // given
+      const outcode = ''
+      const scope = nock(basePath)
+        .get(`/random/postcodes?outcode=${outcode}`)
+        .reply(200, {
+          status: 200,
+          result: {
+            "postcode": "NR7 0DT",
+            "quality": 1,
+            "eastings": 626103,
+            "northings": 309334,
+            "country": "England",
+            "nhs_ha": "East of England",
+            "longitude": 1.33995,
+            "latitude": 52.634622,
+            "european_electoral_region": "Eastern",
+            "primary_care_trust": "Norfolk",
+            "region": "East of England",
+            "lsoa": "Broadland 015D",
+            "msoa": "Broadland 015",
+            "incode": "0DT",
+            "outcode": "NR7",
+            "parliamentary_constituency": "Norwich North",
+            "admin_district": "Broadland",
+            "parish": "Thorpe St. Andrew",
+            "admin_county": "Norfolk",
+            "date_of_introduction": "198001",
+            "admin_ward": "Thorpe St. Andrew North West",
+            "ced": "Woodside",
+            "ccg": "NHS Norfolk and Waveney",
+            "nuts": "Norwich and East Norfolk",
+            "pfa": "Norfolk",
+            "codes": {
+                "admin_district": "E07000144",
+                "admin_county": "E10000020",
+                "admin_ward": "E05005781",
+                "parish": "E04006256",
+                "parliamentary_constituency": "E14000863",
+                "ccg": "E38000239",
+                "ccg_id": "26A",
+                "ced": "E58001035",
+                "nuts": "TLH15",
+                "lsoa": "E01026572",
+                "msoa": "E02005534",
+                "lau2": "E07000144",
+                "pfa": "E23000024"
+            }
+          }
+        })
+
+      // when
+      const response = randomApi.randomPostcode(outcode)
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: expect.toBePostcodeData(),
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
   })
 
   describe('randomPlace', () => {
     it('should return PlacesData', async () => {
       // given
       const scope = nock(basePath)
-      .get('/random/places')
+        .get('/random/places')
         .reply(200, {
           "status": 200,
           "result": {

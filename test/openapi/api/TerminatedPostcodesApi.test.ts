@@ -147,5 +147,30 @@ describe('TerminatedPostcodesApi', () => {
       })
       expect(scope.isDone()).toBeTruthy()
     })
+
+    it('should return 404 error for empty string postcode', async () => {
+      // given
+      const postcode = ''
+      const scope = nock(basePath)
+        .get('/terminated_postcodes/')
+        .reply(404, {
+          status: 404,
+          error: 'Resource not found',
+        })
+
+      // when
+      const response = terminatedPostcodesApi.terminatedPostcodeLookup(postcode)
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Resource not found',
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
   })
 })

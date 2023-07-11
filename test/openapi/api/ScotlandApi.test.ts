@@ -127,11 +127,11 @@ describe('ScotlandApi', () => {
       // given
       const postcode = 'Plop'
       const scope = nock(basePath)
-      .get(`/scotland/postcodes/${encodeURIComponent(postcode)}`)
-      .reply(404, {
-        status: 404,
-        error: 'Invalid postcode',
-      })
+        .get(`/scotland/postcodes/${encodeURIComponent(postcode)}`)
+        .reply(404, {
+          status: 404,
+          error: 'Invalid postcode',
+        })
 
       // when
       const response = scotlandApi.scottishPostcodeLookup(postcode)
@@ -143,6 +143,31 @@ describe('ScotlandApi', () => {
         body: {
           status: 404,
           error: 'Invalid postcode',
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
+    it('should return 404 error for invalid postcode', async () => {
+      // given
+      const postcode = ''
+      const scope = nock(basePath)
+        .get(`/scotland/postcodes/`)
+        .reply(404, {
+          status: 404,
+          error: 'Resource not found',
+        })
+
+      // when
+      const response = scotlandApi.scottishPostcodeLookup(postcode)
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Resource not found',
         },
       })
       expect(scope.isDone()).toBeTruthy()

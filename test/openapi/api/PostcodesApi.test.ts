@@ -421,6 +421,32 @@ describe('PostcodesApi', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
+    it('should return 200 null for non-matching lon/lat', async () => {
+      // given
+      const lon = 0
+      const lat = 0
+      const scope = nock(basePath)
+        .get(`/postcodes?lon=${lon}&lat=${lat}&limit=2`)
+        .reply(200, {
+          "status": 200,
+          "result": null
+        })
+
+      // when
+      const response = postcodesApi.reverseGeocodingOrPostcodeQuery({ lon, lat, limit: 2 })
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          "status": 200,
+          "result": null
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
     it('should return list of PostcodeData for matching query', async () => {
       // given
       const query = 'KT3'
@@ -616,6 +642,31 @@ describe('PostcodesApi', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
+    it('should return 200 null for non-matching query', async () => {
+      // given
+      const query = 'Plop'
+      const scope = nock(basePath)
+        .get(`/postcodes?query=${query}`)
+        .reply(200, {
+          status: 200,
+          result: null,
+        })
+
+      // when
+      const response = postcodesApi.reverseGeocodingOrPostcodeQuery({ query })
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: null,
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
     it('should return 400 error for missing params', async () => {
       // given
       const scope = nock(basePath)
@@ -624,8 +675,34 @@ describe('PostcodesApi', () => {
           status: 400,
           error: 'No postcode query submitted. Remember to include query parameter',
         })
+
       // when
       const response = postcodesApi.reverseGeocodingOrPostcodeQuery({})
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 400,
+        contentType: 'application/json',
+        body: {
+          status: 400,
+          error: 'No postcode query submitted. Remember to include query parameter',
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
+    it('should return 400 error for empty string query', async () => {
+      // given
+      const query = ''
+      const scope = nock(basePath)
+        .get('/postcodes?query=')
+        .reply(400, {
+          status: 400,
+          error: 'No postcode query submitted. Remember to include query parameter',
+        })
+
+      // when
+      const response = postcodesApi.reverseGeocodingOrPostcodeQuery({ query })
 
       // then
       await expect(response).resolves.toEqual({
@@ -1729,6 +1806,43 @@ describe('PostcodesApi', () => {
           result: [
             {
               query: 'Plop',
+              result: null,
+            },
+          ],
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
+    it('should return 200 null for empty string postcode', async () => {
+      // given
+      const request = {
+        postcodes: ['']
+      }
+      const scope = nock(basePath)
+        .post('/postcodes', request)
+        .reply(200, {
+          status: 200,
+          result: [
+            {
+              query: '',
+              result: null,
+            },
+          ],
+        })
+
+      // when
+      const response = postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding({}, request)
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: [
+            {
+              query: '',
               result: null,
             },
           ],

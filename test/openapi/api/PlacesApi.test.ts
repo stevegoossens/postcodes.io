@@ -534,11 +534,61 @@ describe('PlacesApi', () => {
       expect(scope.isDone()).toBeTruthy()
     })
 
+    it('should return empty array for non-matching query', async () => {
+      // given
+      const query = 'zzzzzz'
+      const scope = nock(basePath)
+        .get(`/places?query=${encodeURIComponent(query)}`)
+        .reply(200, {
+          "status": 200,
+          "result": []
+        })
+
+      // when
+      const response = placesApi.placeQuery({ query })
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          "status": 200,
+          "result": []
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
     it('should return 400 error for missing query',async () => {
       // given
       const query = undefined
       const scope = nock(basePath)
         .get('/places')
+        .reply(400, {
+          status: 400,
+          error: 'No valid query submitted. Remember to include every parameter',
+        })
+
+      // when
+      const response = placesApi.placeQuery({ query })
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 400,
+        contentType: 'application/json',
+        body: {
+          status: 400,
+          error: 'No valid query submitted. Remember to include every parameter',
+        },
+      })
+      expect(scope.isDone()).toBeTruthy()
+    })
+
+    it('should return 400 error for empty string query',async () => {
+      // given
+      const query = ''
+      const scope = nock(basePath)
+        .get('/places?query=')
         .reply(400, {
           status: 400,
           error: 'No valid query submitted. Remember to include every parameter',
