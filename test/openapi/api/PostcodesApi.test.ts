@@ -1,9 +1,9 @@
 // eslint-disable-next-line node/no-unpublished-import
 import {afterEach, beforeEach, describe, expect, it} from '@jest/globals';
-import '../../helpers/custom-expect-matchers/toBePostcodeData';
 // eslint-disable-next-line node/no-unpublished-import
 import nock from 'nock';
 
+import '../../helpers/custom-expect-matchers/toBePostcodeData';
 import {PostcodesApi} from '../../../src/openapi';
 
 describe('PostcodesApi', () => {
@@ -224,6 +224,456 @@ describe('PostcodesApi', () => {
       },
     });
     expect(scope.isDone()).toBeTruthy();
+  });
+
+  describe('randomPostcode', () => {
+    it('should return PostcodeData', async () => {
+      // given
+      const scope = nock(basePath)
+        .get('/random/postcodes')
+        .reply(200, {
+          status: 200,
+          result: {
+            postcode: 'BD6 1DB',
+            quality: 1,
+            eastings: 415881,
+            northings: 429882,
+            country: 'England',
+            nhs_ha: 'Yorkshire and the Humber',
+            longitude: -1.760567,
+            latitude: 53.765049,
+            european_electoral_region: 'Yorkshire and The Humber',
+            primary_care_trust: 'Bradford and Airedale Teaching',
+            region: 'Yorkshire and The Humber',
+            lsoa: 'Bradford 060A',
+            msoa: 'Bradford 060',
+            incode: '1DB',
+            outcode: 'BD6',
+            parliamentary_constituency: 'Bradford South',
+            admin_district: 'Bradford',
+            parish: 'Bradford, unparished area',
+            admin_county: null,
+            date_of_introduction: '198001',
+            admin_ward: 'Wibsey',
+            ced: null,
+            ccg: 'NHS West Yorkshire',
+            nuts: 'Bradford',
+            pfa: 'West Yorkshire',
+            codes: {
+              admin_district: 'E08000032',
+              admin_county: 'E99999999',
+              admin_ward: 'E05001367',
+              parish: 'E43000274',
+              parliamentary_constituency: 'E14000588',
+              ccg: 'E38000232',
+              ccg_id: '36J',
+              ced: 'E99999999',
+              nuts: 'TLE41',
+              lsoa: 'E01010746',
+              msoa: 'E02002242',
+              lau2: 'E08000032',
+              pfa: 'E23000010',
+            },
+          },
+        });
+
+      // when
+      const response = postcodesApi.randomPostcode(undefined);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: expect.toBePostcodeData(),
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return PostcodeData for outcode', async () => {
+      // given
+      const outcode = 'NR7';
+      const scope = nock(basePath)
+        .get(`/random/postcodes?outcode=${outcode}`)
+        .reply(200, {
+          status: 200,
+          result: {
+            postcode: 'NR7 0DT',
+            quality: 1,
+            eastings: 626103,
+            northings: 309334,
+            country: 'England',
+            nhs_ha: 'East of England',
+            longitude: 1.33995,
+            latitude: 52.634622,
+            european_electoral_region: 'Eastern',
+            primary_care_trust: 'Norfolk',
+            region: 'East of England',
+            lsoa: 'Broadland 015D',
+            msoa: 'Broadland 015',
+            incode: '0DT',
+            outcode: 'NR7',
+            parliamentary_constituency: 'Norwich North',
+            admin_district: 'Broadland',
+            parish: 'Thorpe St. Andrew',
+            admin_county: 'Norfolk',
+            date_of_introduction: '198001',
+            admin_ward: 'Thorpe St. Andrew North West',
+            ced: 'Woodside',
+            ccg: 'NHS Norfolk and Waveney',
+            nuts: 'Norwich and East Norfolk',
+            pfa: 'Norfolk',
+            codes: {
+              admin_district: 'E07000144',
+              admin_county: 'E10000020',
+              admin_ward: 'E05005781',
+              parish: 'E04006256',
+              parliamentary_constituency: 'E14000863',
+              ccg: 'E38000239',
+              ccg_id: '26A',
+              ced: 'E58001035',
+              nuts: 'TLH15',
+              lsoa: 'E01026572',
+              msoa: 'E02005534',
+              lau2: 'E07000144',
+              pfa: 'E23000024',
+            },
+          },
+        });
+
+      // when
+      const response = postcodesApi.randomPostcode(outcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: expect.toBePostcodeData(),
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return null for invalid outcode', async () => {
+      // given
+      const outcode = 'Ploppy';
+      const scope = nock(basePath)
+        .get(`/random/postcodes?outcode=${outcode}`)
+        .reply(200, {
+          status: 200,
+          result: null,
+        });
+
+      // when
+      const response = postcodesApi.randomPostcode(outcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: null,
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return PostcodeData for empty string outcode', async () => {
+      // given
+      const outcode = '';
+      const scope = nock(basePath)
+        .get(`/random/postcodes?outcode=${outcode}`)
+        .reply(200, {
+          status: 200,
+          result: {
+            postcode: 'NR7 0DT',
+            quality: 1,
+            eastings: 626103,
+            northings: 309334,
+            country: 'England',
+            nhs_ha: 'East of England',
+            longitude: 1.33995,
+            latitude: 52.634622,
+            european_electoral_region: 'Eastern',
+            primary_care_trust: 'Norfolk',
+            region: 'East of England',
+            lsoa: 'Broadland 015D',
+            msoa: 'Broadland 015',
+            incode: '0DT',
+            outcode: 'NR7',
+            parliamentary_constituency: 'Norwich North',
+            admin_district: 'Broadland',
+            parish: 'Thorpe St. Andrew',
+            admin_county: 'Norfolk',
+            date_of_introduction: '198001',
+            admin_ward: 'Thorpe St. Andrew North West',
+            ced: 'Woodside',
+            ccg: 'NHS Norfolk and Waveney',
+            nuts: 'Norwich and East Norfolk',
+            pfa: 'Norfolk',
+            codes: {
+              admin_district: 'E07000144',
+              admin_county: 'E10000020',
+              admin_ward: 'E05005781',
+              parish: 'E04006256',
+              parliamentary_constituency: 'E14000863',
+              ccg: 'E38000239',
+              ccg_id: '26A',
+              ced: 'E58001035',
+              nuts: 'TLH15',
+              lsoa: 'E01026572',
+              msoa: 'E02005534',
+              lau2: 'E07000144',
+              pfa: 'E23000024',
+            },
+          },
+        });
+
+      // when
+      const response = postcodesApi.randomPostcode(outcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: expect.toBePostcodeData(),
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+  });
+
+  describe('terminatedPostcodeLookup', () => {
+    it('should return TerminatedPostcodeData for terminated postcode', async () => {
+      // given
+      const postcode = 'E1W 1UU';
+      const scope = nock(basePath)
+        .get(`/terminated_postcodes/${encodeURIComponent(postcode)}`)
+        .reply(200, {
+          status: 200,
+          result: {
+            postcode: 'E1W 1UU',
+            year_terminated: 2015,
+            month_terminated: 2,
+            longitude: -0.073732,
+            latitude: 51.508007,
+          },
+        });
+
+      // when
+      const response = postcodesApi.terminatedPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: {
+            postcode: 'E1W 1UU',
+            year_terminated: 2015,
+            month_terminated: 2,
+            longitude: -0.073732,
+            latitude: 51.508007,
+          },
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return 404 error for live postcode', async () => {
+      // given
+      const postcode = 'W1A 1AA';
+      const scope = nock(basePath)
+        .get(`/terminated_postcodes/${encodeURIComponent(postcode)}`)
+        .reply(404, {
+          status: 404,
+          error: 'Terminated postcode not found',
+        });
+
+      // when
+      const response = postcodesApi.terminatedPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Terminated postcode not found',
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return 404 error for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop';
+      const scope = nock(basePath)
+        .get(`/terminated_postcodes/${encodeURIComponent(postcode)}`)
+        .reply(404, {
+          status: 404,
+          error: 'Invalid postcode',
+        });
+
+      // when
+      const response = postcodesApi.terminatedPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Invalid postcode',
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return 404 error for empty string postcode', async () => {
+      // given
+      const postcode = '';
+      const scope = nock(basePath).get('/terminated_postcodes/').reply(404, {
+        status: 404,
+        error: 'Resource not found',
+      });
+
+      // when
+      const response = postcodesApi.terminatedPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Resource not found',
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+  });
+
+  describe('scottishPostcodeLookup', () => {
+    it('should return ScottishPostcodeData for Scottish postcode', async () => {
+      // given
+      const postcode = 'EH22 3NX';
+      const scope = nock(basePath)
+        .get(`/scotland/postcodes/${encodeURIComponent(postcode)}`)
+        .reply(200, {
+          status: 200,
+          result: {
+            postcode: 'EH22 3NX',
+            scottish_parliamentary_constituency:
+              'Midlothian North and Musselburgh',
+            codes: {
+              scottish_parliamentary_constituency: 'S16000130',
+            },
+          },
+        });
+
+      // when
+      const response = postcodesApi.scottishPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: {
+            postcode: 'EH22 3NX',
+            scottish_parliamentary_constituency:
+              'Midlothian North and Musselburgh',
+            codes: {
+              scottish_parliamentary_constituency: 'S16000130',
+            },
+          },
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return 404 error for non-Scottish postcode', async () => {
+      // given
+      const postcode = 'W1A 1AA';
+      const scope = nock(basePath)
+        .get(`/scotland/postcodes/${encodeURIComponent(postcode)}`)
+        .reply(404, {
+          status: 404,
+          error: 'Postcode exists in ONSPD but not in SPD',
+        });
+
+      // when
+      const response = postcodesApi.scottishPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Postcode exists in ONSPD but not in SPD',
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return 404 error for invalid postcode', async () => {
+      // given
+      const postcode = 'Plop';
+      const scope = nock(basePath)
+        .get(`/scotland/postcodes/${encodeURIComponent(postcode)}`)
+        .reply(404, {
+          status: 404,
+          error: 'Invalid postcode',
+        });
+
+      // when
+      const response = postcodesApi.scottishPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Invalid postcode',
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should return 404 error for invalid postcode', async () => {
+      // given
+      const postcode = '';
+      const scope = nock(basePath).get('/scotland/postcodes/').reply(404, {
+        status: 404,
+        error: 'Resource not found',
+      });
+
+      // when
+      const response = postcodesApi.scottishPostcodeLookup(postcode);
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 404,
+        contentType: 'application/json',
+        body: {
+          status: 404,
+          error: 'Resource not found',
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
   });
 
   describe('reverseGeocodingOrPostcodeQuery', () => {

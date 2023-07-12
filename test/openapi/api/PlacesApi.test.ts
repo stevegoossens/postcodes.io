@@ -3,6 +3,7 @@ import {afterEach, beforeEach, describe, expect, it} from '@jest/globals';
 // eslint-disable-next-line node/no-unpublished-import
 import nock from 'nock';
 
+import '../../helpers/custom-expect-matchers/toBePlacesData';
 import {PlacesApi} from '../../../src/openapi';
 
 describe('PlacesApi', () => {
@@ -276,6 +277,54 @@ describe('PlacesApi', () => {
       },
     });
     expect(scope.isDone()).toBeTruthy();
+  });
+
+  describe('randomPlace', () => {
+    it('should return PlacesData', async () => {
+      // given
+      const scope = nock(basePath)
+        .get('/random/places')
+        .reply(200, {
+          status: 200,
+          result: {
+            code: 'osgb4000000074569912',
+            name_1: 'Bracadale',
+            name_1_lang: null,
+            name_2: null,
+            name_2_lang: null,
+            local_type: 'Hamlet',
+            outcode: 'IV56',
+            county_unitary: 'Highland',
+            county_unitary_type: 'UnitaryAuthority',
+            district_borough: null,
+            district_borough_type: null,
+            region: 'Scotland',
+            country: 'Scotland',
+            longitude: -6.40485169252266,
+            latitude: 57.3613536744277,
+            eastings: 135214,
+            northings: 838678,
+            min_eastings: 135007,
+            min_northings: 838422,
+            max_eastings: 135540,
+            max_northings: 838922,
+          },
+        });
+
+      // when
+      const response = placesApi.randomPlace();
+
+      // then
+      await expect(response).resolves.toEqual({
+        status: 200,
+        contentType: 'application/json',
+        body: {
+          status: 200,
+          result: expect.toBePlacesData(),
+        },
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
   });
 
   describe('placeQuery', () => {

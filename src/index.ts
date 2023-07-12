@@ -5,26 +5,17 @@ import {
   OutcodesApi,
   PlacesApi,
   PostcodesApi,
-  RandomApi,
-  ScotlandApi,
-  TerminatedPostcodesApi,
 } from './openapi';
 
-export class PostcodesIO {
+class PostcodesIO {
   private _outcodesApi: OutcodesApi;
   private _placesApi: PlacesApi;
   private _postcodesApi: PostcodesApi;
-  private _randomApi: RandomApi;
-  private _scotlandApi: ScotlandApi;
-  private _terminatedPostcodesApi: TerminatedPostcodesApi;
 
   constructor(configuration?: Configuration) {
     this._outcodesApi = new OutcodesApi(configuration);
     this._placesApi = new PlacesApi(configuration);
     this._postcodesApi = new PostcodesApi(configuration);
-    this._randomApi = new RandomApi(configuration);
-    this._scotlandApi = new ScotlandApi(configuration);
-    this._terminatedPostcodesApi = new TerminatedPostcodesApi(configuration);
   }
 
   /**
@@ -502,7 +493,7 @@ export class PostcodesIO {
    */
   async randomPlace(): Promise<Api.PlacesData> {
     try {
-      const response = await this._randomApi.randomPlace();
+      const response = await this._placesApi.randomPlace();
       if (
         response.status === 200 &&
         response.body.status === 200 &&
@@ -534,7 +525,7 @@ export class PostcodesIO {
    */
   async randomPostcode(outcode?: string): Promise<Api.PostcodeData> {
     try {
-      const response = await this._randomApi.randomPostcode(outcode);
+      const response = await this._postcodesApi.randomPostcode(outcode);
       if (
         response.status === 200 &&
         response.body.status === 200 &&
@@ -667,7 +658,9 @@ export class PostcodesIO {
     postcode: string
   ): Promise<Api.ScottishPostcodeData> {
     try {
-      const response = await this._scotlandApi.scottishPostcodeLookup(postcode);
+      const response = await this._postcodesApi.scottishPostcodeLookup(
+        postcode
+      );
       if (
         response.status === 200 &&
         response.body.status === 200 &&
@@ -702,8 +695,9 @@ export class PostcodesIO {
     postcode: string
   ): Promise<Api.TerminatedPostcodeData> {
     try {
-      const response =
-        await this._terminatedPostcodesApi.terminatedPostcodeLookup(postcode);
+      const response = await this._postcodesApi.terminatedPostcodeLookup(
+        postcode
+      );
       if (
         response.status === 200 &&
         response.body.status === 200 &&
@@ -727,4 +721,5 @@ export class PostcodesIO {
   }
 }
 
+module.exports = PostcodesIO;
 export default PostcodesIO;

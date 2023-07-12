@@ -652,6 +652,8 @@ paths:
   /outcodes:
     get:
       operationId: outcodeReverseGeocoding
+      tags:
+        - Outcodes
       summary: Outcode Reverse Geocoding
       description: |
         Returns nearest outcodes for a given longitude and latitude.
@@ -1025,6 +1027,8 @@ paths:
   /outcodes/{outcode}:
     get:
       operationId: outwardCodeLookup
+      tags:
+        - Outcodes
       summary: Outward Code Lookup
       description: |
         Geolocation data for the centroid of the outward code specified. The outward code represents the first half of any postcode (separated by a space).
@@ -1094,6 +1098,8 @@ paths:
   /outcodes/{outcode}/nearest:
     get:
       operationId: nearestOutcode
+      tags:
+        - Outcodes
       summary: Nearest Outcode
       description: |
         Returns nearest outcodes for a given outcode.
@@ -1234,6 +1240,8 @@ paths:
   /places:
     get:
       operationId: placeQuery
+      tags:
+        - Places
       summary: Place Query
       description: |
         Submit a place query and receive a complete list of places matches and associated data.
@@ -1506,6 +1514,8 @@ paths:
   /places/{code}:
     get:
       operationId: placeLookup
+      tags:
+        - Places
       summary: Place Lookup
       description: |
         Find a place by OSGB code (e.g. "osgb4000000074564391"). Returns all available data if found. Returns 404 if place does not exist.
@@ -1571,6 +1581,8 @@ paths:
   /postcodes:
     get:
       operationId: reverseGeocodingOrPostcodeQuery
+      tags:
+        - Postcodes
       summary: Reverse Geocoding / Postcode Query
       description: |
         ### Reverse Geocoding
@@ -2201,6 +2213,8 @@ paths:
                     error: No postcode query submitted. Remember to include query parameter
     post:
       operationId: bulkPostcodeLookupOrBulkReverseGeocoding
+      tags:
+        - Postcodes
       summary: Bulk Postcode Lookup / Bulk Reverse Geocoding
       description: |
         ### Bulk Postcode Lookup
@@ -2882,6 +2896,8 @@ paths:
   /postcodes/{postcode}:
     get:
       operationId: postcodeLookup
+      tags:
+        - Postcodes
       summary: Postcode Lookup
       description: |
         This uniquely identifies a postcode.
@@ -3030,6 +3046,8 @@ paths:
   /postcodes/{postcode}/autocomplete:
     get:
       operationId: postcodeAutocomplete
+      tags:
+        - Postcodes
       summary: Postcode Autocomplete
       description: |
         Convenience method to return an list of matching postcodes.
@@ -3115,6 +3133,8 @@ paths:
   /postcodes/{postcode}/nearest:
     get:
       operationId: nearestPostcode
+      tags:
+        - Postcodes
       summary: Nearest Postcode
       description: |
         Returns nearest postcodes for a given postcode.
@@ -3571,6 +3591,8 @@ paths:
   /postcodes/{postcode}/validate:
     get:
       operationId: postcodeValidation
+      tags:
+        - Postcodes
       summary: Postcode Validation
       description: |
         Convenience method to validate a postcode. Returns true or false (meaning valid or invalid respectively)
@@ -3619,6 +3641,8 @@ paths:
   /postcodes/lon/{longitude}/lat/{latitude}:
     get:
       operationId: reverseGeocodingLegacy
+      tags:
+        - Postcodes
       deprecated: true
       summary: Reverse Geocoding (Legacy)
       description: |
@@ -3786,6 +3810,8 @@ paths:
   /random/postcodes:
     get:
       operationId: randomPostcode
+      tags:
+        - Postcodes
       summary: Random Postcode
       description: |
         Returns a random postcode and all available data for that postcode.
@@ -3916,6 +3942,8 @@ paths:
   /random/places:
     get:
       operationId: randomPlace
+      tags:
+        - Places
       summary: Random Place
       description: |
         Returns a random place and all associated data
@@ -3963,6 +3991,8 @@ paths:
   /scotland/postcodes/{postcode}:
     get:
       operationId: scottishPostcodeLookup
+      tags:
+        - Postcodes
       summary: Scottish Postcode Lookup
       description: |
         Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.
@@ -4032,6 +4062,8 @@ paths:
   /terminated_postcodes/{postcode}:
     get:
       operationId: terminatedPostcodeLookup
+      tags:
+        - Postcodes
       summary: Terminated Postcode Lookup
       description: |
         Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.

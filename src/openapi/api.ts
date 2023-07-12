@@ -486,6 +486,16 @@ export namespace PlacesApi {
 		headers?: undefined
 	}
 	
+	export type RandomPlaceResponse =
+		| RandomPlace200Response
+	
+	export interface RandomPlace200Response {
+		status: 200
+		contentType: 'application/json'
+		body: Api.RandomPlace200Response
+		headers?: undefined
+	}
+	
 }
 
 /**
@@ -558,6 +568,34 @@ export const PlacesApiFetchParamCreator = function (configuration?: Configuratio
 
 			if (__params.limit !== undefined) {
 				localVarQueryParameter.append('limit', String(__params.limit));
+			}
+
+			localVarRequestOptions.headers = localVarHeaderParameter;
+
+			const localVarQueryParameterString = localVarQueryParameter.toString();
+			if (localVarQueryParameterString) {
+				localVarPath += "?" + localVarQueryParameterString;
+			}
+			return {
+				url: localVarPath,
+				options: localVarRequestOptions,
+			};
+		},
+		/**
+		 * <p>Returns a random place and all associated data</p>
+		 * @summary Random Place
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		randomPlace(options: RequestInit = {}): FetchArgs {
+
+			let localVarPath = `/random/places`;
+			const localVarPathQueryStart = localVarPath.indexOf("?");
+			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
+			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
+			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
+			if (localVarPathQueryStart !== -1) {
+				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
 			}
 
 			localVarRequestOptions.headers = localVarHeaderParameter;
@@ -656,6 +694,32 @@ export const PlacesApiFp = function(configuration?: Configuration) {
 				throw response;
 			};
 		},
+		/**
+		 * <p>Returns a random place and all associated data</p>
+		 * @summary Random Place
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		randomPlace(options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<PlacesApi.RandomPlaceResponse> {
+			const localVarFetchArgs = PlacesApiFetchParamCreator(configuration).randomPlace(options);
+			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
+				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
+				const contentType = response.headers.get('Content-Type');
+				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
+				
+				if (response.status === 200) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.RandomPlace200Response,
+						}
+					}
+					throw response;
+				}
+				throw response;
+			};
+		},
 	}
 };
 
@@ -696,6 +760,16 @@ export class PlacesApi extends BaseAPI {
 	 */
 	public placeQuery(__params: PlacesApi.PlaceQueryParameters, options?: RequestInit) {
 		return PlacesApiFp(this.configuration).placeQuery(__params, options)(this.fetch, this.basePath);
+	}
+
+	/**
+	 * <p>Returns a random place and all associated data</p>
+	 * @summary Random Place
+	 * @param {RequestInit} [options] Override http request option.
+	 * @throws {RequiredError}
+	 */
+	public randomPlace(options?: RequestInit) {
+		return PlacesApiFp(this.configuration).randomPlace(options)(this.fetch, this.basePath);
 	}
 
 }
@@ -832,6 +906,16 @@ export namespace PostcodesApi {
 		headers?: undefined
 	}
 	
+	export type RandomPostcodeResponse =
+		| RandomPostcode200Response
+	
+	export interface RandomPostcode200Response {
+		status: 200
+		contentType: 'application/json'
+		body: Api.RandomPostcode200Response
+		headers?: undefined
+	}
+	
 	export interface ReverseGeocodingLegacyParameters {
 		/**
 		 * @type {number}
@@ -915,6 +999,42 @@ export namespace PostcodesApi {
 	
 	export interface ReverseGeocodingOrPostcodeQuery400Response {
 		status: 400
+		contentType: 'application/json'
+		body: Api.ServerErrorResponseBody
+		headers?: undefined
+	}
+	
+	export type ScottishPostcodeLookupResponse =
+		| ScottishPostcodeLookup200Response
+		| ScottishPostcodeLookup404Response
+	
+	export interface ScottishPostcodeLookup200Response {
+		status: 200
+		contentType: 'application/json'
+		body: Api.ScottishPostcodeLookup200Response
+		headers?: undefined
+	}
+	
+	export interface ScottishPostcodeLookup404Response {
+		status: 404
+		contentType: 'application/json'
+		body: Api.ServerErrorResponseBody
+		headers?: undefined
+	}
+	
+	export type TerminatedPostcodeLookupResponse =
+		| TerminatedPostcodeLookup200Response
+		| TerminatedPostcodeLookup404Response
+	
+	export interface TerminatedPostcodeLookup200Response {
+		status: 200
+		contentType: 'application/json'
+		body: Api.TerminatedPostcodeLookup200Response
+		headers?: undefined
+	}
+	
+	export interface TerminatedPostcodeLookup404Response {
+		status: 404
 		contentType: 'application/json'
 		body: Api.ServerErrorResponseBody
 		headers?: undefined
@@ -1149,6 +1269,39 @@ export const PostcodesApiFetchParamCreator = function (configuration?: Configura
 			};
 		},
 		/**
+		 * <p>Returns a random postcode and all available data for that postcode.</p>
+		 * @summary Random Postcode
+		 * @param {string} [outcode] <p>Filters random postcodes by outcode. Returns null if invalid outcode.</p>
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		randomPostcode(outcode: string | undefined, options: RequestInit = {}): FetchArgs {
+
+			let localVarPath = `/random/postcodes`;
+			const localVarPathQueryStart = localVarPath.indexOf("?");
+			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
+			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
+			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
+			if (localVarPathQueryStart !== -1) {
+				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
+			}
+
+			if (outcode !== undefined) {
+				localVarQueryParameter.append('outcode', String(outcode));
+			}
+
+			localVarRequestOptions.headers = localVarHeaderParameter;
+
+			const localVarQueryParameterString = localVarQueryParameter.toString();
+			if (localVarQueryParameterString) {
+				localVarPath += "?" + localVarQueryParameterString;
+			}
+			return {
+				url: localVarPath,
+				options: localVarRequestOptions,
+			};
+		},
+		/**
 		 * <p>Returns nearest postcodes for a given longitude and latitude.</p>
 		 * @summary Reverse Geocoding (Legacy)
 		 * @param {number} latitude
@@ -1272,6 +1425,75 @@ export const PostcodesApiFetchParamCreator = function (configuration?: Configura
 
 			if (__params.widesearch !== undefined) {
 				localVarQueryParameter.append('widesearch', String(__params.widesearch));
+			}
+
+			localVarRequestOptions.headers = localVarHeaderParameter;
+
+			const localVarQueryParameterString = localVarQueryParameter.toString();
+			if (localVarQueryParameterString) {
+				localVarPath += "?" + localVarQueryParameterString;
+			}
+			return {
+				url: localVarPath,
+				options: localVarRequestOptions,
+			};
+		},
+		/**
+		 * <p>Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.</p>
+		 * <p>Returns 404 if postcode does not exist in SPD or is not valid. For postcodes not in SPD but in ONSPD, 404 is returned with error message <code>Postcode exists in ONSPD but not in SPD</code>.</p>
+		 * @summary Scottish Postcode Lookup
+		 * @param {string} postcode
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		scottishPostcodeLookup(postcode: string, options: RequestInit = {}): FetchArgs {
+			// verify required parameter 'postcode' is not null or undefined
+			if (postcode === null || postcode === undefined) {
+				throw new RequiredError('postcode', 'Required parameter postcode was null or undefined when calling scottishPostcodeLookup.');
+			}
+
+			let localVarPath = `/scotland/postcodes/{postcode}`
+				.replace('{postcode}', encodeURIComponent(String(postcode)));
+			const localVarPathQueryStart = localVarPath.indexOf("?");
+			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
+			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
+			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
+			if (localVarPathQueryStart !== -1) {
+				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
+			}
+
+			localVarRequestOptions.headers = localVarHeaderParameter;
+
+			const localVarQueryParameterString = localVarQueryParameter.toString();
+			if (localVarQueryParameterString) {
+				localVarPath += "?" + localVarQueryParameterString;
+			}
+			return {
+				url: localVarPath,
+				options: localVarRequestOptions,
+			};
+		},
+		/**
+		 * <p>Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.</p>
+		 * @summary Terminated Postcode Lookup
+		 * @param {string} postcode
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		terminatedPostcodeLookup(postcode: string, options: RequestInit = {}): FetchArgs {
+			// verify required parameter 'postcode' is not null or undefined
+			if (postcode === null || postcode === undefined) {
+				throw new RequiredError('postcode', 'Required parameter postcode was null or undefined when calling terminatedPostcodeLookup.');
+			}
+
+			let localVarPath = `/terminated_postcodes/{postcode}`
+				.replace('{postcode}', encodeURIComponent(String(postcode)));
+			const localVarPathQueryStart = localVarPath.indexOf("?");
+			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
+			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
+			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
+			if (localVarPathQueryStart !== -1) {
+				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
 			}
 
 			localVarRequestOptions.headers = localVarHeaderParameter;
@@ -1507,6 +1729,33 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 			};
 		},
 		/**
+		 * <p>Returns a random postcode and all available data for that postcode.</p>
+		 * @summary Random Postcode
+		 * @param {string} [outcode] <p>Filters random postcodes by outcode. Returns null if invalid outcode.</p>
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		randomPostcode(outcode: string | undefined, options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<PostcodesApi.RandomPostcodeResponse> {
+			const localVarFetchArgs = PostcodesApiFetchParamCreator(configuration).randomPostcode(outcode, options);
+			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
+				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
+				const contentType = response.headers.get('Content-Type');
+				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
+				
+				if (response.status === 200) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.RandomPostcode200Response,
+						}
+					}
+					throw response;
+				}
+				throw response;
+			};
+		},
+		/**
 		 * <p>Returns nearest postcodes for a given longitude and latitude.</p>
 		 * @summary Reverse Geocoding (Legacy)
 		 * @param {number} latitude
@@ -1609,6 +1858,81 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 				throw response;
 			};
 		},
+		/**
+		 * <p>Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.</p>
+		 * <p>Returns 404 if postcode does not exist in SPD or is not valid. For postcodes not in SPD but in ONSPD, 404 is returned with error message <code>Postcode exists in ONSPD but not in SPD</code>.</p>
+		 * @summary Scottish Postcode Lookup
+		 * @param {string} postcode
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		scottishPostcodeLookup(postcode: string, options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<PostcodesApi.ScottishPostcodeLookupResponse> {
+			const localVarFetchArgs = PostcodesApiFetchParamCreator(configuration).scottishPostcodeLookup(postcode, options);
+			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
+				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
+				const contentType = response.headers.get('Content-Type');
+				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
+				
+				if (response.status === 200) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.ScottishPostcodeLookup200Response,
+						}
+					}
+					throw response;
+				}
+				if (response.status === 404) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
+					}
+					throw response;
+				}
+				throw response;
+			};
+		},
+		/**
+		 * <p>Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.</p>
+		 * @summary Terminated Postcode Lookup
+		 * @param {string} postcode
+		 * @param {RequestInit} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		terminatedPostcodeLookup(postcode: string, options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<PostcodesApi.TerminatedPostcodeLookupResponse> {
+			const localVarFetchArgs = PostcodesApiFetchParamCreator(configuration).terminatedPostcodeLookup(postcode, options);
+			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
+				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
+				const contentType = response.headers.get('Content-Type');
+				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
+				
+				if (response.status === 200) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 200,
+							contentType: 'application/json',
+							body: await response.json() as Api.TerminatedPostcodeLookup200Response,
+						}
+					}
+					throw response;
+				}
+				if (response.status === 404) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
+					}
+					throw response;
+				}
+				throw response;
+			};
+		},
 	}
 };
 
@@ -1700,6 +2024,17 @@ export class PostcodesApi extends BaseAPI {
 	}
 
 	/**
+	 * <p>Returns a random postcode and all available data for that postcode.</p>
+	 * @summary Random Postcode
+	 * @param {string} [outcode] <p>Filters random postcodes by outcode. Returns null if invalid outcode.</p>
+	 * @param {RequestInit} [options] Override http request option.
+	 * @throws {RequiredError}
+	 */
+	public randomPostcode(outcode: string | undefined, options?: RequestInit) {
+		return PostcodesApiFp(this.configuration).randomPostcode(outcode, options)(this.fetch, this.basePath);
+	}
+
+	/**
 	 * <p>Returns nearest postcodes for a given longitude and latitude.</p>
 	 * @summary Reverse Geocoding (Legacy)
 	 * @param {number} latitude
@@ -1750,326 +2085,6 @@ export class PostcodesApi extends BaseAPI {
 		return PostcodesApiFp(this.configuration).reverseGeocodingOrPostcodeQuery(__params, options)(this.fetch, this.basePath);
 	}
 
-}
-export namespace RandomApi {
-	export type RandomPlaceResponse =
-		| RandomPlace200Response
-	
-	export interface RandomPlace200Response {
-		status: 200
-		contentType: 'application/json'
-		body: Api.RandomPlace200Response
-		headers?: undefined
-	}
-	
-	export type RandomPostcodeResponse =
-		| RandomPostcode200Response
-	
-	export interface RandomPostcode200Response {
-		status: 200
-		contentType: 'application/json'
-		body: Api.RandomPostcode200Response
-		headers?: undefined
-	}
-	
-}
-
-/**
- * RandomApi - fetch parameter creator
- * @export
- */
-export const RandomApiFetchParamCreator = function (configuration?: Configuration) {
-	return {
-		/**
-		 * <p>Returns a random place and all associated data</p>
-		 * @summary Random Place
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		randomPlace(options: RequestInit = {}): FetchArgs {
-
-			let localVarPath = `/random/places`;
-			const localVarPathQueryStart = localVarPath.indexOf("?");
-			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
-			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
-			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
-			if (localVarPathQueryStart !== -1) {
-				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
-			}
-
-			localVarRequestOptions.headers = localVarHeaderParameter;
-
-			const localVarQueryParameterString = localVarQueryParameter.toString();
-			if (localVarQueryParameterString) {
-				localVarPath += "?" + localVarQueryParameterString;
-			}
-			return {
-				url: localVarPath,
-				options: localVarRequestOptions,
-			};
-		},
-		/**
-		 * <p>Returns a random postcode and all available data for that postcode.</p>
-		 * @summary Random Postcode
-		 * @param {string} [outcode] <p>Filters random postcodes by outcode. Returns null if invalid outcode.</p>
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		randomPostcode(outcode: string | undefined, options: RequestInit = {}): FetchArgs {
-
-			let localVarPath = `/random/postcodes`;
-			const localVarPathQueryStart = localVarPath.indexOf("?");
-			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
-			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
-			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
-			if (localVarPathQueryStart !== -1) {
-				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
-			}
-
-			if (outcode !== undefined) {
-				localVarQueryParameter.append('outcode', String(outcode));
-			}
-
-			localVarRequestOptions.headers = localVarHeaderParameter;
-
-			const localVarQueryParameterString = localVarQueryParameter.toString();
-			if (localVarQueryParameterString) {
-				localVarPath += "?" + localVarQueryParameterString;
-			}
-			return {
-				url: localVarPath,
-				options: localVarRequestOptions,
-			};
-		},
-	}
-};
-
-/**
- * RandomApi - functional programming interface
- * @export
- */
-export const RandomApiFp = function(configuration?: Configuration) {
-	return {
-		/**
-		 * <p>Returns a random place and all associated data</p>
-		 * @summary Random Place
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		randomPlace(options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<RandomApi.RandomPlaceResponse> {
-			const localVarFetchArgs = RandomApiFetchParamCreator(configuration).randomPlace(options);
-			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
-				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
-				const contentType = response.headers.get('Content-Type');
-				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
-				
-				if (response.status === 200) {
-					if (mimeType === 'application/json') {
-						return {
-							status: 200,
-							contentType: 'application/json',
-							body: await response.json() as Api.RandomPlace200Response,
-						}
-					}
-					throw response;
-				}
-				throw response;
-			};
-		},
-		/**
-		 * <p>Returns a random postcode and all available data for that postcode.</p>
-		 * @summary Random Postcode
-		 * @param {string} [outcode] <p>Filters random postcodes by outcode. Returns null if invalid outcode.</p>
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		randomPostcode(outcode: string | undefined, options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<RandomApi.RandomPostcodeResponse> {
-			const localVarFetchArgs = RandomApiFetchParamCreator(configuration).randomPostcode(outcode, options);
-			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
-				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
-				const contentType = response.headers.get('Content-Type');
-				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
-				
-				if (response.status === 200) {
-					if (mimeType === 'application/json') {
-						return {
-							status: 200,
-							contentType: 'application/json',
-							body: await response.json() as Api.RandomPostcode200Response,
-						}
-					}
-					throw response;
-				}
-				throw response;
-			};
-		},
-	}
-};
-
-/**
- * RandomApi - factory interface
- * @export
- */
-export const RandomApiFactory: FactoryFunction<RandomApi> = function (configuration?: Configuration, basePath?: string, fetch?: FetchAPI) {
-	return new RandomApi(configuration, basePath, fetch);
-};
-
-/**
- * RandomApi - object-oriented interface
- * @export
- * @class RandomApi
- * @extends {BaseAPI}
- */
-export class RandomApi extends BaseAPI {
-	/**
-	 * <p>Returns a random place and all associated data</p>
-	 * @summary Random Place
-	 * @param {RequestInit} [options] Override http request option.
-	 * @throws {RequiredError}
-	 */
-	public randomPlace(options?: RequestInit) {
-		return RandomApiFp(this.configuration).randomPlace(options)(this.fetch, this.basePath);
-	}
-
-	/**
-	 * <p>Returns a random postcode and all available data for that postcode.</p>
-	 * @summary Random Postcode
-	 * @param {string} [outcode] <p>Filters random postcodes by outcode. Returns null if invalid outcode.</p>
-	 * @param {RequestInit} [options] Override http request option.
-	 * @throws {RequiredError}
-	 */
-	public randomPostcode(outcode: string | undefined, options?: RequestInit) {
-		return RandomApiFp(this.configuration).randomPostcode(outcode, options)(this.fetch, this.basePath);
-	}
-
-}
-export namespace ScotlandApi {
-	export type ScottishPostcodeLookupResponse =
-		| ScottishPostcodeLookup200Response
-		| ScottishPostcodeLookup404Response
-	
-	export interface ScottishPostcodeLookup200Response {
-		status: 200
-		contentType: 'application/json'
-		body: Api.ScottishPostcodeLookup200Response
-		headers?: undefined
-	}
-	
-	export interface ScottishPostcodeLookup404Response {
-		status: 404
-		contentType: 'application/json'
-		body: Api.ServerErrorResponseBody
-		headers?: undefined
-	}
-	
-}
-
-/**
- * ScotlandApi - fetch parameter creator
- * @export
- */
-export const ScotlandApiFetchParamCreator = function (configuration?: Configuration) {
-	return {
-		/**
-		 * <p>Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.</p>
-		 * <p>Returns 404 if postcode does not exist in SPD or is not valid. For postcodes not in SPD but in ONSPD, 404 is returned with error message <code>Postcode exists in ONSPD but not in SPD</code>.</p>
-		 * @summary Scottish Postcode Lookup
-		 * @param {string} postcode
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		scottishPostcodeLookup(postcode: string, options: RequestInit = {}): FetchArgs {
-			// verify required parameter 'postcode' is not null or undefined
-			if (postcode === null || postcode === undefined) {
-				throw new RequiredError('postcode', 'Required parameter postcode was null or undefined when calling scottishPostcodeLookup.');
-			}
-
-			let localVarPath = `/scotland/postcodes/{postcode}`
-				.replace('{postcode}', encodeURIComponent(String(postcode)));
-			const localVarPathQueryStart = localVarPath.indexOf("?");
-			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
-			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
-			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
-			if (localVarPathQueryStart !== -1) {
-				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
-			}
-
-			localVarRequestOptions.headers = localVarHeaderParameter;
-
-			const localVarQueryParameterString = localVarQueryParameter.toString();
-			if (localVarQueryParameterString) {
-				localVarPath += "?" + localVarQueryParameterString;
-			}
-			return {
-				url: localVarPath,
-				options: localVarRequestOptions,
-			};
-		},
-	}
-};
-
-/**
- * ScotlandApi - functional programming interface
- * @export
- */
-export const ScotlandApiFp = function(configuration?: Configuration) {
-	return {
-		/**
-		 * <p>Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.</p>
-		 * <p>Returns 404 if postcode does not exist in SPD or is not valid. For postcodes not in SPD but in ONSPD, 404 is returned with error message <code>Postcode exists in ONSPD but not in SPD</code>.</p>
-		 * @summary Scottish Postcode Lookup
-		 * @param {string} postcode
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		scottishPostcodeLookup(postcode: string, options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<ScotlandApi.ScottishPostcodeLookupResponse> {
-			const localVarFetchArgs = ScotlandApiFetchParamCreator(configuration).scottishPostcodeLookup(postcode, options);
-			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
-				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
-				const contentType = response.headers.get('Content-Type');
-				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
-				
-				if (response.status === 200) {
-					if (mimeType === 'application/json') {
-						return {
-							status: 200,
-							contentType: 'application/json',
-							body: await response.json() as Api.ScottishPostcodeLookup200Response,
-						}
-					}
-					throw response;
-				}
-				if (response.status === 404) {
-					if (mimeType === 'application/json') {
-						return {
-							status: 404,
-							contentType: 'application/json',
-							body: await response.json() as Api.ServerErrorResponseBody,
-						}
-					}
-					throw response;
-				}
-				throw response;
-			};
-		},
-	}
-};
-
-/**
- * ScotlandApi - factory interface
- * @export
- */
-export const ScotlandApiFactory: FactoryFunction<ScotlandApi> = function (configuration?: Configuration, basePath?: string, fetch?: FetchAPI) {
-	return new ScotlandApi(configuration, basePath, fetch);
-};
-
-/**
- * ScotlandApi - object-oriented interface
- * @export
- * @class ScotlandApi
- * @extends {BaseAPI}
- */
-export class ScotlandApi extends BaseAPI {
 	/**
 	 * <p>Lookup a Scottish postcode. Returns SPD data associated with postcode. At the moment this is just Scottish Parliamentary Constituency.</p>
 	 * <p>Returns 404 if postcode does not exist in SPD or is not valid. For postcodes not in SPD but in ONSPD, 404 is returned with error message <code>Postcode exists in ONSPD but not in SPD</code>.</p>
@@ -2079,135 +2094,9 @@ export class ScotlandApi extends BaseAPI {
 	 * @throws {RequiredError}
 	 */
 	public scottishPostcodeLookup(postcode: string, options?: RequestInit) {
-		return ScotlandApiFp(this.configuration).scottishPostcodeLookup(postcode, options)(this.fetch, this.basePath);
+		return PostcodesApiFp(this.configuration).scottishPostcodeLookup(postcode, options)(this.fetch, this.basePath);
 	}
 
-}
-export namespace TerminatedPostcodesApi {
-	export type TerminatedPostcodeLookupResponse =
-		| TerminatedPostcodeLookup200Response
-		| TerminatedPostcodeLookup404Response
-	
-	export interface TerminatedPostcodeLookup200Response {
-		status: 200
-		contentType: 'application/json'
-		body: Api.TerminatedPostcodeLookup200Response
-		headers?: undefined
-	}
-	
-	export interface TerminatedPostcodeLookup404Response {
-		status: 404
-		contentType: 'application/json'
-		body: Api.ServerErrorResponseBody
-		headers?: undefined
-	}
-	
-}
-
-/**
- * TerminatedPostcodesApi - fetch parameter creator
- * @export
- */
-export const TerminatedPostcodesApiFetchParamCreator = function (configuration?: Configuration) {
-	return {
-		/**
-		 * <p>Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.</p>
-		 * @summary Terminated Postcode Lookup
-		 * @param {string} postcode
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		terminatedPostcodeLookup(postcode: string, options: RequestInit = {}): FetchArgs {
-			// verify required parameter 'postcode' is not null or undefined
-			if (postcode === null || postcode === undefined) {
-				throw new RequiredError('postcode', 'Required parameter postcode was null or undefined when calling terminatedPostcodeLookup.');
-			}
-
-			let localVarPath = `/terminated_postcodes/{postcode}`
-				.replace('{postcode}', encodeURIComponent(String(postcode)));
-			const localVarPathQueryStart = localVarPath.indexOf("?");
-			const localVarRequestOptions: RequestInit = Object.assign({ method: 'GET' }, options);
-			const localVarHeaderParameter: Headers = options.headers ? new Headers(options.headers) : new Headers();
-			const localVarQueryParameter = new URLSearchParams(localVarPathQueryStart !== -1 ? localVarPath.substring(localVarPathQueryStart + 1) : "");
-			if (localVarPathQueryStart !== -1) {
-				localVarPath = localVarPath.substring(0, localVarPathQueryStart);
-			}
-
-			localVarRequestOptions.headers = localVarHeaderParameter;
-
-			const localVarQueryParameterString = localVarQueryParameter.toString();
-			if (localVarQueryParameterString) {
-				localVarPath += "?" + localVarQueryParameterString;
-			}
-			return {
-				url: localVarPath,
-				options: localVarRequestOptions,
-			};
-		},
-	}
-};
-
-/**
- * TerminatedPostcodesApi - functional programming interface
- * @export
- */
-export const TerminatedPostcodesApiFp = function(configuration?: Configuration) {
-	return {
-		/**
-		 * <p>Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.</p>
-		 * @summary Terminated Postcode Lookup
-		 * @param {string} postcode
-		 * @param {RequestInit} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		terminatedPostcodeLookup(postcode: string, options?: RequestInit): (fetch?: FetchAPI, basePath?: string) => Promise<TerminatedPostcodesApi.TerminatedPostcodeLookupResponse> {
-			const localVarFetchArgs = TerminatedPostcodesApiFetchParamCreator(configuration).terminatedPostcodeLookup(postcode, options);
-			return async (fetch: FetchAPI = defaultFetch, basePath: string = BASE_PATH) => {
-				const response = await fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options)
-				const contentType = response.headers.get('Content-Type');
-				const mimeType = contentType ? contentType.replace(/;.*/, '') : undefined;
-				
-				if (response.status === 200) {
-					if (mimeType === 'application/json') {
-						return {
-							status: 200,
-							contentType: 'application/json',
-							body: await response.json() as Api.TerminatedPostcodeLookup200Response,
-						}
-					}
-					throw response;
-				}
-				if (response.status === 404) {
-					if (mimeType === 'application/json') {
-						return {
-							status: 404,
-							contentType: 'application/json',
-							body: await response.json() as Api.ServerErrorResponseBody,
-						}
-					}
-					throw response;
-				}
-				throw response;
-			};
-		},
-	}
-};
-
-/**
- * TerminatedPostcodesApi - factory interface
- * @export
- */
-export const TerminatedPostcodesApiFactory: FactoryFunction<TerminatedPostcodesApi> = function (configuration?: Configuration, basePath?: string, fetch?: FetchAPI) {
-	return new TerminatedPostcodesApi(configuration, basePath, fetch);
-};
-
-/**
- * TerminatedPostcodesApi - object-oriented interface
- * @export
- * @class TerminatedPostcodesApi
- * @extends {BaseAPI}
- */
-export class TerminatedPostcodesApi extends BaseAPI {
 	/**
 	 * <p>Lookup a terminated postcode. Returns the postcode, year and month of termination. Returns 404 if postcode does not exist in our database of terminated postcodes or not valid.</p>
 	 * @summary Terminated Postcode Lookup
@@ -2216,7 +2105,7 @@ export class TerminatedPostcodesApi extends BaseAPI {
 	 * @throws {RequiredError}
 	 */
 	public terminatedPostcodeLookup(postcode: string, options?: RequestInit) {
-		return TerminatedPostcodesApiFp(this.configuration).terminatedPostcodeLookup(postcode, options)(this.fetch, this.basePath);
+		return PostcodesApiFp(this.configuration).terminatedPostcodeLookup(postcode, options)(this.fetch, this.basePath);
 	}
 
 }
