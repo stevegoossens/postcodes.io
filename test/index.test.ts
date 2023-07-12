@@ -8,7 +8,6 @@ import nock from 'nock';
 import PostcodesIO from '../src/index';
 import {Api} from '../src/openapi';
 import {ApiError} from '../src/errors';
-import {fail} from 'assert';
 
 describe('PostcodesIO', () => {
   let basePath: string;
@@ -2913,23 +2912,11 @@ describe('PostcodesIO', () => {
       const postcodeData = postcodesIO.postcodeLookup(postcode);
 
       // then
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const resolved = await postcodeData;
-        fail('promise should have rejected');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ApiError);
-        expect(error).toHaveProperty(
-          'message',
-          'Exception thrown during API call'
-        );
-        expect(error).toHaveProperty(
-          'cause',
-          expect.objectContaining({
-            status: 400,
-          })
-        );
-      }
+      await expect(postcodeData).rejects.toThrow(
+        new ApiError(
+          'Unsuccessful HTTP response: Status 400, Body: {"status":400,"error":"No postcode query submitted. Remember to include query parameter"}'
+        )
+      );
       expect(scope.isDone()).toBeTruthy();
     });
   });
@@ -2980,30 +2967,18 @@ describe('PostcodesIO', () => {
       const postcode = '';
       const scope = nock(basePath).get('/postcodes//autocomplete').reply(404, {
         status: 404,
-        result: 'Resource not found',
+        error: 'Resource not found',
       });
 
       // when
       const postcodeData = postcodesIO.postcodeAutocomplete(postcode);
 
       // then
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const resolved = await postcodeData;
-        fail('promise should have rejected');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ApiError);
-        expect(error).toHaveProperty(
-          'message',
-          'Exception thrown during API call'
-        );
-        expect(error).toHaveProperty(
-          'cause',
-          expect.objectContaining({
-            status: 404,
-          })
-        );
-      }
+      await expect(postcodeData).rejects.toThrow(
+        new ApiError(
+          'Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Resource not found"}'
+        )
+      );
       expect(scope.isDone()).toBeTruthy();
     });
   });
@@ -3230,7 +3205,7 @@ describe('PostcodesIO', () => {
       const postcode = '';
       const scope = nock(basePath).get('/postcodes//nearest').reply(404, {
         status: 404,
-        result: 'Resource not found',
+        error: 'Resource not found',
       });
 
       // when
@@ -3240,7 +3215,7 @@ describe('PostcodesIO', () => {
       // then
       await expect(postcodeDataReverseGeocodingList).rejects.toThrow(
         new ApiError(
-          'Unsuccessful HTTP response: Status 404, Body: {"status":404,"result":"Resource not found"}'
+          'Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Resource not found"}'
         )
       );
       expect(scope.isDone()).toBeTruthy();
@@ -3289,30 +3264,18 @@ describe('PostcodesIO', () => {
       const postcode = '';
       const scope = nock(basePath).get('/postcodes//validate').reply(404, {
         status: 404,
-        result: 'Resource not found',
+        error: 'Resource not found',
       });
 
       // when
       const postcodeIsValid = postcodesIO.postcodeValidation(postcode);
 
       // then
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const resolved = await postcodeIsValid;
-        fail('promise should have rejected');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ApiError);
-        expect(error).toHaveProperty(
-          'message',
-          'Exception thrown during API call'
-        );
-        expect(error).toHaveProperty(
-          'cause',
-          expect.objectContaining({
-            status: 404,
-          })
-        );
-      }
+      await expect(postcodeIsValid).rejects.toThrow(
+        new ApiError(
+          'Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Resource not found"}'
+        )
+      );
       expect(scope.isDone()).toBeTruthy();
     });
   });

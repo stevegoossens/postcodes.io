@@ -3003,6 +3003,18 @@ paths:
                             }
                         }
                     }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                emptyString:
+                  summary: Empty string postcode
+                  value:
+                    status: 400
+                    error: No postcode query submitted. Remember to include query parameter
         '404':
           description: Not Found
           content:
@@ -3088,6 +3100,18 @@ paths:
                   value:
                     status: 200
                     result: null
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                emptyString:
+                  summary: Empty string postcode
+                  value:
+                    status: 404
+                    error: Resource not found
   /postcodes/{postcode}/nearest:
     get:
       operationId: nearestPostcode
@@ -3539,6 +3563,11 @@ paths:
                   value:
                     status: 404
                     error: Postcode not found
+                emptyString:
+                  summary: Empty string postcode
+                  value:
+                    status: 404
+                    error: Resource not found
   /postcodes/{postcode}/validate:
     get:
       operationId: postcodeValidation
@@ -3575,6 +3604,18 @@ paths:
                   value:
                     status: 200
                     result: true
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponseBody'
+              examples:
+                resourceNotFound:
+                  summary: Blank string postcode
+                  value:
+                    status: 404
+                    error: Resource not found
   /postcodes/lon/{longitude}/lat/{latitude}:
     get:
       operationId: reverseGeocodingLegacy

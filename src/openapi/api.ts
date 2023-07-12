@@ -772,6 +772,7 @@ export namespace PostcodesApi {
 	}
 	export type PostcodeAutocompleteResponse =
 		| PostcodeAutocomplete200Response
+		| PostcodeAutocomplete404Response
 	
 	export interface PostcodeAutocomplete200Response {
 		status: 200
@@ -780,14 +781,29 @@ export namespace PostcodesApi {
 		headers?: undefined
 	}
 	
+	export interface PostcodeAutocomplete404Response {
+		status: 404
+		contentType: 'application/json'
+		body: Api.ServerErrorResponseBody
+		headers?: undefined
+	}
+	
 	export type PostcodeLookupResponse =
 		| PostcodeLookup200Response
+		| PostcodeLookup400Response
 		| PostcodeLookup404Response
 	
 	export interface PostcodeLookup200Response {
 		status: 200
 		contentType: 'application/json'
 		body: Api.PostcodeLookup200Response
+		headers?: undefined
+	}
+	
+	export interface PostcodeLookup400Response {
+		status: 400
+		contentType: 'application/json'
+		body: Api.ServerErrorResponseBody
 		headers?: undefined
 	}
 	
@@ -800,11 +816,19 @@ export namespace PostcodesApi {
 	
 	export type PostcodeValidationResponse =
 		| PostcodeValidation200Response
+		| PostcodeValidation404Response
 	
 	export interface PostcodeValidation200Response {
 		status: 200
 		contentType: 'application/json'
 		body: Api.PostcodeValidation200Response
+		headers?: undefined
+	}
+	
+	export interface PostcodeValidation404Response {
+		status: 404
+		contentType: 'application/json'
+		body: Api.ServerErrorResponseBody
 		headers?: undefined
 	}
 	
@@ -1383,6 +1407,16 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 					}
 					throw response;
 				}
+				if (response.status === 404) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
+						}
+					}
+					throw response;
+				}
 				throw response;
 			};
 		},
@@ -1408,6 +1442,16 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 							status: 200,
 							contentType: 'application/json',
 							body: await response.json() as Api.PostcodeLookup200Response,
+						}
+					}
+					throw response;
+				}
+				if (response.status === 400) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 400,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
 						}
 					}
 					throw response;
@@ -1445,6 +1489,16 @@ export const PostcodesApiFp = function(configuration?: Configuration) {
 							status: 200,
 							contentType: 'application/json',
 							body: await response.json() as Api.PostcodeValidation200Response,
+						}
+					}
+					throw response;
+				}
+				if (response.status === 404) {
+					if (mimeType === 'application/json') {
+						return {
+							status: 404,
+							contentType: 'application/json',
+							body: await response.json() as Api.ServerErrorResponseBody,
 						}
 					}
 					throw response;
