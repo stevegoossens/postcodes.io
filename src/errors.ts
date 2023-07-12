@@ -1,6 +1,6 @@
 /**
  * A consistent error with optional cause
- * 
+ *
  * @export
  * @class ApiError
  * @extends {Error}
@@ -12,9 +12,9 @@ export class ApiError extends Error {
    * @param {ErrorOptions} [options] Optional options
    * @param {unknown} [options.cause] Error cause (e.g. another Error)
    */
-	constructor(message: string = 'API Error', options?: ErrorOptions) {
-		super(message, options);
-		Object.setPrototypeOf(this, ApiError.prototype);
-		this.name = "ApiError";
-	}
+  constructor(message = 'API Error', options?: ErrorOptions) {
+    super(message, options);
+    Object.setPrototypeOf(this, ApiError.prototype);
+    this.name = 'ApiError';
+  }
 }

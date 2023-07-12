@@ -1,4 +1,4 @@
-import { ApiError } from './errors';
+import {ApiError} from './errors';
 import {
   Api,
   Configuration,
@@ -39,52 +39,41 @@ export class PostcodesIO {
    */
   async bulkPostcodeLookup(
     postcodes: string[],
-<<<<<<< HEAD
-    options?: Pick<PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters, 'filter'>
-  ): Promise<Api.BulkPostcodeLookupResultItem[]> {
-    try {
-      const requestBody = { postcodes }
-      const params: PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters = {
-        ...options,
-      }
-      const response = await this._postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding(
-        params,
-        requestBody
-      )
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result as Api.BulkPostcodeLookupResultItem[]
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-=======
     options?: Pick<
       PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters,
       'filter'
     >
-  ): Promise<Api.PostcodeData[] | undefined> {
-    const requestBody = {postcodes};
-    const params: PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters =
-      {
-        ...options,
-      };
-    const response =
-      await this._postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding(
-        params,
-        requestBody
-      );
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
+  ): Promise<Api.BulkPostcodeLookupResultItem[]> {
+    try {
+      const requestBody = {postcodes};
+      const params: PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters =
+        {
+          ...options,
+        };
+      const response =
+        await this._postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding(
+          params,
+          requestBody
+        );
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result as Api.BulkPostcodeLookupResultItem[];
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
+      }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
   }
 
@@ -101,52 +90,41 @@ export class PostcodesIO {
    */
   async bulkReverseGeocoding(
     geolocations: Api.Geolocation[],
-<<<<<<< HEAD
-    options?: Omit<PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters, 'filter'>
-  ): Promise<Api.BulkReverseGeocodingResultItem[]> {
-    try {      
-      const requestBody = { geolocations }
-      const params: PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters = {
-        ...options,
-      }
-      const response = await this._postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding(
-        params,
-        requestBody
-      )
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result as Api.BulkReverseGeocodingResultItem[]
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-=======
     options?: Omit<
       PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters,
       'filter'
     >
-  ): Promise<Api.PostcodeData[] | undefined> {
-    const requestBody = {geolocations};
-    const params: PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters =
-      {
-        ...options,
-      };
-    const response =
-      await this._postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding(
-        params,
-        requestBody
-      );
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
+  ): Promise<Api.BulkReverseGeocodingResultItem[]> {
+    try {
+      const requestBody = {geolocations};
+      const params: PostcodesApi.BulkPostcodeLookupOrBulkReverseGeocodingParameters =
+        {
+          ...options,
+        };
+      const response =
+        await this._postcodesApi.bulkPostcodeLookupOrBulkReverseGeocoding(
+          params,
+          requestBody
+        );
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result as Api.BulkReverseGeocodingResultItem[];
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
+      }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
   }
 
@@ -163,39 +141,32 @@ export class PostcodesIO {
   async nearestOutcode(
     outcode: string,
     options?: Omit<OutcodesApi.NearestOutcodeParameters, 'outcode'>
-<<<<<<< HEAD
   ): Promise<Api.OutcodeData[]> {
     try {
       const params: OutcodesApi.NearestOutcodeParameters = {
-        ...{ outcode },
+        ...{outcode},
         ...options,
-      }
-      const response = await this._outcodesApi.nearestOutcode(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
+      };
+      const response = await this._outcodesApi.nearestOutcode(params);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-  ): Promise<Api.OutcodeData[] | undefined> {
-    const params: OutcodesApi.NearestOutcodeParameters = {
-      ...{outcode},
-      ...options,
-    };
-    const response = await this._outcodesApi.nearestOutcode(params);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 
@@ -212,39 +183,32 @@ export class PostcodesIO {
   async nearestPostcode(
     postcode: string,
     options?: Omit<PostcodesApi.NearestPostcodeParameters, 'postcode'>
-<<<<<<< HEAD
   ): Promise<Api.PostcodeDataReverseGeocoding[]> {
     try {
       const params: PostcodesApi.NearestPostcodeParameters = {
-        ...{ postcode },
+        ...{postcode},
         ...options,
-      }
-      const response = await this._postcodesApi.nearestPostcode(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
+      };
+      const response = await this._postcodesApi.nearestPostcode(params);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-  ): Promise<Api.PostcodeDataReverseGeocoding[] | undefined> {
-    const params: PostcodesApi.NearestPostcodeParameters = {
-      ...{postcode},
-      ...options,
-    };
-    const response = await this._postcodesApi.nearestPostcode(params);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 
@@ -255,53 +219,40 @@ export class PostcodesIO {
    * @param {number} lon Longitude
    * @param {number} lat Latitude
    * @param {Omit<OutcodesApi.OutcodeReverseGeocodingParameters, 'lon' | 'lat'>} [options] Optional options
-<<<<<<< HEAD
-	 * @param {number} [options.limit] Limits number of outcodes matches to return. Defaults to 10. Needs to be less than 100.
-	 * @param {number} [options.radius] Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
-   * @returns {Promise<Api.OutcodeData[]>} List of OutcodeData
-=======
    * @param {number} [options.limit] Limits number of outcodes matches to return. Defaults to 10. Needs to be less than 100.
    * @param {number} [options.radius] Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
-   * @returns {Promise<Api.OutcodeData[] | undefined>} List of OutcodeData, or undefined
->>>>>>> add Google code style
+   * @returns {Promise<Api.OutcodeData[]>} List of OutcodeData
    */
   async outcodeReverseGeocoding(
     lon: number,
     lat: number,
     options?: Omit<OutcodesApi.OutcodeReverseGeocodingParameters, 'lon' | 'lat'>
-<<<<<<< HEAD
   ): Promise<Api.OutcodeData[]> {
-    try {      
+    try {
       const params: OutcodesApi.OutcodeReverseGeocodingParameters = {
-        ...{ lon, lat },
+        ...{lon, lat},
         ...options,
-      }
-      const response = await this._outcodesApi.outcodeReverseGeocoding(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
+      };
+      const response = await this._outcodesApi.outcodeReverseGeocoding(params);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-  ): Promise<Api.OutcodeData[] | undefined> {
-    const params: OutcodesApi.OutcodeReverseGeocodingParameters = {
-      ...{lon, lat},
-      ...options,
-    };
-    const response = await this._outcodesApi.outcodeReverseGeocoding(params);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 
@@ -311,50 +262,38 @@ export class PostcodesIO {
    * @summary Place Query
    * @param {string} query Postcode search (prefix match)
    * @param {Omit<PlacesApi.PlaceQueryParameters, 'q' | 'query'>} [options]
-<<<<<<< HEAD
-	 * @param {number} [options.limit] Limits number of places matches to return. Defaults to 10. Needs to be less than 100.
-   * @returns {Promise<Api.PlacesData[]>} List of PlacesData
-=======
    * @param {number} [options.limit] Limits number of places matches to return. Defaults to 10. Needs to be less than 100.
-   * @returns {Promise<Api.PlacesData[] | undefined>} List of PlacesData, or undefined
->>>>>>> add Google code style
+   * @returns {Promise<Api.PlacesData[]>} List of PlacesData
    */
   async placeQuery(
     query: string,
     options?: Omit<PlacesApi.PlaceQueryParameters, 'q' | 'query'>
-<<<<<<< HEAD
   ): Promise<Api.PlacesData[]> {
-    try {      
+    try {
       const params: PlacesApi.PlaceQueryParameters = {
-        ...{ query },
+        ...{query},
         ...options,
-      }
-      const response = await this._placesApi.placeQuery(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
+      };
+      const response = await this._placesApi.placeQuery(params);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-  ): Promise<Api.PlacesData[] | undefined> {
-    const params: PlacesApi.PlaceQueryParameters = {
-      ...{query},
-      ...options,
-    };
-    const response = await this._placesApi.placeQuery(params);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 
@@ -366,24 +305,7 @@ export class PostcodesIO {
    * @param {string} code A unique identifier that enables records to be identified easily. The identifier will be persistent for all LocalTypes except Section of Named Road and Section of Numbered Road.
    * @returns {Promise<Api.PlacesData>} PlacesData
    */
-<<<<<<< HEAD
   async placeLookup(code: string): Promise<Api.PlacesData> {
-    try {      
-      const response = await this._placesApi.placeLookup(code)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-    }
-=======
-  async placeLookup(code: string): Promise<Api.PlacesData | undefined> {
     try {
       const response = await this._placesApi.placeLookup(code);
       if (
@@ -392,12 +314,20 @@ export class PostcodesIO {
         response.body.result
       ) {
         return response.body.result;
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
-      return undefined;
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
-    return undefined;
->>>>>>> add Google code style
   }
 
   /**
@@ -417,21 +347,6 @@ export class PostcodesIO {
       const params: PostcodesApi.PostcodeAutocompleteParameters = {
         ...{postcode},
         ...options,
-<<<<<<< HEAD
-      }
-      const response = await this._postcodesApi.postcodeAutocomplete(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-=======
       };
       const response = await this._postcodesApi.postcodeAutocomplete(params);
       if (
@@ -440,10 +355,19 @@ export class PostcodesIO {
         response.body.result
       ) {
         return response.body.result;
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
-      return undefined;
->>>>>>> add Google code style
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
   }
 
@@ -456,25 +380,7 @@ export class PostcodesIO {
    * @param {string} postcode All current (‘live’) postcodes within the United Kingdom, the Channel Islands and the Isle of Man.
    * @returns {Api.PostcodeData} PostcodeData
    */
-<<<<<<< HEAD
   async postcodeLookup(postcode: string): Promise<Api.PostcodeData> {
-    try {      
-      const response = await this._postcodesApi.postcodeLookup(postcode)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-=======
-  async postcodeLookup(
-    postcode: string
-  ): Promise<Api.PostcodeData | undefined> {
     try {
       const response = await this._postcodesApi.postcodeLookup(postcode);
       if (
@@ -483,10 +389,19 @@ export class PostcodesIO {
         response.body.result
       ) {
         return response.body.result;
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
-      return undefined;
->>>>>>> add Google code style
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
   }
 
@@ -504,40 +419,11 @@ export class PostcodesIO {
    *
    * @summary Postcode Query
    * @param {string} query Postcode search (prefix match)
-<<<<<<< HEAD
-   * @param {Omit<PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters, 'lon' | 'lat' | 'q' | 'query'>} [options] Optional options 
-	 * @param {number} [options.limit] Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
-	 * @param {number} [options.radius] Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
-	 * @param {boolean} [options.widesearch] Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored.
-   * @returns {Promise<Api.PostcodeDataReverseGeocoding[]>} List of PostcodeDataReverseGeocoding
-   */
-  async postcodeQuery(
-    query: string,
-    options?: Omit<PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters, 'lon' | 'lat' | 'q' | 'query'>
-  ): Promise<Api.PostcodeData[]> {
-    try {      
-      const params: PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters = {
-        ...{ query },
-        ...options,
-      }
-      const response = await this._postcodesApi.reverseGeocodingOrPostcodeQuery(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-=======
    * @param {Omit<PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters, 'lon' | 'lat' | 'q' | 'query'>} [options] Optional options
    * @param {number} [options.limit] Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
    * @param {number} [options.radius] Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
    * @param {boolean} [options.widesearch] Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored.
-   * @returns {Promise<Api.PostcodeDataReverseGeocoding[] | undefined>} List of PostcodeDataReverseGeocoding, or undefined
+   * @returns {Promise<Api.PostcodeDataReverseGeocoding[]>} List of PostcodeDataReverseGeocoding
    */
   async postcodeQuery(
     query: string,
@@ -545,21 +431,34 @@ export class PostcodesIO {
       PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters,
       'lon' | 'lat' | 'q' | 'query'
     >
-  ): Promise<Api.PostcodeData[] | undefined> {
-    const params: PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters = {
-      ...{query},
-      ...options,
-    };
-    const response = await this._postcodesApi.reverseGeocodingOrPostcodeQuery(
-      params
-    );
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
+  ): Promise<Api.PostcodeData[]> {
+    try {
+      const params: PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters = {
+        ...{query},
+        ...options,
+      };
+      const response = await this._postcodesApi.reverseGeocodingOrPostcodeQuery(
+        params
+      );
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
+      }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
   }
 
@@ -571,73 +470,58 @@ export class PostcodesIO {
    * @returns {Promise<boolean>} true or false (meaning valid or invalid respectively)
    */
   async postcodeValidation(postcode: string): Promise<boolean> {
-<<<<<<< HEAD
-    try {      
-      const response = await this._postcodesApi.postcodeValidation(postcode)
-      if (response.status === 200 && response.body.status === 200 && typeof response.body.result === 'boolean') {
-        return response.body.result
+    try {
+      const response = await this._postcodesApi.postcodeValidation(postcode);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        typeof response.body.result === 'boolean'
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
     }
-=======
+  }
+
+  /**
+   * Returns a random place and all associated data
+   *
+   * @summary Random Place
+   * @returns {Promise<Api.PlacesData>} PlacesData
+   */
+  async randomPlace(): Promise<Api.PlacesData> {
     try {
-      const response = await this._postcodesApi.postcodeValidation(postcode);
+      const response = await this._randomApi.randomPlace();
       if (
         response.status === 200 &&
         response.body.status === 200 &&
         response.body.result
       ) {
         return response.body.result;
-      }
-    } catch (error) {
-      return false;
-    }
-    return false;
->>>>>>> add Google code style
-  }
-
-  /**
-   * Returns a random place and all associated data
-<<<<<<< HEAD
-   * 
-	 * @summary Random Place
-   * @returns {Promise<Api.PlacesData>} PlacesData
-   */
-  async randomPlace(): Promise<Api.PlacesData> {
-    try {
-      const response = await this._randomApi.randomPlace()
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-   *
-   * @summary Random Place
-   * @returns {Promise<Api.PlacesData | undefined>} PlacesData or undefined
-   */
-  async randomPlace(): Promise<Api.PlacesData | undefined> {
-    const response = await this._randomApi.randomPlace();
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 
@@ -648,33 +532,28 @@ export class PostcodesIO {
    * @param {string} [outcode] Filters random postcodes by outcode.
    * @returns {Promise<Api.PostcodeData>} PostcodeData
    */
-<<<<<<< HEAD
   async randomPostcode(outcode?: string): Promise<Api.PostcodeData> {
     try {
-      const response = await this._randomApi.randomPostcode(outcode)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
+      const response = await this._randomApi.randomPostcode(outcode);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-  async randomPostcode(
-    outcode?: string
-  ): Promise<Api.PostcodeData | undefined> {
-    const response = await this._randomApi.randomPostcode(outcode);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 
@@ -684,63 +563,47 @@ export class PostcodesIO {
    * @summary Reverse Geocoding
    * @param {number} lon Longitude
    * @param {number} lat Latitude
-<<<<<<< HEAD
-   * @param {Omit<PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters, 'lon' | 'lat' | 'q' | 'query'>} [options] Optional options 
-	 * @param {number} [options.limit] Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
-	 * @param {number} [options.radius] Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
-	 * @param {boolean} [options.widesearch] Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we&#39;ve created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored.
-   * @returns {Promise<Api.PostcodeData[]>} List of PostcodeData
-=======
    * @param {Omit<PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters, 'lon' | 'lat' | 'q' | 'query'>} [options] Optional options
    * @param {number} [options.limit] Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
    * @param {number} [options.radius] Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
    * @param {boolean} [options.widesearch] Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we&#39;ve created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored.
-   * @returns {Promise<Api.PostcodeData[] | undefined>} List of PostcodeData, or undefined
->>>>>>> add Google code style
+   * @returns {Promise<Api.PostcodeData[]>} List of PostcodeData
    */
   async reverseGeocoding(
     lon: number,
     lat: number,
-<<<<<<< HEAD
-    options?: Omit<PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters, 'lon' | 'lat' | 'q' | 'query'>
-  ): Promise<Api.PostcodeData[]> {
-    try {
-      const params: PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters = {
-        ...{ lon, lat },
-        ...options,
-      }
-      const response = await this._postcodesApi.reverseGeocodingOrPostcodeQuery(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-=======
     options?: Omit<
       PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters,
       'lon' | 'lat' | 'q' | 'query'
     >
-  ): Promise<Api.PostcodeData[] | undefined> {
-    const params: PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters = {
-      ...{lon, lat},
-      ...options,
-    };
-    const response = await this._postcodesApi.reverseGeocodingOrPostcodeQuery(
-      params
-    );
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
+  ): Promise<Api.PostcodeData[]> {
+    try {
+      const params: PostcodesApi.ReverseGeocodingOrPostcodeQueryParameters = {
+        ...{lon, lat},
+        ...options,
+      };
+      const response = await this._postcodesApi.reverseGeocodingOrPostcodeQuery(
+        params
+      );
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
+      }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
   }
 
@@ -751,59 +614,44 @@ export class PostcodesIO {
    * @param {number} longitude Longitude
    * @param {number} latitude Latitude
    * @param {Omit<PostcodesApi.ReverseGeocodingLegacyParameters, 'longitude' | 'latitude'>} [options] Optional options
-<<<<<<< HEAD
-	 * @param {number} [options.limit] Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
-	 * @param {number} [options.radius] Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
-	 * @param {boolean} [options.widesearch] Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we&#39;ve created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored.
-   * @returns {Promise<Api.PostcodeDataReverseGeocoding[]>} List of PostcodeDataReverseGeocoding
-=======
    * @param {number} [options.limit] Limits number of postcodes matches to return. Defaults to 10. Needs to be less than 100.
    * @param {number} [options.radius] Limits number of postcodes matches to return. Defaults to 100m. Needs to be less than 2,000m.
    * @param {boolean} [options.widesearch] Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we&#39;ve created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored.
-   * @returns {Promise<Api.PostcodeDataReverseGeocoding[] | undefined>} List of PostcodeDataReverseGeocoding, or undefined
->>>>>>> add Google code style
+   * @returns {Promise<Api.PostcodeDataReverseGeocoding[]>} List of PostcodeDataReverseGeocoding
    */
   async reverseGeocodingLegacy(
     longitude: number,
     latitude: number,
-<<<<<<< HEAD
-    options?: Omit<PostcodesApi.ReverseGeocodingLegacyParameters, 'longitude' | 'latitude'>
-  ): Promise<Api.PostcodeDataReverseGeocoding[]> {
-    try {
-      const params: PostcodesApi.ReverseGeocodingLegacyParameters = {
-        ...{ longitude, latitude },
-        ...options,
-      }
-      const response = await this._postcodesApi.reverseGeocodingLegacy(params)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
-      } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
-      }
-=======
     options?: Omit<
       PostcodesApi.ReverseGeocodingLegacyParameters,
       'longitude' | 'latitude'
     >
-  ): Promise<Api.PostcodeDataReverseGeocoding[] | undefined> {
-    const params: PostcodesApi.ReverseGeocodingLegacyParameters = {
-      ...{longitude, latitude},
-      ...options,
-    };
-    const response = await this._postcodesApi.reverseGeocodingLegacy(params);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
+  ): Promise<Api.PostcodeDataReverseGeocoding[]> {
+    try {
+      const params: PostcodesApi.ReverseGeocodingLegacyParameters = {
+        ...{longitude, latitude},
+        ...options,
+      };
+      const response = await this._postcodesApi.reverseGeocodingLegacy(params);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
+      } else {
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
+      }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Exception thrown during API call', {cause: error});
+      }
     }
   }
 
@@ -815,33 +663,30 @@ export class PostcodesIO {
    * @param {string} postcode Scottish postcode
    * @returns {Promise<Api.ScottishPostcodeData>} ScottishPostcodeData
    */
-<<<<<<< HEAD
-  async scottishPostcodeLookup(postcode: string): Promise<Api.ScottishPostcodeData> {
-    try {      
-      const response = await this._scotlandApi.scottishPostcodeLookup(postcode)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
+  async scottishPostcodeLookup(
+    postcode: string
+  ): Promise<Api.ScottishPostcodeData> {
+    try {
+      const response = await this._scotlandApi.scottishPostcodeLookup(postcode);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-  async scottishPostcodeLookup(
-    postcode: string
-  ): Promise<Api.ScottishPostcodeData | undefined> {
-    const response = await this._scotlandApi.scottishPostcodeLookup(postcode);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 
@@ -853,34 +698,31 @@ export class PostcodesIO {
    * @param {string} postcode Teriminated postcode
    * @returns {Promise<Api.TerminatedPostcodeData>} TerminatedPostcodeData
    */
-<<<<<<< HEAD
-  async terminatedPostcodeLookup(postcode: string): Promise<Api.TerminatedPostcodeData> {
-    try {      
-      const response = await this._terminatedPostcodesApi.terminatedPostcodeLookup(postcode)
-      if (response.status === 200 && response.body.status === 200 && response.body.result) {
-        return response.body.result
+  async terminatedPostcodeLookup(
+    postcode: string
+  ): Promise<Api.TerminatedPostcodeData> {
+    try {
+      const response =
+        await this._terminatedPostcodesApi.terminatedPostcodeLookup(postcode);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError(`Unsuccessful HTTP response: Status ${response.status}, Body: ${JSON.stringify(response.body)}`)
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       } else {
-        throw new ApiError('Exception thrown during API call', { cause: error })
+        throw new ApiError('Exception thrown during API call', {cause: error});
       }
-=======
-  async terminatedPostcodeLookup(
-    postcode: string
-  ): Promise<Api.TerminatedPostcodeData | undefined> {
-    const response =
-      await this._terminatedPostcodesApi.terminatedPostcodeLookup(postcode);
-    if (
-      response.status === 200 &&
-      response.body.status === 200 &&
-      response.body.result
-    ) {
-      return response.body.result;
->>>>>>> add Google code style
     }
   }
 }
