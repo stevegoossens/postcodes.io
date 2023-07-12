@@ -4,6 +4,17 @@ Client for the postcodes.io API
 :octocat: [ideal-postcodes/postcodes.io](https://github.com/ideal-postcodes/postcodes.io)
 REST API docs: https://api.postcodes.io/
 
+<!-- toc -->
+
+- [Install from NPM repo](#install-from-npm-repo)
+- [Development](#development)
+  * [Install](#install)
+  * [View api.postcodes.io REST API docs](#view-apipostcodesio-rest-api-docs)
+  * [Generate code from OpenAPI](#generate-code-from-openapi)
+  * [Build](#build)
+
+<!-- tocstop -->
+
 TODO: add all code examples and "snazz"
 
 ```typescript
