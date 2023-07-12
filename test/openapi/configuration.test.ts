@@ -1,13 +1,17 @@
-import { describe, expect, it } from '@jest/globals';
+// eslint-disable-next-line node/no-unpublished-import
+import {describe, expect, it} from '@jest/globals';
 
-import { Configuration, ConfigurationParameters } from '../../src/openapi/configuration';
+import {
+  Configuration,
+  ConfigurationParameters,
+} from '../../src/openapi/configuration';
 
 describe('configuration', () => {
   it('can instantiate without params', () => {
     // given
 
     // when
-    const config = new Configuration()
+    const config = new Configuration();
 
     // then
     expect(config).toEqual({
@@ -16,8 +20,8 @@ describe('configuration', () => {
       password: undefined,
       authorization: undefined,
       basePath: undefined,
-    })
-  })
+    });
+  });
 
   it('can instantiate with params', () => {
     // given
@@ -27,10 +31,10 @@ describe('configuration', () => {
       password: 'brilliantpassword',
       authorization: 'what',
       basePath: 'yeah',
-    }
+    };
 
     // when
-    const config = new Configuration(params)
+    const config = new Configuration(params);
 
     // then
     expect(config).toEqual({
@@ -39,6 +43,6 @@ describe('configuration', () => {
       password: 'brilliantpassword',
       authorization: 'what',
       basePath: 'yeah',
-    })
-  })
-})
+    });
+  });
+});

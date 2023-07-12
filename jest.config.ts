@@ -1,4 +1,5 @@
-import type { JestConfigWithTsJest } from 'ts-jest';
+// eslint-disable-next-line node/no-unpublished-import
+import type {JestConfigWithTsJest} from 'ts-jest';
 
 const config: JestConfigWithTsJest = {
   collectCoverage: true,
@@ -10,12 +11,8 @@ const config: JestConfigWithTsJest = {
     '!./integration/**/*',
   ],
   coverageDirectory: './reports/coverage',
-  roots: [
-    '<rootDir>/test',
-  ],
-  testMatch: [
-    "**/*\.(spec|test)\.ts"
-  ],
+  roots: ['<rootDir>/test'],
+  testMatch: ['**/*.(spec|test).ts'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
