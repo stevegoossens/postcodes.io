@@ -7,8 +7,8 @@
   "license": "MIT",
   "private": false,
   "type": "commonjs",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
