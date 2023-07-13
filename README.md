@@ -3,8 +3,8 @@ Client for the [postcodes.io](https://postcodes.io/) API from :octocat: [ideal-p
 
 Features:
 
-* supports the full REST API by a matching OpenAPI specification
-  * REST API documentation rendered by ReDoc
+* supports the full REST API by a matching [OpenAPI](https://www.openapis.org/) specification
+  * [https://stevegoossens.github.io/docs/postcodes.io/](REST API documentation) rendered by ReDoc
   * typed schemas for request and response
   * example requests and responses
   * includes undocumented properties
@@ -70,6 +70,8 @@ yarn docs
 
 This will output a local URL that you can open in a browser to view the
 documentation.
+
+The original REST API documentation is at [https://api.postcodes.io/docs](https://api.postcodes.io/docs), but as at the time of writing it is slightly incomplete (a few properties are unmentioned or misnamed) and is harder to read than the ReDoc layout.
 
 ## Install from NPM repo
 
