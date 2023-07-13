@@ -3,8 +3,11 @@ import {
   Api,
   Configuration,
   OutcodesApi,
+  OutcodesApiFactory,
   PlacesApi,
+  PlacesApiFactory,
   PostcodesApi,
+  PostcodesApiFactory,
 } from './openapi';
 
 class PostcodesIO {
@@ -13,9 +16,9 @@ class PostcodesIO {
   private _postcodesApi: PostcodesApi;
 
   constructor(configuration?: Configuration) {
-    this._outcodesApi = new OutcodesApi(configuration);
-    this._placesApi = new PlacesApi(configuration);
-    this._postcodesApi = new PostcodesApi(configuration);
+    this._outcodesApi = OutcodesApiFactory(configuration);
+    this._placesApi = PlacesApiFactory(configuration);
+    this._postcodesApi = PostcodesApiFactory(configuration);
   }
 
   /**
