@@ -5,12 +5,25 @@ const config: JestConfigWithTsJest = {
   collectCoverage: true,
   collectCoverageFrom: [
     './src/**/*.ts',
-    '!./src/openapi/**/*',
     '!./test/**/*',
     '!./**/*.d.ts',
     '!./integration/**/*',
   ],
   coverageDirectory: './reports/coverage',
+  coverageThreshold: {
+    './src/openapi/**/*.ts': {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
   roots: ['<rootDir>/test'],
   testMatch: ['**/*.(spec|test).ts'],
   transform: {
