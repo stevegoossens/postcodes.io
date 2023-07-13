@@ -12,7 +12,11 @@ info:
     name: MIT
   contact:
     name: Ideal Postcodes
-    url: https://chat.ideal-postcodes.co.uk/
+    url: https://postcodes.io/
+  x-logo:
+    url: 'https://stevegoossens.github.io/images/ideal-postcodes/logo-original.png'
+    backgroundColor: '#05326d'
+    altText: 'Ideal Postcodes logo'
 servers:
   - url: https://api.postcodes.io
     description: Public API

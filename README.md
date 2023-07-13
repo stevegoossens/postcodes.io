@@ -56,15 +56,20 @@ It is a good idea to view the REST API documentation to understand the
 structure and property types. The `result` property from the API response body
 is what is returned by the client methods.
 
+![ReDoc screenshot](images/postcodes.io-client-redoc.png)
+
+You can view the REST API docs online at:
+
+[https://stevegoossens.github.io/docs/postcodes.io/](https://stevegoossens.github.io/docs/postcodes.io/)
+
+Alternatively, you can view them locally:
+
 ```
 yarn docs
 ```
 
 This will output a local URL that you can open in a browser to view the
-documentation rendered by ReDoc, which is a great choice
-for rendering REST APIs.
-
-![ReDoc screenshot](images/postcodes.io-client-redoc.png)
+documentation.
 
 ## Install from NPM repo
 
@@ -244,7 +249,7 @@ const placesData = await postcodesIO.placeLookup(code)
 #### Random Place
 
 ```typescript
-const placeData = await postcodesIO.randomPlace()
+const placesData = await postcodesIO.randomPlace()
 ```
 
 ## Development
