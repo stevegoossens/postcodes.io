@@ -595,6 +595,25 @@ describe('PostcodesIO', () => {
       await expect(placesData).resolves.toBePlacesData();
       expect(scope.isDone()).toBeTruthy();
     });
+
+    it('should throw ApiError for HTTP 200 result null', async () => {
+      // given
+      const scope = nock(basePath).get('/random/places').reply(200, {
+        status: 200,
+        result: null,
+      });
+
+      // when
+      const response = postcodesIO.randomPlace();
+
+      // then
+      await expect(response).rejects.toThrow(
+        new ApiError(
+          'Unsuccessful HTTP response: Status 200, Body: {"status":200,"result":null}'
+        )
+      );
+      expect(scope.isDone()).toBeTruthy();
+    });
   });
 
   describe('scottishPostcodeLookup', () => {
@@ -1913,6 +1932,27 @@ describe('PostcodesIO', () => {
       ]);
       expect(scope.isDone()).toBeTruthy();
     });
+
+    it('should throw ApiError for result undefined', async () => {
+      // given
+      const postcodes: string[] = [];
+      // this is a made-up response for code branch coverage
+      const scope = nock(basePath).post('/postcodes', {postcodes}).reply(200, {
+        status: 200,
+        result: undefined,
+      });
+
+      // when
+      const postcodeDataList = postcodesIO.bulkPostcodeLookup(postcodes);
+
+      // then
+      await expect(postcodeDataList).rejects.toThrow(
+        new ApiError(
+          'Unsuccessful HTTP response: Status 200, Body: {"status":200}'
+        )
+      );
+      expect(scope.isDone()).toBeTruthy();
+    });
   });
 
   describe('bulkReverseGeocoding', () => {
@@ -2774,6 +2814,29 @@ describe('PostcodesIO', () => {
       await expect(postcodeDataList).resolves.toEqual([]);
       expect(scope.isDone()).toBeTruthy();
     });
+
+    it('should reject ApiError for result undefined', async () => {
+      // given
+      const geolocations: Api.Geolocation[] = [];
+      // this is a made-up response for code branch coverage
+      const scope = nock(basePath)
+        .post('/postcodes', {geolocations: []})
+        .reply(200, {
+          status: 200,
+          result: undefined,
+        });
+
+      // when
+      const postcodeDataList = postcodesIO.bulkReverseGeocoding(geolocations);
+
+      // then
+      await expect(postcodeDataList).rejects.toThrow(
+        new ApiError(
+          'Unsuccessful HTTP response: Status 200, Body: {"status":200}'
+        )
+      );
+      expect(scope.isDone()).toBeTruthy();
+    });
   });
 
   describe('postcodeLookup', () => {
@@ -3217,6 +3280,100 @@ describe('PostcodesIO', () => {
         new ApiError(
           'Unsuccessful HTTP response: Status 404, Body: {"status":404,"error":"Resource not found"}'
         )
+      );
+      expect(scope.isDone()).toBeTruthy();
+    });
+  });
+
+  describe('outwardCodeLookup', () => {
+    it('should resolve OutcodeData for matching outcode', async () => {
+      // given
+      const outcode = 'B1';
+      const scope = nock(basePath)
+        .get('/outcodes/B1')
+        .reply(200, {
+          status: 200,
+          result: {
+            admin_county: [],
+            admin_district: ['Birmingham'],
+            admin_ward: [
+              'Ladywood',
+              'Soho & Jewellery Quarter',
+              'Bordesley & Highgate',
+              'Newtown',
+            ],
+            country: ['England'],
+            eastings: 406257,
+            latitude: 52.479937379085,
+            longitude: -1.90929488562091,
+            northings: 286893,
+            outcode: 'B1',
+            parish: ['Birmingham, unparished area'],
+            parliamentary_constituency: ['Birmingham, Ladywood'],
+          },
+        });
+
+      // when
+      const outcodeData = postcodesIO.outwardCodeLookup(outcode);
+
+      // then
+      await expect(outcodeData).resolves.toEqual({
+        admin_county: [],
+        admin_district: ['Birmingham'],
+        admin_ward: [
+          'Ladywood',
+          'Soho & Jewellery Quarter',
+          'Bordesley & Highgate',
+          'Newtown',
+        ],
+        country: ['England'],
+        eastings: 406257,
+        latitude: 52.479937379085,
+        longitude: -1.90929488562091,
+        northings: 286893,
+        outcode: 'B1',
+        parish: ['Birmingham, unparished area'],
+        parliamentary_constituency: ['Birmingham, Ladywood'],
+      });
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should throw ApiError for result undefined', async () => {
+      // given
+      const outcode = 'API erroneously sends result undefined';
+      const scope = nock(basePath)
+        .get(`/outcodes/${encodeURIComponent(outcode)}`)
+        .reply(200, {
+          status: 200,
+          result: undefined,
+        });
+
+      // when
+      const outcodeData = postcodesIO.outwardCodeLookup(outcode);
+
+      // then
+      await expect(outcodeData).rejects.toThrow(
+        new ApiError(
+          'Unsuccessful HTTP response: Status 200, Body: {"status":200}'
+        )
+      );
+      expect(scope.isDone()).toBeTruthy();
+    });
+
+    it('should throw ApiError for empty string outcode', async () => {
+      // given
+      const outcode = '';
+      const scope = nock(basePath).get('/outcodes/').reply(400, {
+        status: 400,
+        error: 'Invalid longitude/latitude submitted',
+      });
+
+      // when
+      const outcodeData = postcodesIO.outwardCodeLookup(outcode);
+
+      // then
+      await expect(outcodeData).rejects.toThrow(
+        new ApiError('Exception thrown during API call')
       );
       expect(scope.isDone()).toBeTruthy();
     });

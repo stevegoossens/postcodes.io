@@ -60,11 +60,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -111,11 +107,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -153,11 +145,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -195,11 +183,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -239,11 +223,37 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
+      throw this.getApiError(error);
+    }
+  }
+
+  /**
+   * Geolocation data for the centroid of the outward code specified. The
+   * outward code represents the first half of any postcode (separated by a
+   * space).
+   *
+   * @summary Outward Code Lookup
+   * @param {string} outcode Outward code (first part of postcode)
+   * @returns {Promise<Api.OutcodeData} OutcodeData
+   */
+  async outwardCodeLookup(outcode: string): Promise<Api.OutcodeData> {
+    try {
+      const response = await this._outcodesApi.outwardCodeLookup(outcode);
+      if (
+        response.status === 200 &&
+        response.body.status === 200 &&
+        response.body.result
+      ) {
+        return response.body.result;
       } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
+        throw new ApiError(
+          `Unsuccessful HTTP response: Status ${
+            response.status
+          }, Body: ${JSON.stringify(response.body)}`
+        );
       }
+    } catch (error) {
+      throw this.getApiError(error);
     }
   }
 
@@ -280,11 +290,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -313,11 +319,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -354,11 +356,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -388,11 +386,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -445,11 +439,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -477,11 +467,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -508,11 +494,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -540,11 +522,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -590,11 +568,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -638,11 +612,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -675,11 +645,7 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
     }
   }
 
@@ -712,11 +678,21 @@ class PostcodesIO {
         );
       }
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Exception thrown during API call', {cause: error});
-      }
+      throw this.getApiError(error);
+    }
+  }
+
+  /**
+   * Get ApiError or wrap a different thrown type with ApiError
+   *
+   * @param {unknown} error ApiError or unknown
+   * @returns {ApiError} ApiError or ApiError with cause (i.e. wrapped)
+   */
+  private getApiError(error: unknown): ApiError {
+    if (error instanceof ApiError) {
+      return error;
+    } else {
+      return new ApiError('Exception thrown during API call', {cause: error});
     }
   }
 }
