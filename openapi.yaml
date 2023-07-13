@@ -688,6 +688,21 @@ paths:
             format: int32
           description: |
             Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const lon = -2.302836
+            const lat = 53.455654
+            const outcodeDataList = await postcodesIO
+                .outcodeReverseGeocoding(lon, lat)
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const lon = -2.302836
+            const lat = 53.455654
+            const outcodeDataList = await postcodesIO
+                .outcodeReverseGeocoding(lon, lat, {limit: 3})
       responses:
         '200':
           description: List of Outcode Data
@@ -801,155 +816,6 @@ paths:
                                 ]
                             },
                             {
-                                "outcode": "L14",
-                                "longitude": -2.88058875471698,
-                                "latitude": 53.4181563668764,
-                                "northings": 391623,
-                                "eastings": 341572,
-                                "admin_district": [
-                                    "Knowsley",
-                                    "Liverpool"
-                                ],
-                                "parish": [
-                                    "Knowsley, unparished area",
-                                    "Liverpool, unparished area"
-                                ],
-                                "admin_county": [],
-                                "admin_ward": [
-                                    "Swanside",
-                                    "Page Moss",
-                                    "Yew Tree",
-                                    "Roby",
-                                    "West Derby",
-                                    "Childwall",
-                                    "Knotty Ash"
-                                ],
-                                "country": [
-                                    "England"
-                                ],
-                                "parliamentary_constituency": [
-                                    "Liverpool, Wavertree",
-                                    "Knowsley",
-                                    "Liverpool, West Derby"
-                                ]
-                            },
-                            {
-                                "outcode": "L13",
-                                "longitude": -2.92043604982207,
-                                "latitude": 53.4185191975089,
-                                "northings": 391696,
-                                "eastings": 338925,
-                                "admin_district": [
-                                    "Liverpool"
-                                ],
-                                "parish": [
-                                    "Liverpool, unparished area"
-                                ],
-                                "admin_county": [],
-                                "admin_ward": [
-                                    "Picton",
-                                    "West Derby",
-                                    "Greenbank",
-                                    "Old Swan",
-                                    "Wavertree",
-                                    "Clubmoor",
-                                    "Childwall",
-                                    "Tuebrook and Stoneycroft",
-                                    "Knotty Ash"
-                                ],
-                                "country": [
-                                    "England"
-                                ],
-                                "parliamentary_constituency": [
-                                    "Liverpool, Wavertree",
-                                    "Liverpool, Riverside",
-                                    "Liverpool, Walton",
-                                    "Liverpool, West Derby"
-                                ]
-                            },
-                            {
-                                "outcode": "L7",
-                                "longitude": -2.94975911930586,
-                                "latitude": 53.4058327809111,
-                                "northings": 390311,
-                                "eastings": 336957,
-                                "admin_district": [
-                                    "Liverpool"
-                                ],
-                                "parish": [
-                                    "Liverpool, unparished area"
-                                ],
-                                "admin_county": [],
-                                "admin_ward": [
-                                    "Picton",
-                                    "Central",
-                                    "Old Swan",
-                                    "Kensington and Fairfield",
-                                    "Princes Park"
-                                ],
-                                "country": [
-                                    "England"
-                                ],
-                                "parliamentary_constituency": [
-                                    "Liverpool, Wavertree",
-                                    "Liverpool, Riverside"
-                                ]
-                            },
-                            {
-                                "outcode": "L25",
-                                "longitude": -2.86370323212192,
-                                "latitude": 53.3788270304806,
-                                "northings": 387234,
-                                "eastings": 342642,
-                                "admin_district": [
-                                    "Knowsley",
-                                    "Liverpool"
-                                ],
-                                "parish": [
-                                    "Halewood",
-                                    "Liverpool, unparished area"
-                                ],
-                                "admin_county": [],
-                                "admin_ward": [
-                                    "Woolton",
-                                    "Allerton and Hunts Cross",
-                                    "Belle Vale",
-                                    "Halewood South",
-                                    "Halewood North"
-                                ],
-                                "country": [
-                                    "England"
-                                ],
-                                "parliamentary_constituency": [
-                                    "Garston and Halewood"
-                                ]
-                            },
-                            {
-                                "outcode": "L17",
-                                "longitude": -2.94064022687225,
-                                "latitude": 53.3775697400882,
-                                "northings": 387158,
-                                "eastings": 337522,
-                                "admin_district": [
-                                    "Liverpool"
-                                ],
-                                "parish": [
-                                    "Liverpool, unparished area"
-                                ],
-                                "admin_county": [],
-                                "admin_ward": [
-                                    "Mossley Hill",
-                                    "Greenbank",
-                                    "St. Michael's"
-                                ],
-                                "country": [
-                                    "England"
-                                ],
-                                "parliamentary_constituency": [
-                                    "Liverpool, Riverside"
-                                ]
-                            },
-                            {
                                 "outcode": "L70",
                                 "longitude": -2.9567696,
                                 "latitude": 53.4040682666667,
@@ -1000,13 +866,121 @@ paths:
                                     "Yew Tree",
                                     "Croxteth",
                                     "West Derby",
+                                    "Greenbank",
+                                    "Old Swan",
+                                    "Wavertree",
+                                    "Clubmoor",
+                                    "Childwall",
+                                    "Tuebrook and Stoneycroft",
                                     "Knotty Ash"
                                 ],
                                 "country": [
                                     "England"
                                 ],
                                 "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Liverpool, Riverside",
+                                    "Liverpool, Walton",
                                     "Liverpool, West Derby"
+                                ]
+                            }
+                        ]
+                    }
+                foundLimit3:
+                  summary: Found (limit=3)
+                  value:
+                    {
+                        "status": 200,
+                        "result": [
+                            {
+                                "outcode": "L16",
+                                "longitude": -2.8875342145749,
+                                "latitude": 53.39873448583,
+                                "northings": 389468,
+                                "eastings": 341084,
+                                "admin_district": [
+                                    "Knowsley",
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Knowsley, unparished area",
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Woolton",
+                                    "Belle Vale",
+                                    "Roby",
+                                    "Greenbank",
+                                    "Church",
+                                    "Childwall"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Garston and Halewood",
+                                    "Liverpool, Riverside",
+                                    "Knowsley"
+                                ]
+                            },
+                            {
+                                "outcode": "L15",
+                                "longitude": -2.92057201265823,
+                                "latitude": 53.3975726793249,
+                                "northings": 389366,
+                                "eastings": 338885,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Picton",
+                                    "Greenbank",
+                                    "Church",
+                                    "Wavertree",
+                                    "Childwall"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Liverpool, Riverside"
+                                ]
+                            },
+                            {
+                                "outcode": "L18",
+                                "longitude": -2.90821618411553,
+                                "latitude": 53.3805520054152,
+                                "northings": 387462,
+                                "eastings": 339683,
+                                "admin_district": [
+                                    "Liverpool"
+                                ],
+                                "parish": [
+                                    "Liverpool, unparished area"
+                                ],
+                                "admin_county": [],
+                                "admin_ward": [
+                                    "Woolton",
+                                    "Allerton and Hunts Cross",
+                                    "Cressington",
+                                    "Mossley Hill",
+                                    "Greenbank",
+                                    "Church"
+                                ],
+                                "country": [
+                                    "England"
+                                ],
+                                "parliamentary_constituency": [
+                                    "Liverpool, Wavertree",
+                                    "Garston and Halewood",
+                                    "Liverpool, Riverside"
                                 ]
                             }
                         ]
@@ -1042,6 +1016,13 @@ paths:
           name: outcode
           schema:
             $ref: '#/components/schemas/outcode'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const outcode = 'B1'
+            const outcodeData =
+                await postcodesIO.outwardCodeLookup(outcode)
       responses:
         '200':
           description: Outcode Data
@@ -1129,6 +1110,13 @@ paths:
             format: int32
           description: |
             Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const outcode = 'W1A'
+            const outcodeDataList =
+                await postcodesIO.nearestOutcode(outcode)
       responses:
         '200':
           description: List of Outcode Data
@@ -1266,6 +1254,13 @@ paths:
             format: int32
           description: |
             Limits number of places matches to return. Defaults to 10. Needs to be less than 100.
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const query = 'adl'
+            const placesDataList =
+                await postcodesIO.placeQuery(query)
       responses:
         '200':
           description: List of Places Data
@@ -1529,6 +1524,13 @@ paths:
           name: code
           schema:
             $ref: '#/components/schemas/code'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const code = 'osgb4000000074564391'
+            const placesData =
+                await postcodesIO.placeLookup(code)
       responses:
         '200':
           description: Places Data
@@ -1666,6 +1668,23 @@ paths:
             type: boolean
           description: |
             Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored. 
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const lon = -1.492787
+            const lat = 54.961017
+            const postcodeDataList =
+                await postcodesIO.reverseGeocoding(
+                  lon,
+                  lat
+                )
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const query = 'KT3'
+            const postcodeDataList =
+                await postcodesIO.postcodeQuery(query)
       responses:
         '200':
           description: Postcode Data (and distance)
@@ -2310,6 +2329,30 @@ paths:
             type: boolean
           description: |
             Applies a global widesearch parameter to all geolocation lookup objects. Defaults to `false`.
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcodes = ['BD6 3PS', 'NE32 5YQ']
+            const postcodeDataList =
+                await postcodesIO.bulkPostcodeLookup(postcodes)
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const geolocations = [
+              {
+                longitude: 0.629834723775309,
+                latitude: 51.7923246977375,
+              },
+              {
+                longitude: -2.49690382054704,
+                latitude: 53.5351312861402,
+                radius: 1000,
+                limit: 5,
+              },
+            ]
+            const postcodeDataReverseGeocodingResultList =
+                await postcodesIO.bulkReverseGeocoding(geolocations)
       responses:
         '200':
           description: List of Postcode Data
@@ -2915,6 +2958,13 @@ paths:
           name: postcode
           schema:
             $ref: '#/components/schemas/postcode'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcode = 'AB15 6DH'
+            const postcodeData =
+                await postcodesIO.postcodeLookup(postcode)
       responses:
         '200':
           description: Postcode Data
@@ -3066,6 +3116,13 @@ paths:
           name: limit
           schema:
             $ref: '#/components/schemas/limit'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcode = 'TA11 7Y'
+            const postcodes =
+                await postcodesIO.postcodeAutocomplete(postcode)
       responses:
         '200':
           description: Postcodes
@@ -3158,6 +3215,13 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/radius'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcode = 'BH21 7AT'
+            const postcodeDataReverseGeocodingList =
+                await postcodesIO.nearestPostcode(postcode)
       responses:
         '200':
           description: Postcode Data
@@ -3606,6 +3670,13 @@ paths:
           name: postcode
           schema:
             $ref: '#/components/schemas/postcode'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcode = 'CW6 0EF'
+            const postcodeIsValid =
+                await postcodesIO.postcodeValidation(postcode)
       responses:
         '200':
           description: Postcode validity
@@ -3685,6 +3756,17 @@ paths:
             type: boolean
           description: |
             Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored. 
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const longitude = -3.924229
+            const latitude = 51.923369
+            const postcodeDataList =
+                await postcodesIO.reverseGeocodingLegacy(
+                  longitude,
+                  latitude
+                )
       responses:
         '200':
           description: Postcode Data
@@ -3827,6 +3909,12 @@ paths:
             Filters random postcodes by outcode. Returns null if invalid outcode.
           schema:
             $ref: '#/components/schemas/outcode'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcodeData =
+                await postcodesIO.randomPostcode()
       responses:
         '200':
           description: Postcode Data
@@ -3951,6 +4039,12 @@ paths:
       summary: Random Place
       description: |
         Returns a random place and all associated data
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const placesData =
+                await postcodesIO.randomPlace()
       responses:
         '200':
           description: Places Data
@@ -4008,6 +4102,13 @@ paths:
           name: postcode
           schema:
             $ref: '#/components/schemas/postcode'
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcode = 'EH22 3NX'
+            const scottishPostcodeData =
+                await postcodesIO.scottishPostcodeLookup(postcode)
       responses:
         '200':
           description: Scottish Postcode Data
@@ -4079,6 +4180,13 @@ paths:
             type: string
             description: |
               Terminated postcode
+      x-codeSamples:
+        - lang: JavaScript
+          label: postcodes.io-client (JS/TS)
+          source: |
+            const postcode = 'E1W 1UU'
+            const terminatedPostcodeData =
+                await postcodesIO.terminatedPostcodeLookup(postcode)
       responses:
         '200':
           description: Terminated Postcode Data

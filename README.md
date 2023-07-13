@@ -145,21 +145,24 @@ const postcodeDataReverseGeocodingList =
 
 ```typescript
 const postcode = 'TA11 7Y'
-const postcodes = await postcodesIO.postcodeAutocomplete(postcode)
+const postcodes =
+    await postcodesIO.postcodeAutocomplete(postcode)
 ```
 
 #### Postcode Lookup
 
 ```typescript
 const postcode = 'AB15 6DH'
-const postcodeData = await postcodesIO.postcodeLookup(postcode)
+const postcodeData =
+    await postcodesIO.postcodeLookup(postcode)
 ```
 
 #### Postcode Query
 
 ```typescript
 const query = 'KT3'
-const postcodeDataList = await postcodesIO.postcodeQuery(query)
+const postcodeDataList =
+    await postcodesIO.postcodeQuery(query)
 ```
 
 #### Postcode Validation
@@ -173,7 +176,8 @@ const postcodeIsValid =
 #### Random Postcode
 
 ```typescript
-const postcodeData = await postcodesIO.randomPostcode()
+const postcodeData =
+    await postcodesIO.randomPostcode()
 ```
 
 #### Reverse Geocoding
@@ -181,10 +185,11 @@ const postcodeData = await postcodesIO.randomPostcode()
 ```typescript
 const lon = -1.492787
 const lat = 54.961017
-const postcodeDataList = await postcodesIO.reverseGeocoding(
-  lon,
-  lat
-)
+const postcodeDataList =
+    await postcodesIO.reverseGeocoding(
+      lon,
+      lat
+    )
 ```
 
 #### Reverse Geocoding (Legacy)
@@ -192,10 +197,11 @@ const postcodeDataList = await postcodesIO.reverseGeocoding(
 ```typescript
 const longitude = -3.924229
 const latitude = 51.923369
-const postcodeDataList = await postcodesIO.reverseGeocodingLegacy(
-  longitude,
-  latitude
-)
+const postcodeDataList =
+    await postcodesIO.reverseGeocodingLegacy(
+      longitude,
+      latitude
+    )
 ```
 
 #### Scottish Postcode Lookup
@@ -220,7 +226,16 @@ const terminatedPostcodeData =
 
 ```typescript
 const outcode = 'W1A'
-const outcodeDataList = await postcodesIO.nearestOutcode(outcode)
+const outcodeDataList =
+    await postcodesIO.nearestOutcode(outcode)
+```
+
+#### Outward Code Lookup
+
+```typescript
+const outcode = 'B1'
+const outcodeData =
+    await postcodesIO.outwardCodeLookup(outcode)
 ```
 
 #### Outcode Reverse Geocoding
@@ -238,20 +253,23 @@ const outcodeDataList =
 
 ```typescript
 const query = 'adl'
-const placesDataList = await postcodesIO.placeQuery(query)
+const placesDataList =
+    await postcodesIO.placeQuery(query)
 ```
 
 #### Place Lookup
 
 ```typescript
 const code = 'osgb4000000074564391'
-const placesData = await postcodesIO.placeLookup(code)
+const placesData =
+    await postcodesIO.placeLookup(code)
 ```
 
 #### Random Place
 
 ```typescript
-const placesData = await postcodesIO.randomPlace()
+const placesData =
+    await postcodesIO.randomPlace()
 ```
 
 ## Development
