@@ -31,6 +31,6 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
       - run: yarn --immutable
-      - name: Authenticate with NPM (to allow publishing)
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - run: yarn npm publish --access public
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
