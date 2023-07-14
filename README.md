@@ -7,7 +7,7 @@ Client for the [postcodes.io](https://postcodes.io/) API from :octocat: [ideal-p
 Features:
 
 * supports the full REST API by a matching [OpenAPI](https://www.openapis.org/) specification
-  * [https://stevegoossens.github.io/docs/postcodes.io/](REST API documentation) rendered by ReDoc
+  * [REST API documentation](https://stevegoossens.github.io/docs/postcodes.io/) rendered by ReDoc
   * typed schemas for request and response
   * example requests and responses
   * includes undocumented properties
