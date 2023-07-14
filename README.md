@@ -1,5 +1,8 @@
 # postcodes.io-client
+
 Client for the [postcodes.io](https://postcodes.io/) API from :octocat: [ideal-postcodes/postcodes.io](https://github.com/ideal-postcodes/postcodes.io) GitHub repo.
+
+![CI](https://github.com/stevegoossens/postcodes.io-client/actions/workflows/nodejs.yml/badge.svg)
 
 Features:
 
