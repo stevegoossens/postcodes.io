@@ -1,7 +1,7 @@
 openapi: '3.0.3'
 info:
   title: Postcodes.io
-  version: '1.0.0'
+  version: '1.0.1'
   description: |
     Postcodes.io allows UK postcode data to be queried over a JSON HTTP API.
 
