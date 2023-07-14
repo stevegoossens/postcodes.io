@@ -1,8 +1,8 @@
-# postcodes.io-client
+# @stevegoossens/postcodes.io
 
 Client for the [postcodes.io](https://postcodes.io/) API from :octocat: [ideal-postcodes/postcodes.io](https://github.com/ideal-postcodes/postcodes.io) GitHub repo.
 
-![Node.js CI workflow badge](https://github.com/stevegoossens/postcodes.io-client/actions/workflows/node.js.yml/badge.svg)
+![Node.js CI workflow badge](https://github.com/stevegoossens/postcodes.io/actions/workflows/node.js.yml/badge.svg)
 
 Features:
 
@@ -59,7 +59,7 @@ It is a good idea to view the REST API documentation to understand the
 structure and property types. The `result` property from the API response body
 is what is returned by the client methods.
 
-![ReDoc screenshot](images/postcodes.io-client-redoc.png)
+![ReDoc screenshot](images/postcodes.io-redoc.png)
 
 You can view the REST API docs online at:
 
@@ -79,7 +79,7 @@ The original REST API documentation is at [https://api.postcodes.io/docs](https:
 ## Install from NPM repo
 
 ```
-yarn add postcodes.io-client
+yarn add @stevegoossens/postcodes.io
 ```
 
 ## Usage
@@ -91,11 +91,11 @@ the normal `https://api.postcodes.io` server)
 ### Instantiate class
 
 ```typescript
-import PostcodesIO from 'postcodes.io-client'
+import PostcodesIO from '@stevegoossens/postcodes.io'
 const postcodesIO = new PostcodesIO()
 ```
 ```javascript
-const PostcodesIO = require('postcodes.io-client')
+const PostcodesIO = require('@stevegoossens/postcodes.io')
 const postcodesIO = new PostcodesIO()
 ```
 

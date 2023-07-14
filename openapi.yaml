@@ -690,14 +690,14 @@ paths:
             Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const lon = -2.302836
             const lat = 53.455654
             const outcodeDataList = await postcodesIO
                 .outcodeReverseGeocoding(lon, lat)
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const lon = -2.302836
             const lat = 53.455654
@@ -1018,7 +1018,7 @@ paths:
             $ref: '#/components/schemas/outcode'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const outcode = 'B1'
             const outcodeData =
@@ -1112,7 +1112,7 @@ paths:
             Limits number of outcodes matches to return. Defaults to 5000m. Needs to be less than 25,000m.
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const outcode = 'W1A'
             const outcodeDataList =
@@ -1256,7 +1256,7 @@ paths:
             Limits number of places matches to return. Defaults to 10. Needs to be less than 100.
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const query = 'adl'
             const placesDataList =
@@ -1526,7 +1526,7 @@ paths:
             $ref: '#/components/schemas/code'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const code = 'osgb4000000074564391'
             const placesData =
@@ -1670,7 +1670,7 @@ paths:
             Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored. 
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const lon = -1.492787
             const lat = 54.961017
@@ -1680,7 +1680,7 @@ paths:
                   lat
                 )
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const query = 'KT3'
             const postcodeDataList =
@@ -2331,13 +2331,13 @@ paths:
             Applies a global widesearch parameter to all geolocation lookup objects. Defaults to `false`.
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcodes = ['BD6 3PS', 'NE32 5YQ']
             const postcodeDataList =
                 await postcodesIO.bulkPostcodeLookup(postcodes)
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const geolocations = [
               {
@@ -2960,7 +2960,7 @@ paths:
             $ref: '#/components/schemas/postcode'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcode = 'AB15 6DH'
             const postcodeData =
@@ -3118,7 +3118,7 @@ paths:
             $ref: '#/components/schemas/limit'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcode = 'TA11 7Y'
             const postcodes =
@@ -3217,7 +3217,7 @@ paths:
             $ref: '#/components/schemas/radius'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcode = 'BH21 7AT'
             const postcodeDataReverseGeocodingList =
@@ -3672,7 +3672,7 @@ paths:
             $ref: '#/components/schemas/postcode'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcode = 'CW6 0EF'
             const postcodeIsValid =
@@ -3758,7 +3758,7 @@ paths:
             Search up to 20km radius, but subject to a maximum of 10 results. Since lookups over a wide area can be very expensive, we've created this method to allow you choose to make the trade off between search radius and number of results. Defaults to false. When enabled, radius and limits over 10 are ignored. 
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const longitude = -3.924229
             const latitude = 51.923369
@@ -3911,7 +3911,7 @@ paths:
             $ref: '#/components/schemas/outcode'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcodeData =
                 await postcodesIO.randomPostcode()
@@ -4041,7 +4041,7 @@ paths:
         Returns a random place and all associated data
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const placesData =
                 await postcodesIO.randomPlace()
@@ -4104,7 +4104,7 @@ paths:
             $ref: '#/components/schemas/postcode'
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcode = 'EH22 3NX'
             const scottishPostcodeData =
@@ -4182,7 +4182,7 @@ paths:
               Terminated postcode
       x-codeSamples:
         - lang: JavaScript
-          label: postcodes.io-client (JS/TS)
+          label: '@stevegoossens/postcodes.io (JS/TS)'
           source: |
             const postcode = 'E1W 1UU'
             const terminatedPostcodeData =
