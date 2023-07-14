@@ -1,6 +1,6 @@
 {
   "name": "@stevegoossens/postcodes.io",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Client for the postcodes.io API (ideal-postcodes/postcodes.io)",
   "repository": "git@github.com:stevegoossens/postcodes.io",
   "author": "stevegoossens <steve.goossens@gmail.com>",
