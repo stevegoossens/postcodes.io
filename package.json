@@ -1,6 +1,6 @@
 {
   "name": "@stevegoossens/postcodes.io",
-  "version": "0.9.5",
+  "version": "1.0.0",
   "description": "Client for the postcodes.io API (ideal-postcodes/postcodes.io)",
   "repository": "git@github.com:stevegoossens/postcodes.io",
   "author": "stevegoossens <steve.goossens@gmail.com>",
@@ -10,6 +10,24 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
+  ],
+  "keywords": [
+    "postcodes.io",
+    "postcodes",
+    "postcode",
+    "outcodes",
+    "outcode",
+    "places",
+    "terminated postcodes",
+    "scottish postcodes",
+    "rest api",
+    "api client",
+    "typescript",
+    "javascript",
+    "openapi",
+    "openapi-generator-plus",
+    "http",
+    "fetch"
   ],
   "scripts": {
     "prebuild": "rimraf dist",
