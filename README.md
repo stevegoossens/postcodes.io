@@ -2,7 +2,7 @@
 
 Client for the [postcodes.io](https://postcodes.io/) API from :octocat: [ideal-postcodes/postcodes.io](https://github.com/ideal-postcodes/postcodes.io) GitHub repo.
 
-![Node.js CI workflow badge](https://github.com/stevegoossens/postcodes.io/actions/workflows/node.js.yml/badge.svg) [![npm version](https://badge.fury.io/js/@stevegoossens%2Fpostcodes.io.svg)](https://badge.fury.io/js/@stevegoossens%2Fpostcodes.io)
+![Node.js CI workflow badge](https://github.com/stevegoossens/postcodes.io/actions/workflows/node.js.yml/badge.svg) [![npm version](https://badge.fury.io/js/@stevegoossens%2Fpostcodes.io.svg)](https://badge.fury.io/js/@stevegoossens%2Fpostcodes.io) [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/gts)
 
 Features:
 
